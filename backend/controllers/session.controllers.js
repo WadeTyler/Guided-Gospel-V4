@@ -5,9 +5,6 @@ const db = require('../db/db');
 const getSessions = async (req, res) => {
   try {
     const userid = req.cookies.userid;
-    if (!userid) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
     const query = 'SELECT * FROM session WHERE userid = ?';
     const [sessionsData] = await db.query(query, [userid]);
@@ -20,5 +17,5 @@ const getSessions = async (req, res) => {
 }
 
 module.exports = {
-
+  getSessions
 }

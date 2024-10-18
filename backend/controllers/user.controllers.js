@@ -21,8 +21,8 @@ const checkIfEmailExists = async(email) => {
 }
 
 const signUp = async (req, res) => {
-  const { firstname, lastname, email, password } = req.body || {};
   try {
+    const { firstname, lastname, email, password } = req.body || {};
 
     // Check if all fields are provided
     if (!firstname || !lastname || !email || !password) {
@@ -79,8 +79,8 @@ const signUp = async (req, res) => {
 }
 
 const login = async (req, res) => {
-  const { email, password } = req.body || {};
   try {
+    const { email, password } = req.body || {};
     if (!email || !password) {
       return res.status(400).json({ message: "Email and Password are required"});
     }
@@ -121,10 +121,6 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
-    if (!userid) {
-      return res.status(400).json({ message: "User not logged in" });
-    }
     
     res.clearCookie('userid', {
       httpOnly: true,
@@ -143,9 +139,6 @@ const logout = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const userid = req.cookies.userid;
-    if (!userid) {
-      return res.status(400).json({ message: "User not logged in" });
-    }
 
     const [userData] = await db.query('SELECT * FROM user WHERE userid = ?', [userid]);
     const user = userData[0];
@@ -216,10 +209,6 @@ const updateUser = async (req, res) => {
 const getMe = async (req, res) => {
   try {
     const userid = req.cookies.userid;
-
-    if (!userid) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
     const query = 'SELECT * FROM user WHERE userid = ?';
     const [userData] = await db.query(query, [userid]);
