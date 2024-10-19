@@ -1,6 +1,6 @@
 const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
-
+const { deleteSessionMessages, deleteAllUserMessages } = require('../lib/utils/deleteMessages');
 
 // Get all sessions for a user
 const getSessions = async (req, res) => {
@@ -44,8 +44,13 @@ const deleteSession = async (req, res) => {
       return res.status(400).json({ message: "Session id is required" });
     } 
 
+    // Delete all messages in the session
+    await deleteSessionMessages(sessionid);
+
+    // Delete the session
     const query = 'DELETE FROM session WHERE sessionid = ?';
     await db.query(query, [sessionid]);
+    
 
     return res.status(200).json({ message: "Session deleted successfully" });
 
@@ -60,8 +65,11 @@ const deleteAllSessions = async (req, res) => {
   try {
     const userid = req.cookies.userid;
 
-    const query = 'DELETE FROM session WHERE userid = ?';
+    // Delete all messages for the user
+    await deleteAllUserMessages(userid);
 
+    // Delete all sessions for the user
+    const query = 'DELETE FROM session WHERE userid = ?';
     await db.query(query, [userid]);
 
     return res.status(200).json({ message: "All sessions deleted successfully" });

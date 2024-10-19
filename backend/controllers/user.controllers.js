@@ -2,23 +2,7 @@
 const db = require('../db/db.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
-
-
-const checkIfEmailExists = async(email) => {
-  try {
-    const query = 'SELECT * FROM user WHERE email = ?';
-    const [rows] = await db.query(query, [email]);
-
-    if (rows.length > 0) {
-      return true;
-    }
-
-    return false;
-
-  } catch (error) {
-    throw new Error(error);
-  }
-}
+const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 
 const signUp = async (req, res) => {
   try {

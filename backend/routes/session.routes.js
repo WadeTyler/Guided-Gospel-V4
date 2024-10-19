@@ -6,6 +6,6 @@ const router = express.Router();
 router.get('/', protectedRoute, sessionController.getSessions);
 router.post('/create', protectedRoute, sessionController.createSession);
 router.delete('/:sessionid', protectedRoute, sessionController.deleteSession);
-router.delete('/all', protectedRoute, sessionController.deleteAllSessions);
+router.delete('/', protectedRoute, sessionController.deleteAllSessions);
 
 module.exports = router;

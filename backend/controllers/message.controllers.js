@@ -8,7 +8,7 @@ const getMessages = async (req, res) => {
       return res.status(400).json({ message: "Session id is required" });
     }
 
-    const query = 'SELECT * FROM message WHERE sessionid = ?';
+    const query = 'SELECT * FROM message WHERE sessionid = ? ORDER BY timestamp';
 
     const [messsagesData] = await db.query(query, [sessionid]);
     return res.status(200).json(messsagesData);
@@ -24,15 +24,17 @@ const addMessage = async (req, res) => {
 
     if (!sessionid || !sender || !text) return res.status(400).json({ message: "Session id, sender and text are required" });
 
+    const userid = req.cookies.userid;
+
     const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
     const messageid = uuidv4();
 
-    const query = 'INSERT INTO message (messageid, sessionid, timestamp, sender, text) VALUES (?, ?, ?, ?, ?)';
-    const values = [messageid, sessionid, timestamp, sender, text];
+    const query = 'INSERT INTO message (messageid, sessionid, userid, timestamp, sender, text) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [messageid, sessionid, userid, timestamp, sender, text];
 
     await db.query(query, values);
 
-    return res.status(200).json({ messageid, sessionid, timestamp, sender, text});
+    return res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});
 
   } catch (error) {
     console.log("Error in addMessage controller", error);
@@ -41,7 +43,8 @@ const addMessage = async (req, res) => {
 }
 
 
+
 module.exports = {
   getMessages,
-  addMessage
+  addMessage,
 }
