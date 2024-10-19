@@ -1,4 +1,5 @@
 const db = require('../db/db');
+const { v4: uuidv4 } = require('uuid');
 
 
 // Get all sessions for a user
@@ -16,6 +17,63 @@ const getSessions = async (req, res) => {
   }
 }
 
+// Create a new session (Returns the sessionid)
+const createSession = async (req, res) => {
+  try {
+    
+    const userid = req.cookies.userid;
+    const sessionid = uuidv4();
+
+    const query = 'INSERT INTO session (sessionid, userid) VALUES (?, ?)';
+    const values = [sessionid, userid];
+
+    await db.query(query, values);
+
+    return res.status(200).json({ sessionid });
+  } catch (error) {
+    console.log("Error in createSession controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// Delete a session
+const deleteSession = async (req, res) => {
+  try {
+    const sessionid = req.params.sessionid;
+    if (!sessionid) {
+      return res.status(400).json({ message: "Session id is required" });
+    } 
+
+    const query = 'DELETE FROM session WHERE sessionid = ?';
+    await db.query(query, [sessionid]);
+
+    return res.status(200).json({ message: "Session deleted successfully" });
+
+  } catch (error) {
+    console.log("Error in deleteSession controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// Delete all sessions
+const deleteAllSessions = async (req, res) => {
+  try {
+    const userid = req.cookies.userid;
+
+    const query = 'DELETE FROM session WHERE userid = ?';
+
+    await db.query(query, [userid]);
+
+    return res.status(200).json({ message: "All sessions deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteAllSessions controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
-  getSessions
+  getSessions,
+  createSession,
+  deleteSession,
+  deleteAllSessions
 }
