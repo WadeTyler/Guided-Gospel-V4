@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from "react";
 
-import Button from "./Button";
+
 import { GridPattern } from "./GridPattern";
 import { motion, useScroll } from "framer-motion";
-import { FaArrowRight } from "react-icons/fa";
+
 import { InputBar } from "./InputBar";
 import { Link } from "react-router-dom";
 export const Hero = () => {
@@ -50,7 +50,7 @@ export const Hero = () => {
           {...pattern}
         />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto mt-32">
+      <div className="relative z-10 max-w-7xl mx-auto mt-32 flex flex-col justify-center items-center">
 
         
 
@@ -65,9 +65,16 @@ export const Hero = () => {
         Whether you're seeking answers to life's questions or simply looking to deepen your understanding of Scripture, Guided is here to help you with biblical insights, any time of the day.
         </motion.p>
 
-        <Link className="cursor-pointer" to="/chat">
-          <InputBar cn="pointer-events-none"/>
-        </Link>
+        <Link to="/chat"
+        className="mt-8 px-6 py-3 text-lg text-white bg-primary rounded-full shadow-xl transition duration-300 hover:translate-y-2 hover:scale-105"
+        >Chat With Guided Now</Link>
+        <h4 className="text-zinc-600 mt-4 underline cursor-pointer" onClick={(e) => {
+          e.preventDefault();
+          const features = document.getElementById("features");
+          if (features) {
+            features.scrollIntoView({ behavior: "smooth" });
+          }
+          }}>Learn more below</h4>
 
         <div
           style={{ perspective: "1000px" }}
