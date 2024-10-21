@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
+import Logout from './pages/Logout';
 import { Navbar } from './components/floating-dock';
 
 
@@ -24,6 +25,11 @@ export default function App() {
       try {
         const response = await fetch('/api/user');
         const data = await response.json();
+
+        if (data.error) {
+          return null;
+        }
+
         if (!response.ok) {
           throw new Error(data.message);
         }
@@ -52,6 +58,7 @@ export default function App() {
           <Route path="/signup" element={ authUser ? <Navigate to="/chat" /> : <Signup />} />
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
+          <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
         </Routes>
         <Navbar />    
       </Router>

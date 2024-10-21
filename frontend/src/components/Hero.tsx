@@ -40,7 +40,7 @@ export const Hero = () => {
   }, []);
 
   return (
-    <div className=" px-4">
+    <div className="px-4">
       <div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
         <GridPattern
           width={120}

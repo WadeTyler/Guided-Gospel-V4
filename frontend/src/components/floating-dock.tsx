@@ -15,20 +15,39 @@ import {
   useTransform,
 } from "framer-motion";
 import { Link } from 'react-router-dom';
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useQuery } from '@tanstack/react-query';
 
 import { IconHomeFilled } from "@tabler/icons-react";
 import { IconMessageCircleFilled } from "@tabler/icons-react";
 import { IconSettingsFilled } from "@tabler/icons-react"
+import { IconLogout } from "@tabler/icons-react";
 
 export const Navbar = () => {
+
+  const { data:authUser } = useQuery({ queryKey: ['authUser'] });
+
+  const [items, setItems] = useState<{ title: string; icon: React.ReactNode; href: string; }[]>([]);
+
+  useEffect(() => {
+    if (authUser) {
+      setItems([
+        { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
+        { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
+        { title: "Settings", icon: <IconSettingsFilled className="text-primary" />, href: "/settings" },
+        { title: "Logout", icon: <IconLogout className="text-primary" />, href: "/logout" },
+      ]);
+    } else {
+      setItems([
+        { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
+        { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" }
+      ]);
+    }
+  }, [authUser]);
+
   return (
     <FloatingDock 
-      items={[
-        {title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/"},
-        {title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat"},
-        {title: "Settings", icon: <IconSettingsFilled className="text-primary"/>, href: "/settings"},
-        ]}
+      items={items}
       desktopClassName="fixed bottom-5 left-1/2 -translate-x-1/2 z-50"
       mobileClassName="fixed bottom-5 right-5 z-50"
     />
