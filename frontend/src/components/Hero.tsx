@@ -10,13 +10,6 @@ import { Link } from "react-router-dom";
 export const Hero = () => {
 
 
-  // Flip Words
-
-  const words1 = ["Scripture", "Salvation", "Guidance",];
-  const words2 = ["Faith", "Jesus", "Truth"];
-
-  // #endregion
-
   const pattern = {
     y: -6,
     squares: [

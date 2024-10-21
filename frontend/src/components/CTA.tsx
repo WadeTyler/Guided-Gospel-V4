@@ -28,7 +28,7 @@ export const CTA = ({ headerText, bodyText }: any) => {
 
           <div className="flex justify-center">
             <Button as="button" variant="large" className="rounded-2xl py-2">
-              <Link to="/signup">Chat with Guided</Link>
+              <Link to="/chat">Chat with Guided</Link>
             </Button>
           </div>
         </div>
