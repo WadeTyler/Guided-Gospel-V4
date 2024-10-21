@@ -21,10 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
-app.use("/user", userRoutes);
-app.use("/session", sessionRoutes);
-app.use("/message", messageRoutes);
-app.use("/ai", aiRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/session", sessionRoutes);
+app.use("/api/message", messageRoutes);
+app.use("/api/ai", aiRoutes);
 
 const PORT = process.env.PORT || 8000;
 // Start Server
