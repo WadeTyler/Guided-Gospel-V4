@@ -63,7 +63,9 @@ const Login = () => {
           className='border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none' />
           {isPending 
             ? 
-            <Loading size="lg" /> 
+            <div className="w-full flex items-center justify-center">
+              <Loading size='sm' cn="text-primary text-center" />
+            </div>
             :
             <button className="bg-primary px-4 py-2 rounded-2xl text-white">Login</button>
           }

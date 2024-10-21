@@ -3,8 +3,8 @@
 
 // Packages
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 
 // Pages
@@ -15,24 +15,30 @@ import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Logout from './pages/Logout';
 import { Navbar } from './components/floating-dock';
+import Loading from './components/Loading';
 
 
 export default function App() {
 
-  const { data:authUser } = useQuery({ 
+  const queryClient = useQueryClient();
+
+  const { data:authUser, isLoading } = useQuery({ 
     queryKey: ['authUser'],
     queryFn: async () => {
+      console.log("Fetching User");
       try {
         const response = await fetch('/api/user');
         const data = await response.json();
 
         if (data.error) {
+          console.log("ERROR");
           return null;
         }
 
         if (!response.ok) {
           throw new Error(data.message);
         }
+
         return data;
       } catch (error) {
         if (error instanceof Error) {
@@ -41,16 +47,21 @@ export default function App() {
           throw new Error(String(error));
         }
       }
-    }
+    },
+    retry: false
   });
 
-  useEffect(() => {
-    console.log(authUser);
-  }, [authUser])
-
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen bg-white flex items-center justify-center">
+        <Loading size='lg' cn="w-48 h-48 text-primary" />
+      </div>
+      
+    )
+  }
 
   return (
-      <Router>
+    <div className="">
         <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -60,7 +71,7 @@ export default function App() {
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
         </Routes>
-        <Navbar />    
-      </Router>
+        <Navbar />
+    </div>
   )
 }

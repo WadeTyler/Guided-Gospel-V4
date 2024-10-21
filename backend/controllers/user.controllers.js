@@ -200,6 +200,7 @@ const getMe = async (req, res) => {
 
     // Remove password
     const { password: _, ...userWithoutPassword} = user;
+
     return res.status(200).json(userWithoutPassword);
 
   } catch (error) {

@@ -1,41 +1,41 @@
 // Loading Spinner
 
-const Loading = ({size}: {size:string}) => {
+const Loading = ({size, cn}: {size:string; cn?:string}) => {
   switch (size) {
     case 'xs':
-      return <XSLoading />
+      return <XSLoading cn={cn} />
     case 'sm':
-      return <SMLoading />
+      return <SMLoading cn={cn} />
     case 'md':
-      return <MDLoading />
+      return <MDLoading cn={cn} />
     case 'lg':
-      return <LGLoading />
+      return <LGLoading cn={cn} />
     default:
-      return <XSLoading />
+      return <XSLoading cn={cn} />
   }
 }
 
-const XSLoading = () => {
+const XSLoading = ({cn}: {cn?:string}) => {
   return (
-    <span className="loading loading-dots loading-xs text-center"></span>
+    <span className={`loading loading-dots loading-xs text-center ${cn}`}></span>
   );
 }
 
-const SMLoading = () => {
+const SMLoading = ({cn}: {cn?:string}) => {
   return (
-    <span className="loading loading-dots loading-sm text-center"></span>
+    <span className={`loading loading-dots loading-sm text-center ${cn}`}></span>
   )
 }
 
-const MDLoading = () => {
+const MDLoading = ({cn}: {cn?:string}) => {
   return (
-    <span className="loading loading-dots loading-md text-center"></span>
+    <span className={`loading loading-dots loading-md text-center ${cn}`}></span>
   )
 }
 
-const LGLoading = () => {
+const LGLoading = ({cn}: {cn?:string}) => {
   return (
-    <span className="loading loading-dots loading-lg text-center"></span>
+    <span className={`loading loading-dots loading-lg text-center ${cn}`}></span>
   )
 }
 
