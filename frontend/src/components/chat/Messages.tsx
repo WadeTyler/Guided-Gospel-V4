@@ -19,7 +19,7 @@ const Messages = ({messages}: {
             <p className={`text-neutral-800 w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>
-            <p className={`max-w-[40rem] w-fit p-3 text-white rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800' : 'bg-zinc-500'}`}>
+            <p className={`max-w-[40rem] w-fit p-3 text-white rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800' : 'bg-zinc-500 self-end'}`}>
               {message.text}
             </p>
             <span className='text-transparent group-hover:text-neutral-800 transition-all ease-in-out duration-300'>{formatTimestamp(message.timestamp)}</span>

@@ -1,21 +1,25 @@
 
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RiChatNewFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { convertToDateUSFormat } from '../../lib/utils';
+import toast from 'react-hot-toast';
+import Loading from '../Loading';
 
 
 const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: string; setCurrentSessionid: React.Dispatch<React.SetStateAction<string>>;}) => {
 
   const { data:authUser } = useQuery({ queryKey: ['authUser'] });
+  const queryClient = useQueryClient();
 
   type SessionData = {
     sessionid: string;
     userid: string;
     summary: string | null;
     lastmodified: string;
-  }
+  }[]
   
   const { data:sessionData } = useQuery<SessionData>({
     queryKey: ['sessionData'],
@@ -31,12 +35,54 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
         if (!response.ok) {
           throw new Error(data.message);
         }
+        console.log(data);
         return data;
       } catch (error) {
         throw new Error((error as Error).message);
       }
     }
   })
+
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const { mutate:deleteAllSessions, isPending:deletingAllSessions } = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/session', {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      
+    },
+    onSuccess: () => {
+      toast.success('All sessions deleted');
+      queryClient.invalidateQueries({ queryKey: ['sessionData']});
+      queryClient.invalidateQueries({ queryKey: ['messages']});
+      setCurrentSessionid('');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    }
+  });
+
+
+  const handleDeleteButton = () => {
+    if (!isDeleting) {
+      return;
+    }
+    if (!sessionData || sessionData.length === 0) {
+      setIsDeleting(false);
+      toast.error("No sessions to delete");
+      return;
+    }
+    deleteAllSessions();
+    setIsDeleting(false);
+  }
 
 
   return (
@@ -68,12 +114,21 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
         }
       </section>
 
-
-      <section className="text-red-700 flex flex-row gap-2 items-center text-lg cursor-pointer hover:translate-y-2 transition-all duration-300 ease-in-out absolute bottom-4">
-        <MdDelete />
-        <p>Delete All</p>
-      </section>
       
+      {isDeleting &&
+        <div className="flex gap-2 items-center absolute bottom-16">
+          <button className='text-white px-2 py-1 rounded-xl bg-red-700' onClick={() => handleDeleteButton()}>Confirm</button>
+          <button className='text-neutral-800 px-2 py-1 rounded-xl bg-primary' onClick={() => setIsDeleting(false)}>Cancel</button>
+        </div>
+      }
+
+      {!deletingAllSessions && 
+        <section className="text-red-500 flex flex-row gap-2 items-center text-lg cursor-pointer hover:translate-y-2 transition-all duration-300 ease-in-out absolute bottom-4" onClick={() => setIsDeleting(true)}>
+          <MdDelete />
+          <p>Delete All</p>
+        </section>
+      }
+      {deletingAllSessions && <Loading size="md" cn="text-red-500 flex flex-row gap-2 items-center text-lg  absolute bottom-4" />}
 
     </div>
   )

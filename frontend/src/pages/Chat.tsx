@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from '../components/chat/Sidebar';
 import Messages from '../components/chat/Messages';
 import Loading from '../components/Loading';
+import { FlipWords } from '../components/flip-words';
 
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
@@ -9,8 +10,6 @@ import toast from 'react-hot-toast';
 
 const Chat = () => {
   const queryClient = useQueryClient();
-
-  const { data:authUser } = useQuery({ queryKey: ['authUser'] });
 
   const [currentSessionid, setCurrentSessionid] = useState<string>('');
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -42,7 +41,7 @@ const Chat = () => {
     }
   })
 
-  const { mutate:sendMessage, isPending:sendingMessage, error } = useMutation({
+  const { mutate:sendMessage, isPending:sendingMessage } = useMutation({
     mutationFn: async (inputMessage: string) => {
       try {
         var sessionid = currentSessionid;
@@ -154,6 +153,17 @@ const Chat = () => {
     sendMessage(inputMessage);
   }
 
+  const words = [
+    "The Bible",
+    "Jesus",
+    "God",
+    "Faith",
+    "Christianity",
+    "Salvation",
+    "Prayer",
+    "The Holy Spirit",
+  ]
+
   return (
     <div className="w-full h-screen flex relative">
       <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid}  />
@@ -164,13 +174,14 @@ const Chat = () => {
           currentSessionid &&
           <Messages messages={messages} />
         }
-
         {
           !currentSessionid &&
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <p className="">Ask away!</p>
-            <p className="">Some things you can ask me... placeholder</p>
-            <p>.....</p>
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <section className="flex text-3xl w-[40rem]">
+              <p className="">Ask about </p>
+              <FlipWords words={words} />
+            </section>
+            <p className='w-[40rem]'>Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!</p>
           </div>
         }
 
@@ -179,9 +190,9 @@ const Chat = () => {
             e.preventDefault();
             handleSubmit();
           }}
-          className='absolute bottom-24 flex items-center justify-center bg-neutral-800 w-[40rem] rounded-xl'>
+          className='absolute bottom-24 flex items-center justify-center bg-neutral-800 w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
           <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
-            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 ${sendingMessage ? 'text-zinc-500' : 'text-white'}`}
+            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500' : 'text-white'}`}
             placeholder='Ask me anything...'
             disabled={sendingMessage}
           />
