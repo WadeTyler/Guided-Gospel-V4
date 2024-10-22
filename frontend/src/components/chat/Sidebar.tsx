@@ -12,7 +12,6 @@ import { FaDeleteLeft } from "react-icons/fa6";
 
 const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: string; setCurrentSessionid: React.Dispatch<React.SetStateAction<string>>;}) => {
 
-  const { data:authUser } = useQuery({ queryKey: ['authUser'] });
   const queryClient = useQueryClient();
 
   type SessionData = {

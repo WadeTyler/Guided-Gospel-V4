@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { formatTimestamp } from '../../lib/utils'
-import Loading from '../Loading';
+
 
 const Messages = ({messages }: {
   messages: {
