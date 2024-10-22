@@ -149,12 +149,15 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
                   {"Placeholder summary"}
                 </p>
               </section>
-              <div className="absolute right-0 top-0 hover:text-red-500" onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteSession(session.sessionid);
-              }}>
-                <FaDeleteLeft />
-              </div>
+              {!deletingSession && 
+                <div className="absolute right-0 top-0 hover:text-red-500" onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteSession(session.sessionid);
+                }}>
+                  <FaDeleteLeft />
+                </div>
+              }
+              {deletingSession && <Loading size="sm" cn="absolute right-0 top-0 text-red-500" />}
             </div>
           ))
         }
