@@ -2,9 +2,9 @@
 // App.tsx
 
 // Packages
-import { useEffect } from 'react';
+
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 
 // Pages
@@ -19,8 +19,6 @@ import Loading from './components/Loading';
 
 
 export default function App() {
-
-  const queryClient = useQueryClient();
 
   const { data:authUser, isLoading } = useQuery({ 
     queryKey: ['authUser'],

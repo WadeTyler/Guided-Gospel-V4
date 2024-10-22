@@ -1,5 +1,5 @@
 import { testimonials } from "../constants/testimonials";
-import React from "react";
+
 
 type Testimonial = {
   name: string;

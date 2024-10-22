@@ -1,9 +1,5 @@
-import { AiFillPieChart, AiOutlineTeam } from "react-icons/ai";
-import { BsBarChartFill, BsServer } from "react-icons/bs";
-import { TiMessageTyping } from "react-icons/ti";
-import { GrOrganization } from "react-icons/gr";
-import { GiLockSpy } from "react-icons/gi";
-import { MdDarkMode } from "react-icons/md";
+
+import { BsBarChartFill } from "react-icons/bs";
 import { FaPray } from "react-icons/fa";
 import { IoMdSunny } from "react-icons/io";
 import { IoChatboxEllipsesSharp } from "react-icons/io5";

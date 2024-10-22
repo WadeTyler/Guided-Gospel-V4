@@ -1,8 +1,6 @@
 import { features } from "../constants/features";
 import { motion, useMotionValue } from "framer-motion";
-import React from "react";
 
-import { AiFillPieChart } from "react-icons/ai";
 import { CardPattern } from "./CardPattern";
 
 type FeatureType = {

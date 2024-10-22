@@ -1,11 +1,11 @@
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 import { GridPattern } from "./GridPattern";
 import { motion, useScroll } from "framer-motion";
 
-import { InputBar } from "./InputBar";
+
 import { Link } from "react-router-dom";
 export const Hero = () => {
 

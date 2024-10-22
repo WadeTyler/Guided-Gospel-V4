@@ -1,8 +1,8 @@
 import React from "react";
 
-import clsx from "clsx";
+
 import { twMerge } from "tailwind-merge";
-import Link from "next/link";
+
 
 export interface IButton {
   variant?: "small" | "medium" | "large" | string;
