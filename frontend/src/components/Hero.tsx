@@ -68,13 +68,6 @@ export const Hero = () => {
         <Link to="/chat"
         className="mt-8 px-6 py-3 text-lg text-white bg-primary rounded-full shadow-xl transition duration-300 hover:translate-y-2 hover:scale-105"
         >Chat With Guided Now</Link>
-        <h4 className="text-zinc-600 mt-4 underline cursor-pointer" onClick={(e) => {
-          e.preventDefault();
-          const features = document.getElementById("features");
-          if (features) {
-            features.scrollIntoView({ behavior: "smooth" });
-          }
-          }}>Learn more below</h4>
 
         <div
           style={{ perspective: "1000px" }}
@@ -93,6 +86,7 @@ export const Hero = () => {
             }}
             className="relative w-[100%] overflow-x-hidden md:w-3/4 mx-auto h-[12rem] sm:h-[16rem] md:h-[24rem] lg:h-[32rem] -mb-12 md:-mb-32 max-w-5xl"
           >
+            <img src="./images/chat-hero-image.png" alt="Hero Image" className="rounded-t-3xl"/>
           </motion.div>
         </div>
       </div>
