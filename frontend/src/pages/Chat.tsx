@@ -90,7 +90,7 @@ const Chat = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({message: inputMessage})
+          body: JSON.stringify({message: inputMessage, sessionid})
         });
         const aiData = await aiResponse.json();
         if (!aiResponse.ok) {

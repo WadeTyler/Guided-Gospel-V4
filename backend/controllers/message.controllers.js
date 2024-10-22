@@ -10,8 +10,8 @@ const getMessages = async (req, res) => {
 
     const query = 'SELECT * FROM message WHERE sessionid = ? ORDER BY timestamp';
 
-    const [messsagesData] = await db.query(query, [sessionid]);
-    return res.status(200).json(messsagesData);
+    const [messagesData] = await db.query(query, [sessionid]);
+    return res.status(200).json(messagesData);
   } catch (error) {
     console.log("Error in getMessages controller", error);
     return res.status(500).json({ message: "Internal server error" });
