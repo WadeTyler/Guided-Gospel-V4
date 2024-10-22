@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import Loading from '../components/Loading'
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import toast from 'react-hot-toast';
+
 import { useNavigate } from 'react-router-dom';
 
 const Logout = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data:authUser, refetch } = useQuery({queryKey: ['authUser']});
+  const { data:authUser } = useQuery({queryKey: ['authUser']});
   
   const { mutate:logoutMutation } = useMutation({
     mutationFn: async () => {

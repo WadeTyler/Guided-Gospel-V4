@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -11,7 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const {mutate:loginMutation, isPending, error} = useMutation({
+  const {mutate:loginMutation, isPending} = useMutation({
     mutationFn: async ({email, password}: {email: string; password: string}) => {
       try {
         const response = await fetch('/api/user/login', {

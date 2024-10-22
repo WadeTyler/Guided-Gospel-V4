@@ -12,7 +12,7 @@ const Signup = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const {mutate:signupMutation, isPending, error} = useMutation({
+  const {mutate:signupMutation, isPending} = useMutation({
     mutationFn: async ({firstname, lastname, email, password}: {firstname: string; lastname: string; email: string; password: string}) => {
       try {
         const response = await fetch('/api/user/signup', {
