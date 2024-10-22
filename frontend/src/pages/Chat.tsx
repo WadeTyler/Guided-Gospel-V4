@@ -25,7 +25,7 @@ const Chat = () => {
   const [currentSessionid, setCurrentSessionid] = useState<string>('');
   const [inputMessage, setInputMessage] = useState<string>('');
 
-  const { data:messages } = useQuery({
+  const { data:messages, isRefetching:refetchingMessages } = useQuery({
     queryKey: ['messages'],
     queryFn: async () => {
       try {
@@ -164,7 +164,6 @@ const Chat = () => {
     queryClient.invalidateQueries({queryKey: ['messages']});
   }, [currentSessionid]);
 
-
   const handleSubmit = () => {
     console.log(inputMessage);
 
@@ -200,8 +199,15 @@ const Chat = () => {
       <div className="w-full h-screen relative flex flex-col items-center">
 
         {
-          currentSessionid &&
+          currentSessionid && !refetchingMessages &&
           <Messages messages={messages} />
+        }
+        {
+          refetchingMessages && 
+          <div className="w-full h-full flex justify-center items-center">
+
+              <Loading cn="text-primary" size="lg"/>
+          </div>
         }
         {
           !currentSessionid &&
@@ -224,7 +230,7 @@ const Chat = () => {
           <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
             className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white'}`}
             placeholder='Ask me anything...'
-            disabled={sendingMessage}
+            disabled={sendingMessage || refetchingMessages}
           />
           {!sendingMessage && 
             <button 

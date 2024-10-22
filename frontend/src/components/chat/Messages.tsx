@@ -1,8 +1,9 @@
 
 import React from 'react';
 import { formatTimestamp } from '../../lib/utils'
+import Loading from '../Loading';
 
-const Messages = ({messages}: {
+const Messages = ({messages }: {
   messages: {
     messageid: string;
     sessionid: string;
@@ -13,8 +14,11 @@ const Messages = ({messages}: {
 }[];
 
 }) => {
+
   return (
+
     <div className="flex flex-col w-full h-full pl-48 pt-16 pb-16 mb-36 relative overflow-auto">
+      
       {messages.map((message, index) => (
           <div key={index} className={`flex flex-col relative group ${message.sender === 'ai' ? 'self-start translate-x-16' : 'self-end -translate-x-16'}`}>
             <p className={`text-neutral-800 w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
