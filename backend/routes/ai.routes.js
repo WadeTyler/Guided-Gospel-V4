@@ -5,5 +5,6 @@ const router = express.Router();
 
 // Routes
 router.post('/completion', protectedRoute, aiController.getChatCompletion);
+router.post('/summary', protectedRoute, aiController.getAndSetSummary);
 
 module.exports = router;

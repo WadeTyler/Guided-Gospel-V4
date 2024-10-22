@@ -78,7 +78,38 @@ const getChatHistory = async (sessionid, systemPrompt) => {
   }
 }
 
+// Get a summary based on the message
+const getAndSetSummary = async (req, res) => {
+  try {
+    const { sessionid } = req.body;
+    
+    if (!sessionid) {
+      return res.status(400).json({ error: "Session id is required" });
+    }
+
+    const systemPrompt = "You are a helpful assistant. Your role is to provide a summary of user's conversation. Your summary should be no more than 4 words. Don't include any personal information or details that could identify the user. Your goal is to provide a concise summary of the conversation. Don't include the word 'user' in your summary.";
+
+    const messages = await getChatHistory(sessionid, systemPrompt);
+
+    const summary = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: messages
+    });
+
+    const content = summary.choices[0].message.content;
+
+    // Save the summary to the database
+    const query = 'UPDATE session SET summary = ? WHERE sessionid = ?';
+    await db.query(query, [content, sessionid]);
+    
+    return res.status(200).json({ summary: content });
+  } catch (error) {
+    console.log("Error in getAndSetSummary Controller", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 module.exports = {
   getChatCompletion,
+  getAndSetSummary,
 }

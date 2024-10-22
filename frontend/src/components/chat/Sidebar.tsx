@@ -145,8 +145,8 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
             >
               <section className="group-hover:scale-90 transition-all duration-300 ease-in-out">
                 <p className="text-xs">{convertToDateUSFormat(session.lastmodified)}</p>
-                <p className=''>
-                  {"Placeholder summary"}
+                <p className='text-sm'>
+                  {session.summary || 'No Summary'}
                 </p>
               </section>
               {!deletingSession && 

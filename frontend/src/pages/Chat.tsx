@@ -56,8 +56,10 @@ const Chat = () => {
     mutationFn: async (inputMessage: string) => {
       try {
         var sessionid = currentSessionid;
+        var firstMessage = false;
         // Create a new session if there is no current session
         if (!sessionid) {
+          firstMessage = true;
           const response = await fetch('/api/session/create', {
             method: "POST",
             headers: {
@@ -124,6 +126,22 @@ const Chat = () => {
         if (!addAiMessageResponse.ok) {
           throw new Error(aiMessageData.message);
         }
+
+        // Create the summary of the session
+        if (firstMessage) {
+          const summaryResponse = await fetch(`/api/ai/summary`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({sessionid})
+          });
+          const summaryData = await summaryResponse.json();
+          if (!summaryResponse.ok) {
+            throw new Error(summaryData.message);
+          }
+        }
+        
 
         // Reset Input Message
         setInputMessage('');
