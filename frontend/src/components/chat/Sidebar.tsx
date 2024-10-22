@@ -166,8 +166,8 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
       
       {isDeletingAll &&
         <div className="flex gap-2 items-center absolute bottom-16">
-          <button className='text-white px-2 py-1 rounded-xl bg-red-700' onClick={() => handleDeleteAllButton()}>Confirm</button>
-          <button className='text-neutral-800 px-2 py-1 rounded-xl bg-primary' onClick={() => setIsDeletingAll(false)}>Cancel</button>
+          <button className='text-white shadow-md shadow-black px-2 py-1 rounded-xl bg-red-500' onClick={() => handleDeleteAllButton()}>Confirm</button>
+          <button className='text-neutral-800 shadow-md shadow-black px-2 py-1 rounded-xl bg-primary' onClick={() => setIsDeletingAll(false)}>Cancel</button>
         </div>
       }
 

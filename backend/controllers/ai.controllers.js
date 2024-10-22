@@ -30,6 +30,7 @@ const getChatCompletion = async (req, res) => {
 
     Response Rules:
     - Limit your response to 2 paragraphs.
+    - When you finish a paragraph add '<br/><br/>'.
     - Ask a related question at the end of your response.
     `;
 

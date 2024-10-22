@@ -1,4 +1,5 @@
-import React from 'react'
+
+import React from 'react';
 import { formatTimestamp } from '../../lib/utils'
 
 const Messages = ({messages}: {
@@ -20,7 +21,13 @@ const Messages = ({messages}: {
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>
             <p className={`max-w-[40rem] w-fit p-3 text-white rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800' : 'bg-zinc-500 self-end'}`}>
-              {message.text}
+              {/* Split the message into parts using '<br/><br/>' which is added by the AI */}
+              {message.text.split('<br/><br/>').map((part, index) => (
+                <React.Fragment key={index}>
+                  {part}
+                  {index < message.text.split('<br/><br/>').length - 1 && <><br /><br/></>}
+                </React.Fragment>
+              ))}
             </p>
             <span className='text-transparent group-hover:text-neutral-800 transition-all ease-in-out duration-300'>{formatTimestamp(message.timestamp)}</span>
           </div>
