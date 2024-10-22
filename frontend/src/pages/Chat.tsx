@@ -7,9 +7,16 @@ import { FlipWords } from '../components/flip-words';
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { formatName } from '../lib/utils';
 
 const Chat = () => {
   const queryClient = useQueryClient();
+  interface AuthUser {
+    firstname: string;
+  }
+
+  const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
+
 
   const [currentSessionid, setCurrentSessionid] = useState<string>('');
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -177,8 +184,9 @@ const Chat = () => {
         {
           !currentSessionid &&
           <div className="w-full h-full flex flex-col justify-center items-center">
+            {authUser && <h2 className="text-5xl w-[40rem] text-end">{`Hey ${formatName(authUser.firstname)}!`}</h2>}
             <section className="flex text-3xl w-[40rem]">
-              <p className="">Ask about </p>
+              <p className="">Ask me about </p>
               <FlipWords words={words} />
             </section>
             <p className='w-[40rem]'>Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!</p>

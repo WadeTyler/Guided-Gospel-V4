@@ -28,3 +28,9 @@ export const convertToDateUSFormat = (timestamp:string) => {
   return `${month}/${day}/${year}`;
 }
 
+export const formatName = (name: string) => {
+  var formattedName = name.toLowerCase();
+  formattedName = formattedName[0].toUpperCase() + formattedName.slice(1);
+  console.log(formattedName);
+  return formattedName;
+}
