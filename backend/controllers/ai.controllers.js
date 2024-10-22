@@ -56,7 +56,6 @@ const getChatHistory = async (sessionid, systemPrompt) => {
     const query = 'SELECT sender, text, timestamp FROM message WHERE sessionid = ? ORDER BY timestamp';
 
     const [messagesData] = await db.query(query, [sessionid]);
-    console.log(messagesData);
 
     var messages = [
       {role: "system", content: systemPrompt},
