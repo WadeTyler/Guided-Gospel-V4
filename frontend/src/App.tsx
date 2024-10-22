@@ -38,7 +38,7 @@ export default function App() {
         if (!response.ok) {
           throw new Error(data.message);
         }
-
+        console.log(data);
         return data;
       } catch (error) {
         if (error instanceof Error) {

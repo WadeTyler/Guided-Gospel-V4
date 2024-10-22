@@ -7,7 +7,7 @@ const getSessions = async (req, res) => {
   try {
     const userid = req.cookies.userid;
 
-    const query = 'SELECT * FROM session WHERE userid = ?';
+    const query = 'SELECT * FROM session WHERE userid = ? ORDER BY lastmodified DESC';
     const [sessionsData] = await db.query(query, [userid]);
     
     return res.status(200).json(sessionsData);
@@ -24,8 +24,10 @@ const createSession = async (req, res) => {
     const userid = req.cookies.userid;
     const sessionid = uuidv4();
 
-    const query = 'INSERT INTO session (sessionid, userid) VALUES (?, ?)';
-    const values = [sessionid, userid];
+    const lastmodified = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+    const query = 'INSERT INTO session (sessionid, userid, lastmodified) VALUES (?, ?, ?)';
+    const values = [sessionid, userid, lastmodified];
 
     await db.query(query, values);
 

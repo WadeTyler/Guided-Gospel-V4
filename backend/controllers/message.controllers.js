@@ -34,6 +34,12 @@ const addMessage = async (req, res) => {
 
     await db.query(query, values);
 
+    const lastmodified = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const query2 = 'UPDATE session SET lastmodified = ? WHERE sessionid = ?';
+    const values2 = [lastmodified, sessionid];
+
+    await db.query(query2, values2);
+
     return res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});
 
   } catch (error) {
