@@ -10,19 +10,11 @@ const openai = new OpenAI({
   project: 'proj_JhUmfjLZuCJ1pPOrPJFdRSMZ',
 });
 
-// System prompt
-const systemPrompt = `
-  You are a Christian advisor. Your role is to support and guide users in their faith journey. Provide a listening ear, offer scriptural insights, and help users navigate any spiritual questions or concerns they may have. Your goal is to affirm the user's beliefs, offer encouragement based on Biblical teachings, and remind them of God's love and presence in their life.
 
-  Response Rules:
-  - Limit your response to 2 paragraphs.
-  - Add '<br/><br/>' at the end of each paragraph.
-  - Ask a related question at the end of your response.
-  `;
 
 const getChatCompletion = async (req, res) => {
   try {
-    const { message, sessionid } = req.body;
+    const { message, sessionid, firstname } = req.body;
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
     }
@@ -30,8 +22,19 @@ const getChatCompletion = async (req, res) => {
       return res.status(400).json({ error: "Session id is required" });
     }
 
+    // System prompt
+    const systemPrompt = `
+    You are a Christian advisor. Your role is to support and guide users in their faith journey. Provide a listening ear, offer scriptural insights, and help users navigate any spiritual questions or concerns they may have. Your goal is to affirm the user's beliefs, offer encouragement based on Biblical teachings, and remind them of God's love and presence in their life.
+
+    ${firstname ? `The user's name is: ${firstname}.` : ''}
+
+    Response Rules:
+    - Limit your response to 2 paragraphs.
+    - Ask a related question at the end of your response.
+    `;
+
     // Get the chat history
-    const messages = await getChatHistory(sessionid);
+    const messages = await getChatHistory(sessionid, systemPrompt);
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -46,7 +49,7 @@ const getChatCompletion = async (req, res) => {
 }
 
 // This gets the chat history, and returns it as an array of messages according to openai's format
-const getChatHistory = async (sessionid) => {
+const getChatHistory = async (sessionid, systemPrompt) => {
   try {
     
     const query = 'SELECT sender, text, timestamp FROM message WHERE sessionid = ? ORDER BY timestamp';

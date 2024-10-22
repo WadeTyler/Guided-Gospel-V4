@@ -13,6 +13,10 @@ const Chat = () => {
   const queryClient = useQueryClient();
   interface AuthUser {
     firstname: string;
+    lastname: string;
+    age: number;
+    denomination: string;
+    email: string;
   }
 
   const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
@@ -96,7 +100,7 @@ const Chat = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({message: inputMessage, sessionid})
+          body: JSON.stringify({message: inputMessage, sessionid, firstname: authUser?.firstname})
         });
         const aiData = await aiResponse.json();
         if (!aiResponse.ok) {
@@ -200,7 +204,7 @@ const Chat = () => {
           }}
           className='absolute bottom-24 flex items-center justify-center bg-neutral-800 w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
           <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
-            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500' : 'text-white'}`}
+            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white'}`}
             placeholder='Ask me anything...'
             disabled={sendingMessage}
           />
