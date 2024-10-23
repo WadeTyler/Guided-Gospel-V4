@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import React, { useState } from 'react'
+import { useState } from 'react'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -43,7 +43,11 @@ const Feedback = () => {
   }
 
   return (
-    <div className="w-full h-screen bg-white flex flex-col items-center justify-center ">
+    <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
+    className="w-full h-screen bg-white flex flex-col items-center justify-center ">
       <div className="w-[40rem] flex flex-col gap-4">
         <h1 className="text-primary text-3xl">Share your Feedback</h1>
         <p className="">We would love to hear your feedback, so we can improve Guided Gospel for everyone.</p>
@@ -77,7 +81,7 @@ const Feedback = () => {
           }
         </form>
       </div>      
-    </div>
+    </motion.div>
   )
 }
 
