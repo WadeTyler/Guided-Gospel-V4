@@ -196,14 +196,21 @@ const Settings = () => {
               <h1 className="text-primary text-3xl">Wait {authUser?.firstname}!</h1>
               <p className="mb-4">Are you sure you want to delete your account?</p>
               <p className="mb-4">By deleting your account you'll lose access to Guided Gospel! You'll have to make another one to chat again.</p>
-              <section className="flex gap-4 items-center justify-center">
-                <button 
-                onClick={handleDeleteAccount}
-                className="bg-red-500 px-3 py-1 rounded-2xl text-white hover:text-red-500 hover:bg-neutral-800 transition-all duration-300 ease-in-out">Confirm Delete Account</button>
-                <button 
-                onClick={() => setIsDeletingUser(false)}
-                className="bg-primary px-3 py-1 rounded-2xl hover:bg-green-500 transition-all duration-300 ease-in-out">Cancel</button>
-              </section>
+              {!isPendingDeletingUser && 
+                <section className="flex gap-4 items-center justify-center">
+                  <button 
+                  onClick={handleDeleteAccount}
+                  className="bg-red-500 px-3 py-1 rounded-2xl text-white hover:text-red-500 hover:bg-neutral-800 transition-all duration-300 ease-in-out">Confirm Delete Account</button>
+                  <button 
+                  onClick={() => setIsDeletingUser(false)}
+                  className="bg-primary px-3 py-1 rounded-2xl hover:bg-green-500 transition-all duration-300 ease-in-out">Cancel</button>
+                </section>
+              }
+              {isPendingDeletingUser && 
+                <section className="flex gap-4 items-center justify-center">
+                  <Loading size='md' cn='text-red-500' />
+                </section>
+              }
             </div>
         </div>
       }
