@@ -9,9 +9,9 @@ const userRoutes = require('./routes/user.routes');
 const sessionRoutes = require('./routes/session.routes');
 const messageRoutes = require('./routes/message.routes');
 const aiRoutes = require('./routes/ai.routes');
+const verseRoutes = require('./routes/verses.routes');
 
 require('dotenv').config();
-
 
 // middleware
 const app = express();
@@ -25,6 +25,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/verse", verseRoutes);
 
 const PORT = process.env.PORT || 8000;
 // Start Server
