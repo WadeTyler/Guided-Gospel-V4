@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .form-input-bar {
-  @apply border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none;
+  @apply border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none focus:border-primary focus:ring-primary focus:ring-1;
 }
