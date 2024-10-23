@@ -115,7 +115,7 @@ const Settings = () => {
       queryClient.invalidateQueries({ queryKey: ['authUser'] });
       toast.success("Account deleted successfully");
       
-      navigate('/');
+      navigate('/feedback');
     },
     onError: (error: Error) => {
       toast.error(error.message || "Something went wrong");

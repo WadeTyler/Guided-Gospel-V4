@@ -69,7 +69,7 @@ export default function App() {
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
-          <Route path="/feedback" element={ authUser ? <Navigate to="/" /> : <Feedback /> } />
+          <Route path="/feedback" element={ <Feedback /> } />
         </Routes>
         <Navbar />
     </div>
