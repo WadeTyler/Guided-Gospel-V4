@@ -234,8 +234,9 @@ const deleteUser = async (req, res) => {
   try {
     const userid = req.cookies.userid;
 
-    const query = 'DELETE FROM user WHERE userid = ?';
-    await db.query(query, [userid]);
+    await db.query('DELETE FROM message WHERE userid = ?;', [userid]);
+    await db.query('DELETE FROM session WHERE userid = ?;', [userid]);
+    await db.query('DELETE FROM user WHERE userid = ?;', [userid]);
 
     res.clearCookie('userid', {
       httpOnly: true,
