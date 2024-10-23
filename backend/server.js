@@ -10,6 +10,7 @@ const sessionRoutes = require('./routes/session.routes');
 const messageRoutes = require('./routes/message.routes');
 const aiRoutes = require('./routes/ai.routes');
 const verseRoutes = require('./routes/verses.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
 
 require('dotenv').config();
 
@@ -26,6 +27,7 @@ app.use("/api/session", sessionRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/verse", verseRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 const PORT = process.env.PORT || 8000;
 // Start Server
