@@ -230,10 +230,31 @@ const getMe = async (req, res) => {
   }
 }
 
+const deleteUser = async (req, res) => {
+  try {
+    const userid = req.cookies.userid;
+
+    const query = 'DELETE FROM user WHERE userid = ?';
+    await db.query(query, [userid]);
+
+    res.clearCookie('userid', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict'
+    });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteUser controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   signUp,
   login,
   logout,
   updateUser,
-  getMe
+  getMe,
+  deleteUser
 }
