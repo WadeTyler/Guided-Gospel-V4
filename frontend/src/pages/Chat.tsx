@@ -23,6 +23,28 @@ const Chat = () => {
 
   const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
 
+  const { data:votd, isPending:votdPending, error:votdError } = useQuery({
+    queryKey: ['votd'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/verse/votd', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+        
+      }
+    }
+  })
 
   const [currentSessionid, setCurrentSessionid] = useState<string>('');
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -216,7 +238,9 @@ const Chat = () => {
         }
         {
           !currentSessionid &&
-          <div className="w-full h-full flex flex-col justify-center items-center">
+          <div className="w-full h-full flex flex-col justify-center items-center gap-6">
+
+
             {authUser && 
               <motion.h2 
               initial={{ x: 100, opacity: 0}}
@@ -226,21 +250,44 @@ const Chat = () => {
                 {`Hey ${formatName(authUser.firstname)}!`}
               </motion.h2>
             }
-            <motion.section
-              initial={{ x: -100, opacity: 0}}
-              animate={{ x: 0, opacity: 1}}
-              transition={{ duration: .5}} 
-            className="flex text-3xl w-[40rem]">
-              <p className="">Ask me about </p>
-              <FlipWords words={words} />
-            </motion.section>
-            <motion.p 
+
+            <motion.div 
               initial={{ x: -100, opacity: 0}}
               animate={{ x: 0, opacity: 1}}
               transition={{ duration: .5}}
-            className='w-[40rem]'>
-              Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!
-            </motion.p>
+            className="w-[40rem]">
+              <h3 className="text-3xl">Verse of the Day</h3>
+              {!votdPending && votd && 
+                <div className="">
+                  <p className="text-lg italic">"{votd.verse}"</p>
+                  <p className="text-sm">{votd.location}</p>
+                </div>
+              }
+              {votdPending && 
+                <Loading cn="text-primary" size="md"/>
+              }
+              {
+                votdError && 
+                <p className="text-lg">Sorry... something went wrong. No verse today 🥺</p>
+              }
+              
+            </motion.div>
+
+            <motion.section className="w-[40rem]"
+            initial={{ x: -100, opacity: 0}}
+            animate={{ x: 0, opacity: 1}}
+            transition={{ duration: .5}} 
+            >
+              <div className="flex text-3xl">
+                <p className="">Ask me about </p>
+                <FlipWords words={words} />
+              </div>
+              <p className="">
+                Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!
+              </p>
+            </motion.section>
+            
+            
           </div>
         }
 
