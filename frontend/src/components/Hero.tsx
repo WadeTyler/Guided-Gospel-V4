@@ -83,10 +83,13 @@ export const Hero = () => {
                 damping: 20,
                 mass: 0.5,
               },
+              boxShadow: isHalf ? "0px 4px 24px rgba(245,158,11,1)" : "none",
             }}
-            className="relative w-[100%] overflow-x-hidden md:w-3/4 mx-auto h-[12rem] sm:h-[16rem] md:h-[24rem] lg:h-[32rem] -mb-12 md:-mb-32 max-w-5xl"
+            className="relative w-[100%] overflow-hidden md:w-3/4 mx-auto h-[12rem] sm:h-[16rem] md:h-[24rem] lg:h-[32rem] -mb-12 md:-mb-32 max-w-5xl rounded-t-3xl"
           >
-            <img src="./images/chat-hero-image.png" alt="Hero Image" className="rounded-t-3xl"/>
+            <img src="./images/gg-hero.png" alt="Hero Image" 
+            className="rounded-t-3xl"
+            />
           </motion.div>
         </div>
       </div>
