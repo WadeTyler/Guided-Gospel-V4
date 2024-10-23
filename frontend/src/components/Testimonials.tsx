@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { testimonials } from "../constants/testimonials";
 
 
@@ -18,9 +19,10 @@ export const Testimonials = () => {
         <h2 className="font-display text-3xl tracking-tight text-zinc-900 sm:text-4xl md:text-5xl">
           See what our users say about us
         </h2>
-        <p className="mt-6 text-lg tracking-tight  text-zinc-600">
+        <p className="mt-6 mb-6 text-lg tracking-tight  text-zinc-600">
           How has Guided Helped you in your Faith?
         </p>
+        <Link to="/feedback" className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 shadow-md hover:text-primary transition-all ease-in-out duration-300">Let us Know</Link>
       </div>
 
       <div className="max-w-6xl mx-auto columns-1 md:columns-2 lg:columns-3 gap-4 mt-20">
