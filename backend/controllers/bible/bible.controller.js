@@ -22,6 +22,24 @@ const getVersesInChapter = async (req, res) => {
   }
 }
 
+const getVerse = async (req, res) => {
+  try {
+    const { bookName, chapterNum, verseNum } = req.params;
+
+    if (!bookName || !chapterNum || !verseNum) {
+      return res.status(400).send("Book name, chapter number, and verse number are required");
+    }
+
+    const query = `SELECT * FROM Verses WHERE chapterid = (SELECT chapterid FROM Chapters WHERE bookid = (SELECT bookid FROM Books WHERE bookName = ?) AND chapterNum = ?) AND verseNum = ?`;
+    const [verses] = await db.query(query, [bookName, chapterNum, verseNum]);
+
+    return res.status(200).json(verses[0]);
+  } catch (error) {
+    console.log("Error in getVerse controller: ", error);
+    res.status(500).send("Internal server error");
+  }
+}
+
 const getChapters = async (req, res) => {
   try {
     const { bookName } = req.params;
@@ -55,5 +73,6 @@ module.exports = {
   getVersesInChapter,
   getChapters,
   getBooks,
+  getVerse
 
 }
