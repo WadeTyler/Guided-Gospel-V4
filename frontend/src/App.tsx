@@ -14,6 +14,7 @@ import Signup from './pages/Signup';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Logout from './pages/Logout';
+import Feedback from './pages/Feedback';
 import { Navbar } from './components/floating-dock';
 import Loading from './components/Loading';
 
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
+          <Route path="/feedback" element={ authUser ? <Navigate to="/" /> : <Feedback /> } />
         </Routes>
         <Navbar />
     </div>
