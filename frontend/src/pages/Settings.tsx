@@ -2,9 +2,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
   // update request takes in the following: { firstname, lastname, email, age, denomination, currentPassword, newPassword }
+
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
@@ -87,6 +90,42 @@ const Settings = () => {
     updateUser(formData);
   }
 
+  const [isDeletingUser, setIsDeletingUser] = useState<Boolean>(false);
+
+  const { mutate:deleteUser, isPending:isPendingDeletingUser } = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await fetch('/api/user/', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      toast.success("Account deleted successfully");
+      
+      navigate('/');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Something went wrong");
+    }
+  })
+
+  const handleDeleteAccount = () => {
+    deleteUser();
+  }
+
   return (
     <div className="flex gap-12 items-center justify-center w-full h-screen">
       
@@ -123,21 +162,51 @@ const Settings = () => {
               {changingPassword ? "Cancel" : "Change Password"}
             </h4>
           </div>
-          {!isUpdating && 
+          <div className="flex gap-4">
+            {!isUpdating && 
+              <button 
+              disabled={isUpdating}
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+              className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Update Settings</button>
+            }
+            {isUpdating &&
+              <Loading size='md' cn='text-primary' />
+            }
             <button 
-            disabled={isUpdating}
             onClick={(e) => {
+              e.stopPropagation();
               e.preventDefault();
-              handleSubmit();
+              setIsDeletingUser(true);
             }}
-            className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Update Settings</button>
-          }
-          {isUpdating &&
-            <Loading size='md' cn='text-primary' />
-          }
+            className="bg-red-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-red-500 transition-all ease-in-out duration-300">
+              Delete Account
+            </button>
+          </div>
+          
         </form>
 
       </div>
+
+      {isDeletingUser &&
+        <div className="bg-[rgba(0,0,0,0.8)] w-full h-full absolute z-[100] flex items-center justify-center">
+            <div className="bg-white w-96 p-4 rounded-2xl flex flex-col">
+              <h1 className="text-primary text-3xl">Wait {authUser?.firstname}!</h1>
+              <p className="mb-4">Are you sure you want to delete your account?</p>
+              <p className="mb-4">By deleting your account you'll lose access to Guided Gospel! You'll have to make another one to chat again.</p>
+              <section className="flex gap-4 items-center justify-center">
+                <button 
+                onClick={handleDeleteAccount}
+                className="bg-red-500 px-3 py-1 rounded-2xl text-white hover:text-red-500 hover:bg-neutral-800 transition-all duration-300 ease-in-out">Confirm Delete Account</button>
+                <button 
+                onClick={() => setIsDeletingUser(false)}
+                className="bg-primary px-3 py-1 rounded-2xl hover:bg-green-500 transition-all duration-300 ease-in-out">Cancel</button>
+              </section>
+            </div>
+        </div>
+      }
     </div>
   )
 }
