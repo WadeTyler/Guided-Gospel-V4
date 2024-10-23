@@ -125,9 +125,9 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
   return (
     <div className='bg-neutral-800 w-48 h-full flex flex-col shadow-[rgba(0,0,0)_0px_2px_8px] gap-8 px-3 py-3 absolute z-10 pb-12'>
 
-      <Link to="/" className="text-primary font-bold text-2xl mt-1 cursor-pointer hover:translate-y-1 transition-all duration-300 ease-in-out">Guided Gospel</Link>
+      <Link to="/" className="text-primary font-bold text-2xl mt-1 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">Guided Gospel</Link>
 
-      <section className="text-white flex flex-row gap-2 items-center text-lg cursor-pointer hover:translate-y-2 transition-all duration-300 ease-in-out"
+      <section className="text-white flex flex-row gap-2 items-center text-lg cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out"
       onClick={() => setCurrentSessionid('')}
       >
         <RiChatNewFill />
@@ -142,7 +142,7 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
               key={session.sessionid} // Better to use a unique identifier
               onClick={() => setCurrentSessionid(session.sessionid)}
             >
-              <section className="group-hover:scale-90 transition-all duration-300 ease-in-out">
+              <section className="group-hover:scale-95 transition-all duration-300 ease-in-out">
                 <p className="text-xs">{convertToDateUSFormat(session.lastmodified)}</p>
                 <p className='text-sm'>
                   {session.summary || 'No Summary'}
@@ -165,13 +165,13 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
       
       {isDeletingAll &&
         <div className="flex gap-2 items-center absolute bottom-16">
-          <button className='text-white shadow-md shadow-black px-2 py-1 rounded-xl bg-red-500' onClick={() => handleDeleteAllButton()}>Confirm</button>
-          <button className='text-neutral-800 shadow-md shadow-black px-2 py-1 rounded-xl bg-primary' onClick={() => setIsDeletingAll(false)}>Cancel</button>
+          <button className='text-white shadow-md shadow-black px-2 py-1 rounded-xl bg-red-500 hover:scale-105 transition-all duration-300 ease-in-out' onClick={() => handleDeleteAllButton()}>Confirm</button>
+          <button className='text-neutral-800 shadow-md shadow-black px-2 py-1 rounded-xl bg-primary hover:scale-105 transition-all duration-300 ease-in-out' onClick={() => setIsDeletingAll(false)}>Cancel</button>
         </div>
       }
 
       {!deletingAllSessions && 
-        <section className="text-red-500 flex flex-row gap-2 items-center text-lg cursor-pointer hover:translate-y-2 transition-all duration-300 ease-in-out absolute bottom-4" onClick={() => setIsDeletingAll(true)}>
+        <section className="text-red-500 flex flex-row gap-2 items-center text-lg cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out absolute bottom-4" onClick={() => setIsDeletingAll(true)}>
           <MdDelete />
           <p>Delete All</p>
         </section>
