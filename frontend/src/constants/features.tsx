@@ -40,7 +40,7 @@ export const features = [
   {
     heading: "Your Privacy, Our Promise.",
     description:
-      "At Guided Gospel, your journey is private and secure. We don’t store or sell your data, ensuring your spiritual exploration remains confidential.",
+      "At Guided Gospel, your journey is private and secure. We don’t sell your data, ensuring your spiritual exploration remains confidential.",
     icon: <MdPrivacyTip  className="text-primary h-4 w-4 relative z-50" />,
   },
 ];
