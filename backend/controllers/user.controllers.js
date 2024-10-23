@@ -156,7 +156,7 @@ const updateUser = async (req, res) => {
     }
 
     // Make sure both current and newPassword are provided
-    if (currentPassword && !newPassword || newPassword && !currentPassword) {
+    if ((currentPassword && !newPassword) || (newPassword && !currentPassword)) {
       return res.status(400).json({ message: "Current password and new password are required" });
     }
 
@@ -173,6 +173,7 @@ const updateUser = async (req, res) => {
       }
 
       const match = await bcrypt.compare(currentPassword, user.password);
+
       if (!match) {
         return res.status(400).json({ message: "Invalid current password" });
       }

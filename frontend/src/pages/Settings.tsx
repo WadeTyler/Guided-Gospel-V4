@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import Loading from '../components/Loading';
 
 const Settings = () => {
   // update request takes in the following: { firstname, lastname, email, age, denomination, currentPassword, newPassword }
@@ -74,9 +75,11 @@ const Settings = () => {
     onSuccess: () => {
       toast.success("Settings updated successfully");
       queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      setChangingPassword(false);
     },
     onError: (error: Error) => {
       toast.error(error.message || "Something went wrong");
+      setChangingPassword(false);
     }
   })
 
@@ -99,18 +102,18 @@ const Settings = () => {
 
         <form action="" className="w-full flex flex-col gap-4 justify-center items-center">
           <div className="flex gap-4 w-full">
-            <input type="text" name="firstname" placeholder="First Name" defaultValue={formData.firstname} onChange={(e) => formData.firstname = e.target.value} className="form-input-bar" />
-            <input type="text" name="lastname" placeholder="Last Name" defaultValue={formData.lastname} onChange={(e) => formData.lastname = e.target.value}className="form-input-bar" />
-            <input type="number" name="age" placeholder="Age" defaultValue={formData.age}  onChange={(e) => formData.age = e.target.value}className="form-input-bar !w-1/3" />
+            <input type="text" name="firstname" placeholder="First Name" defaultValue={formData.firstname} onChange={(e) => formData.firstname = e.target.value} disabled={isUpdating} className="form-input-bar" />
+            <input type="text" name="lastname" placeholder="Last Name" defaultValue={formData.lastname} onChange={(e) => formData.lastname = e.target.value} disabled={isUpdating} className="form-input-bar" />
+            <input type="number" name="age" placeholder="Age" defaultValue={formData.age}  onChange={(e) => formData.age = e.target.value} disabled={isUpdating} className="form-input-bar !w-1/3" />
           </div>
-          <input type="text" name="email" placeholder="Email" defaultValue={formData.email} onChange={(e) => formData.email = e.target.value}className="form-input-bar" />
-          <input type="text" name="denomination" placeholder="Denomination" defaultValue={formData.denomination} onChange={(e) => formData.denomination = e.target.value} className="form-input-bar" />
+          <input type="text" name="email" placeholder="Email" defaultValue={formData.email} onChange={(e) => formData.email = e.target.value} disabled={isUpdating} className="form-input-bar" />
+          <input type="text" name="denomination" placeholder="Denomination" defaultValue={formData.denomination} onChange={(e) => formData.denomination = e.target.value} disabled={isUpdating} className="form-input-bar" />
           <div className="flex gap-4 w-full justify-end items-center">
 
             {changingPassword &&
               <div className="flex gap-4 w-full">
-                <input type="text" name="currentpassword" placeholder="Current Password" className="form-input-bar" onChange={(e) => formData.currentPassword = e.target.value} />
-                <input type="text" name="newpassword" placeholder="New Password" onChange={(e) => formData.newPassword = e.target.value} className="form-input-bar" />
+                <input type="text" name="currentpassword" placeholder="Current Password" disabled={isUpdating} className="form-input-bar" onChange={(e) => formData.currentPassword = e.target.value} />
+                <input type="text" name="newpassword" placeholder="New Password" onChange={(e) => formData.newPassword = e.target.value} disabled={isUpdating} className="form-input-bar" />
               </div>
             }
 
@@ -120,12 +123,18 @@ const Settings = () => {
               {changingPassword ? "Cancel" : "Change Password"}
             </h4>
           </div>
-          <button 
-          onClick={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-          className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Update Settings</button>
+          {!isUpdating && 
+            <button 
+            disabled={isUpdating}
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Update Settings</button>
+          }
+          {isUpdating &&
+            <Loading size='md' cn='text-primary' />
+          }
         </form>
 
       </div>
