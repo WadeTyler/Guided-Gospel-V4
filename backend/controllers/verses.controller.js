@@ -18,7 +18,7 @@ const getVotd = async (req, res) => {
       id = today.getDate() + 31;
     }
 
-    const query = 'SELECT * FROM verses WHERE id = ?';
+    const query = 'SELECT * FROM votd WHERE id = ?';
     const [verse] = await db.query(query, [id]);
     
     res.status(200).json(verse[0]);
