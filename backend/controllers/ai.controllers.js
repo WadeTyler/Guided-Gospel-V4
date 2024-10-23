@@ -14,7 +14,7 @@ const openai = new OpenAI({
 
 const getChatCompletion = async (req, res) => {
   try {
-    const { message, sessionid, firstname } = req.body;
+    const { message, sessionid, firstname, age, denomination } = req.body;
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
     }
@@ -27,6 +27,8 @@ const getChatCompletion = async (req, res) => {
     You are a Christian advisor. Your role is to support and guide users in their faith journey. Provide a listening ear, offer scriptural insights, and help users navigate any spiritual questions or concerns they may have. Your goal is to affirm the user's beliefs, offer encouragement based on Biblical teachings, and remind them of God's love and presence in their life.
 
     ${firstname ? `The user's name is: ${firstname}.` : ''}
+    ${age ? `The user's age is: ${age}.` : ''}
+    ${denomination ? `The user's denomination is: ${denomination}.` : ''}
 
     Response Rules:
     - Limit your response to 2 paragraphs.
