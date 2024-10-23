@@ -151,7 +151,7 @@ const updateUser = async (req, res) => {
 
     // Check if email exists
     const emailExists = await checkIfEmailExists(email);
-    if (emailExists) {
+    if (email !== user.email && emailExists) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
@@ -164,6 +164,14 @@ const updateUser = async (req, res) => {
   
     // Check if password matches if updating
     if (currentPassword && newPassword) {
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+
+      if (currentPassword === newPassword) {
+        return res.status(400).json({ message: "New password must be different from current password" });
+      }
+
       const match = await bcrypt.compare(currentPassword, user.password);
       if (!match) {
         return res.status(400).json({ message: "Invalid current password" });
