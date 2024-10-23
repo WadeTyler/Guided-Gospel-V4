@@ -156,13 +156,17 @@ const Chat = () => {
     }
   })
 
-  // Reload messages on sessionid change
   useEffect(() => {
+
+    // Reload messages on sessionid change
     const fetchData = async () => {
       console.log(currentSessionid);
       await queryClient.invalidateQueries({queryKey: ['messages']});
     };
     fetchData();
+
+    // Reset the input message on sessionid change
+    setInputMessage('');
   }, [currentSessionid]);
 
   const handleSubmit = () => {
