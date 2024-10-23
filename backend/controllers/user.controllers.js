@@ -137,6 +137,18 @@ const updateUser = async (req, res) => {
       return res.status(400).json({ message: "No fields to update" });
     }
 
+    if (age && (age < 1 || age > 120)) {
+      return res.status(400).json({ message: "Invalid age" });
+    }
+
+    if (firstname && firstname.length < 2) {
+      return res.status(400).json({ message: "First name must be at least 2 characters" });
+    }
+
+    if (lastname && lastname.length < 2) {
+      return res.status(400).json({ message: "Last name must be at least 2 characters" });
+    }
+
     // Check if email exists
     const emailExists = await checkIfEmailExists(email);
     if (emailExists) {
