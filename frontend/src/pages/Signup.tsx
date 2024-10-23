@@ -55,13 +55,13 @@ const Signup = () => {
           handleSubmit();
         }}>
           <input type="text" name="firstname" placeholder='First Name' onChange={(e) => {setFirstname(e.target.value)}}
-            className='border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none' />
+            className='form-input-bar' />
           <input type="text" name="lastname" placeholder='Last Name' onChange={(e) => {setLastname(e.target.value)}}
-            className='border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none' />
+            className='form-input-bar' />
           <input type="text" name="email" placeholder='Email' onChange={(e) => {setEmail(e.target.value)}}
-            className='border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none' />
+            className='form-input-bar' />
           <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
-            className='border-primary border-[1px] rounded-2xl text-zinc-700 w-full hover:shadow-lg focus:shadow-lg focus:outline-none' />
+            className='form-input-bar' />
           
           {isPending && 
             <div className="w-full flex items-center justify-center">
