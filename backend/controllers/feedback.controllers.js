@@ -6,7 +6,7 @@ const submitFeedback = async (req, res) => {
     const { feedback } = req.body;
 
     if (!feedback) {
-      return res.status(400).json({ message: "Feedback is required" });
+      return res.status(400).json({ message: "A message is required to submit feedback." });
     }
 
     const feedbackid = uuidv4();
