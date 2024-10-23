@@ -46,7 +46,7 @@ const Chat = () => {
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data);
+
         return data;
       } catch (error) {
         throw new Error((error as Error).message);
@@ -94,7 +94,6 @@ const Chat = () => {
           throw new Error(userData.message);
         }
 
-        // Invalidate the messages query to show the user message
         queryClient.invalidateQueries({queryKey: ['messages']});
         setInputMessage('');  // Reset Input Message
 
@@ -143,27 +142,27 @@ const Chat = () => {
             throw new Error(summaryData.message);
           }
         }
-        
-
-        // Reset Input Message
-        setInputMessage('');
 
       } catch (error) {
         throw new Error((error as Error).message);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['messages']});
       queryClient.invalidateQueries({queryKey: ['sessionData']});
+      queryClient.invalidateQueries({queryKey: ['messages']});
     },
     onError: (error: Error) => {
       toast.error(error.message);
     }
   })
 
+  // Reload messages on sessionid change
   useEffect(() => {
-    console.log(currentSessionid);
-    queryClient.invalidateQueries({queryKey: ['messages']});
+    const fetchData = async () => {
+      console.log(currentSessionid);
+      await queryClient.invalidateQueries({queryKey: ['messages']});
+    };
+    fetchData();
   }, [currentSessionid]);
 
   const handleSubmit = () => {

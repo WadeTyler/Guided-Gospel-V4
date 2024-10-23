@@ -5,9 +5,9 @@ import { formatTimestamp } from '../../lib/utils'
 
 const Messages = ({messages }: {
   messages: {
-    messageid: string;
-    sessionid: string;
-    userid: string;
+    messageid?: string;
+    sessionid?: string;
+    userid?: string;
     timestamp: string;
     sender: string;
     text: string;
