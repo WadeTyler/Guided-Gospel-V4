@@ -66,7 +66,7 @@ export const Hero = () => {
         </motion.p>
 
         <Link to="/chat"
-        className="mt-8 px-6 py-3 text-lg text-white bg-primary rounded-full shadow-xl transition duration-300 hover:translate-y-2 hover:scale-105"
+        className="mt-8 px-6 py-3 text-lg text-white bg-primary rounded-full shadow-xl transition duration-300 hover:scale-105 hover:shadow-2xl hover:bg-neutral-800 hover:text-primary"
         >Chat With Guided Now</Link>
 
         <div

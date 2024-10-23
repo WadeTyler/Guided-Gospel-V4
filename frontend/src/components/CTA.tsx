@@ -26,7 +26,7 @@ export const CTA = ({ headerText, bodyText }: any) => {
           </p>
 
           <div className="flex justify-center">
-            <Button as="button" variant="large" className="rounded-2xl py-2">
+            <Button as="button" variant="large" className="rounded-2xl py-2 hover:shadow-primary hover:shadow-[0px_0px_16px] transition-all duration-300 ease-in-out">
               <Link to="/chat">Chat with Guided</Link>
             </Button>
           </div>
