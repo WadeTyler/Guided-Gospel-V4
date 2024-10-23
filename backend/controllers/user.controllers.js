@@ -137,7 +137,7 @@ const updateUser = async (req, res) => {
       return res.status(400).json({ message: "No fields to update" });
     }
 
-    if (age && (age < 1 || age > 120)) {
+    if (age && (age < 13 || age > 130)) {
       return res.status(400).json({ message: "Invalid age" });
     }
 
@@ -188,8 +188,8 @@ const updateUser = async (req, res) => {
       firstname || user.firstname,
       lastname || user.lastname,
       email || user.email,
-      age || user.age,
-      denomination || user.denomination,
+      age || null,
+      denomination || null,
       hashedPassword,
       userid
     ];
