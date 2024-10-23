@@ -67,7 +67,7 @@ const Login = () => {
               <Loading size='sm' cn="text-primary text-center" />
             </div>
             :
-            <button className="bg-primary px-4 py-2 rounded-2xl text-white">Login</button>
+            <button className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Login</button>
           }
         </form>
         <Link to="/signup" className="text-secondary underline">Don't have an account? Signup</Link>
