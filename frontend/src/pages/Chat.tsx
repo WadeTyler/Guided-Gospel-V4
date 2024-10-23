@@ -9,6 +9,8 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { formatName } from '../lib/utils';
 
+import { motion } from 'framer-motion';
+
 const Chat = () => {
   const queryClient = useQueryClient();
   interface AuthUser {
@@ -212,12 +214,30 @@ const Chat = () => {
         {
           !currentSessionid &&
           <div className="w-full h-full flex flex-col justify-center items-center">
-            {authUser && <h2 className="text-5xl w-[40rem] text-end">{`Hey ${formatName(authUser.firstname)}!`}</h2>}
-            <section className="flex text-3xl w-[40rem]">
+            {authUser && 
+              <motion.h2 
+              initial={{ x: 100, opacity: 0}}
+              animate={{ x: 0, opacity: 1}}
+              transition={{ duration: .5}}
+              className="text-5xl w-[40rem] text-end">
+                {`Hey ${formatName(authUser.firstname)}!`}
+              </motion.h2>
+            }
+            <motion.section
+              initial={{ x: -100, opacity: 0}}
+              animate={{ x: 0, opacity: 1}}
+              transition={{ duration: .5}} 
+            className="flex text-3xl w-[40rem]">
               <p className="">Ask me about </p>
               <FlipWords words={words} />
-            </section>
-            <p className='w-[40rem]'>Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!</p>
+            </motion.section>
+            <motion.p 
+              initial={{ x: -100, opacity: 0}}
+              animate={{ x: 0, opacity: 1}}
+              transition={{ duration: .5}}
+            className='w-[40rem]'>
+              Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!
+            </motion.p>
           </div>
         }
 
