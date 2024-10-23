@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Loading from '../components/Loading';
 
 const Feedback = () => {
   const [feedback, setFeedback] = useState<string>('');
@@ -51,22 +52,29 @@ const Feedback = () => {
           placeholder='Share your feedback here...'
           className='form-input-bar resize-none h-64 w-full'
           />
-          <section className="flex gap-4 items-center justify-center">
-            <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSubmit();
-            }}
-            className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Submit Feedback</button>
-            <button 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              navigate('/');
-            }}
-            className="bg-zinc-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-white transition-all ease-in-out duration-300">Go Home</button>
-          </section>
+          {!isSubmittingFeedback &&
+            <section className="flex gap-4 items-center justify-center">
+              <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSubmit();
+              }}
+              className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Submit Feedback</button>
+              <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigate('/');
+              }}
+              className="bg-zinc-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-white transition-all ease-in-out duration-300">Go Home</button>
+            </section>
+          }
+          {isSubmittingFeedback && 
+            <section className="flex items-center justify-center">
+              <Loading size='lg' cn='text-primary flex justify-center items-center' />
+            </section>
+          }
         </form>
       </div>      
     </div>

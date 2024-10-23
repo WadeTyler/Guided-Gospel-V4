@@ -11,8 +11,20 @@ const submitFeedback = async (req, res) => {
 
     const feedbackid = uuidv4();
 
-    const query = 'INSERT INTO feedback (feedbackid, text) VALUES (?, ?)';
-    await db.query(query, [feedbackid, feedback]);
+    const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+    var query = '';
+    var values = [feedbackid, feedback, timestamp];
+
+    const userid = req.cookies.userid;
+    if (!userid) {
+      query = 'INSERT INTO feedback (feedbackid, text, timestamp) VALUES (?, ?, ?)';
+    } else {
+      query = 'INSERT INTO feedback (feedbackid, text, timestamp, userid) VALUES (?, ?, ?, ?)';
+      values.push(userid);
+    }
+
+    await db.query(query, values);
 
     return res.status(200).json({ message: "Feedback submitted successfully" });
   } catch (error) {
