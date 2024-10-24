@@ -2,6 +2,7 @@ import { features } from "../constants/features";
 import { motion, useMotionValue } from "framer-motion";
 
 import { CardPattern } from "./CardPattern";
+import BiblePreview from "./BiblePreview";
 
 type FeatureType = {
   heading: string;
@@ -37,7 +38,7 @@ export const SubHero = () => {
       onMouseMove={onMouseMove}
     >
       <div className="absolute w-96 h-96 -left-20 -top-20 bg-gradient-to-t from-[#9890e3] to-[#b1f4cf] blur-3xl rounded-full opacity-20" />
-      <motion.div initial={{y:-100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}
+      <motion.div initial={{y:100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}
       className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
         <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
           Faith at Your Fingertips – Learn, Ask, Grow.
@@ -59,6 +60,7 @@ export const SubHero = () => {
           />
         ))}
       </div>
+      <BiblePreview />
     </div>
   );
 };

@@ -47,7 +47,7 @@ export const Pricing = () => {
         {/* <motion.h3 initial={{y:100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}
         className="font-display text-2xl tracking-tight text-blue-100 sm:text-3xl md:text-4xl italic">"Did you say Free?!"</motion.h3> */}
         <motion.p initial={{y:100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}
-        className="mt-6 text-lg tracking-tight text-white max-w-3xl">Yes! Free! Guided Gospel is Free because we believe that spiritual guidance and biblical insight should be accessible to everyone, without barriers or costs. Unlike other Christian AI apps, we believe 
+        className="text-lg tracking-tight text-white max-w-3xl">Yes! Free! Guided Gospel is Free because we believe that spiritual guidance and biblical insight should be accessible to everyone, without barriers or costs. Unlike other Christian AI apps, we believe 
           <span className="text-primary"><br/>Your faith journey shouldn't come with a price tag.</span>
         </motion.p>
       </div>
