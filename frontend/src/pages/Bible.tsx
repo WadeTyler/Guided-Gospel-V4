@@ -206,20 +206,20 @@ const Bible = () => {
         </div>
       }
       {verses && currentBook && currentChapter && 
-        <div className={`absolute ${wideMode ? 'w-10/12' : 'w-[40rem]'} h-[30rem] mt-52 -z-10`}>
-
+        <>
           <button onClick={nextPage}
-          className="absolute -right-20 top-1/2 -translate-y-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150">
-            <IconChevronRight />
+            className={`absolute ${!wideMode ? 'right-1/4' : 'right-14'} translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
+              <IconChevronRight />
           </button>
 
           <button onClick={previousPage}
-          className="absolute -left-20 top-1/2 -translate-y-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150">
-            <IconChevronLeft />
+            className={`absolute ${!wideMode ? 'left-1/4' : 'left-14'} -translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
+              <IconChevronLeft />
           </button>
-        </div>
-        
+        </>
       }
+
+      
 
     </div>
   )
