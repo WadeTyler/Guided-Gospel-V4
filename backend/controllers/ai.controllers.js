@@ -1,7 +1,7 @@
 
 const OpenAI = require('openai');
 const db = require('../db/db');
-const rates = require('../lib/utils/rates');
+const rates = require('../middleware/rates');
 
 // Load API key from .env file
 const openAIAPIKey = process.env.OPENAI_API_KEY;

@@ -1,7 +1,7 @@
 const express = require('express');
 const sessionController = require('../controllers/session.controllers');
-const protectedRoute = require('../lib/utils/protectedRoute');
-const rates = require('../lib/utils/rates');
+const protectedRoute = require('../middleware/protectedRoute');
+const rates = require('../middleware/rates');
 const router = express.Router();
 
 router.get('/', protectedRoute, sessionController.getSessions);
