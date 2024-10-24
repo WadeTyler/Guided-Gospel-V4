@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { IconChevronRight } from '@tabler/icons-react';
 import { IconChevronLeft } from '@tabler/icons-react';
-
+import { motion } from 'framer-motion';
 
 
 interface Verse {
@@ -149,7 +149,11 @@ const Bible = () => {
   return (
     <div className="flex items-center justify-center flex-col">
       
-      <header className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-12`}>
+      <motion.header 
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-12`}>
         <div className="border-b-primary border-b-2 flex items-center flex-col pb-4 mb-4 w-full">
           <h1 className="text-4xl text-primary">Guided Gospel</h1>
         </div>
@@ -204,7 +208,7 @@ const Bible = () => {
               />
             </div>
         </div>
-      </header>
+      </motion.header>
       
       {/* Display Verses */}
       {verses && 
@@ -213,10 +217,14 @@ const Bible = () => {
             <h2 className="text-3xl text-neutral-800">{currentBook} - {currentChapter}</h2>
           }
           {verses.map((verse: Verse, index: number) => (
-            <div key={index} className={`border-b-2 border-gray-200 p-2 flex gap-2 text-${currentFontSize}`}>
+            <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            key={index} className={`border-b-2 border-gray-200 p-2 flex gap-2 text-${currentFontSize}`}>
               <p className="">{verse.verseNum}</p>
               <p className="">{verse.text}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       }
