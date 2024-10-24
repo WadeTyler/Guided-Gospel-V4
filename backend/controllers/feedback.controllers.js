@@ -1,5 +1,6 @@
 const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
+const { getTimestampInSQLFormat } = require('../lib/utils/sqlFormatting');
 
 const submitFeedback = async (req, res) => {
   try {
@@ -33,6 +34,31 @@ const submitFeedback = async (req, res) => {
   }
 }
 
+const submitBugReport = async (req, res) => {
+  try {
+    const userid = req.cookies.userid;
+    const { category, impact, issue } = req.body;
+    
+    if (!category || !impact || !issue) {
+      return res.status(400).json({ message: "All fields are required to submit a bug report." });
+    }
+
+    const timestamp = getTimestampInSQLFormat();
+
+    const query = 'INSERT INTO BugReports (userid, category, impact, issue, timestamp) VALUES (?, ?, ?, ?, ?)';
+    const values = [userid, category, impact, issue, timestamp];
+
+    await db.query(query, values);
+
+    return res.status(200).json({ message: "Bug report submitted successfully" });
+    
+  } catch (error) {
+    console.log("Error in submitBugReport controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
-  submitFeedback
+  submitFeedback,
+  submitBugReport
 }

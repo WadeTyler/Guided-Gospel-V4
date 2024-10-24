@@ -73,6 +73,7 @@ export default function App() {
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
           <Route path="/feedback" element={ <Feedback /> } />
+          <Route path="/bugreport" element={ authUser ? <Feedback type="bugreport" /> : <Navigate to="/login" /> } />
           <Route path="/bible" element={ <Bible /> } />
         </Routes>
         <Navbar />

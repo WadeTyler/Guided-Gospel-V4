@@ -176,6 +176,15 @@ const Settings = () => {
               <Loading size='md' cn='text-primary' />
             }
             <button 
+            disabled={isUpdating}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/bugreport');
+            }}
+            className="bg-zinc-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">
+              Report a Bug
+            </button>
+            <button 
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
