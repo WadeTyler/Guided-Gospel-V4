@@ -246,7 +246,7 @@ const Chat = () => {
               initial={{ x: 100, opacity: 0}}
               animate={{ x: 0, opacity: 1}}
               transition={{ duration: .5}}
-              className="text-5xl w-[40rem] text-end">
+              className="text-5xl w-[40rem] text-end text-primary">
                 {`Hey ${formatName(authUser.firstname)}!`}
               </motion.h2>
             }
@@ -299,7 +299,7 @@ const Chat = () => {
           className='absolute bottom-24 flex items-center justify-center bg-neutral-800 w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
           <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
             className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white'}`}
-            placeholder='Ask me anything...'
+            placeholder='Message Guided'
             disabled={sendingMessage || refetchingMessages}
           />
           {!sendingMessage && 
