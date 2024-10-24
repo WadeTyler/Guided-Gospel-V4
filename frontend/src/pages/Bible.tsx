@@ -4,6 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { IconChevronRight } from '@tabler/icons-react';
 import { IconChevronLeft } from '@tabler/icons-react';
+import { setLocalWithExpiry, getLocalWithExpiry, manageCacheLimit } from '../lib/utils';
+
 
 interface Verse {
     verseid: string,
@@ -65,6 +67,15 @@ const Bible = () => {
     queryKey: ['verses'],
     queryFn: async () => {
       try {
+
+        // If the verses are in local storage, return them from local storage
+        const localVerses = localStorage.getItem('book' + currentBook + 'chapter' + currentChapter);
+        if (localVerses) {
+          console.log('Retrieving verses local storage');
+          return JSON.parse(localVerses);
+        }
+
+        // If the verses are not in local storage, fetch them from the server
         const response = await fetch(`/api/bible/${currentBook}/${currentChapter}`, {
           method: 'GET',
           headers: {
@@ -77,6 +88,10 @@ const Bible = () => {
         if (!response.ok) {
           throw new Error(data.message);
         }
+
+        // Save the verses in local storage
+        const versesString = JSON.stringify(data);
+        localStorage.setItem('book' + currentBook + 'chapter' + currentChapter, versesString);
 
         return data;
       } catch (error) {
