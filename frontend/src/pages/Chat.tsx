@@ -49,7 +49,18 @@ const Chat = () => {
   const [currentSessionid, setCurrentSessionid] = useState<string>('');
   const [inputMessage, setInputMessage] = useState<string>('');
 
-  const { data:messages, isRefetching:refetchingMessages } = useQuery({
+
+  type Message = {
+    messageid?: string;
+    sessionid?: string;
+    userid?: string;
+    timestamp: string;
+    sender: string;
+    text: string
+  }
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const { data:messagesData, isRefetching:refetchingMessages } = useQuery({
     queryKey: ['messages'],
     queryFn: async () => {
       try {
@@ -98,7 +109,7 @@ const Chat = () => {
           sessionid = data.sessionid;
         }
 
-        // Add the user message
+        // Add the user message to the database
         const userResponse = await fetch('/api/message/add', {
           method: 'POST',
           headers: {
@@ -115,8 +126,9 @@ const Chat = () => {
         if (!userResponse.ok) {
           throw new Error(userData.message);
         }
-
-        queryClient.invalidateQueries({queryKey: ['messages']});
+        
+        // Add the message to the messages array
+        setMessages(prevMessages => [...prevMessages, userData])  
         setInputMessage('');  // Reset Input Message
 
         // Get AI Response
@@ -150,6 +162,9 @@ const Chat = () => {
           throw new Error(aiMessageData.message);
         }
 
+        // Add the message to the messages array
+        setMessages(prevMessages => [...prevMessages, aiMessageData])   
+
         // Create the summary of the session
         if (firstMessage) {
           const summaryResponse = await fetch(`/api/ai/summary`, {
@@ -171,7 +186,6 @@ const Chat = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['sessionData']});
-      queryClient.invalidateQueries({queryKey: ['messages']});
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -190,6 +204,12 @@ const Chat = () => {
     // Reset the input message on sessionid change
     setInputMessage('');
   }, [currentSessionid]);
+
+  useEffect(() => {
+    if (messagesData) {
+      setMessages(messagesData);
+    }
+  }, [messagesData])
 
   const handleSubmit = () => {
     console.log(inputMessage);
