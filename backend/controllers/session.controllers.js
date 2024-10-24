@@ -1,6 +1,7 @@
 const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
 const { deleteSessionMessages, deleteAllUserMessages } = require('../lib/utils/deleteMessages');
+const { getTimestampInSQLFormat } = require('../lib/utils/sqlFormatting');
 
 // Get all sessions for a user
 const getSessions = async (req, res) => {
@@ -24,7 +25,7 @@ const createSession = async (req, res) => {
     const userid = req.cookies.userid;
     const sessionid = uuidv4();
 
-    const lastmodified = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const lastmodified = getTimestampInSQLFormat();
 
     const query = 'INSERT INTO session (sessionid, userid, lastmodified) VALUES (?, ?, ?)';
     const values = [sessionid, userid, lastmodified];

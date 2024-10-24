@@ -1,5 +1,6 @@
 const db = require('../db/db');
 const { v4: uuidv4 } = require('uuid');
+const { getTimestampInSQLFormat } = require('../lib/utils/sqlFormatting');
 
 const getMessages = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ const addMessage = async (req, res) => {
 
     const userid = req.cookies.userid;
 
-    const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    const timestamp = getTimestampInSQLFormat();
     const messageid = uuidv4();
 
     const query = 'INSERT INTO message (messageid, sessionid, userid, timestamp, sender, text) VALUES (?, ?, ?, ?, ?, ?)';
