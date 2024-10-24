@@ -5,7 +5,7 @@ const BiblePreview = () => {
   return (
     <div className="flex flex-col items-center">
       <motion.div initial={{y:100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}
-      className="max-w-2xl md:mx-auto md:text-center xl:max-w-none mb-20">
+      className="max-w-2xl md:mx-auto md:text-center xl:max-w-none mb-10">
         <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
           Check out our Built in Bible
         </h2>
@@ -13,7 +13,7 @@ const BiblePreview = () => {
           We have a bible built in ready for you to read with just 1 click, so you have all of your resources in the same place!
         </p>
       </motion.div>
-      <Link to="/bible" className='mb-20 bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 shadow-md hover:text-primary transition-all ease-in-out duration-300'>Check it Out Here</Link>
+      <Link to="/bible" className='mb-10 bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 shadow-md hover:text-primary transition-all ease-in-out duration-300'>Check it Out Here</Link>
       <motion.img 
       initial={{opacity:0, y:100}}
       whileInView={{opacity:1, y:0, boxShadow: '0px 4px 24px rgba(245,158,11,1)'}}

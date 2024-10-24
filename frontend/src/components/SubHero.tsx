@@ -69,7 +69,7 @@ const Card = ({ heading, description, icon }: FeatureType) => {
   return (
     <div className="flex flex-col items-start">
       <IconContainer icon={icon} />
-      <motion.div initial={{opacity: 0, scale: 0, y:-100, x:-100}} whileInView={{ opacity: 1, scale: 1, y: 0, x:0}} transition={{duration: .5, delay: Math.random()/2}}
+      <motion.div initial={{opacity: 0}} whileInView={{ opacity: 1}} transition={{duration: .5, delay: .5}}
       className="mt-8">
         <h2 className="text-white text-2xl">{heading}</h2>
         <p className="text-sm text-zinc-100 mt-8 leading-relaxed">

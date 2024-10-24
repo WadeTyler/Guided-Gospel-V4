@@ -1,9 +1,14 @@
 
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export const CTA = ({ headerText, bodyText }: any) => {
   return (
-    <div className="relative rounded-2xl bg-vulcan-700 mx-4  mb-20 mt-20 text-gray-100 max-w-6xl lg:mx-auto  min-h-96 h-full  overflow-hidden pb-4">
+    <motion.div 
+    initial={{y:100, opacity: 0}}
+    whileInView={{y:0, opacity: 1}}
+    transition={{duration: .5}}
+    className="relative rounded-2xl bg-vulcan-700 mx-4  mb-20 mt-20 text-gray-100 max-w-6xl lg:mx-auto  min-h-96 h-full  overflow-hidden pb-4">
       <div
         className="absolute inset-0 top-0  bg-grid-vulcan-500"
         style={{
@@ -29,6 +34,6 @@ export const CTA = ({ headerText, bodyText }: any) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
