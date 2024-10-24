@@ -4,6 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+// Cron Jobs
+const resetRates = require('./lib/cronjobs/resetRates');
+
 // Routes
 const userRoutes = require('./routes/user.routes');
 const sessionRoutes = require('./routes/session.routes');
@@ -31,6 +34,8 @@ app.use("/api/verse", verseRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/bible", bibleRoutes);
 
+
+resetRates();
 
 const PORT = process.env.PORT || 8000;
 // Start Server
