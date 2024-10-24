@@ -67,9 +67,6 @@ const BugReport = () => {
   })
 
   const handleSubmit = () => {
-    // if (!category || !impact || !issue || impact === 0 || category === "" || impact === 0) { 
-    //   toast.error("All fields are required");
-    // }
     submitBugReport({ category, impact, issue });
   }
   

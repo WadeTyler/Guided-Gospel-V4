@@ -131,7 +131,7 @@ const Settings = () => {
       
       {/* Left Side */}
       <div className="flex flex-col items-center w-[25rem]">
-        <img src="./images/logo.jpg" alt="" className="w-full rounded-full" />
+        <img src="./images/logo-3.png" alt="" className="w-full rounded-full" />
       </div>
 
       {/* Right Side */}
