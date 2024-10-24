@@ -153,8 +153,8 @@ const Bible = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-12`}>
-        <div className="border-b-primary border-b-2 flex items-center flex-col pb-4 mb-4 w-full">
+      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-0 pt-12 bg-white pb-2`}>
+        <div className="border-b-primary border-b-2 flex items-center flex-col pb-4 mb-4 w-full z-20">
           <h1 className="text-4xl text-primary">Guided Gospel</h1>
         </div>
 
@@ -212,7 +212,7 @@ const Bible = () => {
       
       {/* Display Verses */}
       {verses && 
-        <div className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} h-[30rem] flex flex-col mt-52 overflow-y-auto`}>
+        <div className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} flex flex-col mt-52 overflow-y-auto  pb-28 -z-10`}>
           {currentBook && currentChapter && 
             <h2 className="text-3xl text-neutral-800">{currentBook} - {currentChapter}</h2>
           }
@@ -231,18 +231,18 @@ const Bible = () => {
       {verses && currentBook && currentChapter && 
         <>
           <button onClick={nextPage}
-            className={`absolute ${!wideMode ? 'right-1/4' : 'right-14'} translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
+            className={`fixed ${!wideMode ? 'right-1/4' : 'right-14'} translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
               <IconChevronRight />
           </button>
 
           <button onClick={previousPage}
-            className={`absolute ${!wideMode ? 'left-1/4' : 'left-14'} -translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
+            className={`fixed ${!wideMode ? 'left-1/4' : 'left-14'} -translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
               <IconChevronLeft />
           </button>
         </>
       }
 
-      
+
 
     </div>
   )
