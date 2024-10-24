@@ -58,6 +58,13 @@ const Chat = () => {
     sender: string;
     text: string
   }
+
+  const loadingMessage: Message = {
+    timestamp: new Date().toISOString(),
+    sender: 'ai',
+    text: '...'
+  } 
+
   const [messages, setMessages] = useState<Message[]>([]);
 
   const { data:messagesData, isRefetching:refetchingMessages } = useQuery({
@@ -131,6 +138,9 @@ const Chat = () => {
         setMessages(prevMessages => [...prevMessages, userData])  
         setInputMessage('');  // Reset Input Message
 
+        // Add AI Loading Message
+        setMessages(prevMessages => [...prevMessages, loadingMessage]);
+
         // Get AI Response
         const aiResponse = await fetch('/api/ai/completion', {
           method: "POST",
@@ -161,6 +171,9 @@ const Chat = () => {
         if (!addAiMessageResponse.ok) {
           throw new Error(aiMessageData.message);
         }
+
+        // Remove AI Loading Message
+        setMessages(prevMessages => prevMessages.slice(0, -1));
 
         // Add the message to the messages array
         setMessages(prevMessages => [...prevMessages, aiMessageData])   
