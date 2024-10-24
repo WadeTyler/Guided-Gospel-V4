@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { IconHomeFilled } from "@tabler/icons-react";
 import { IconMessageCircleFilled } from "@tabler/icons-react";
+import { IconBible } from "@tabler/icons-react";
 import { IconSettingsFilled } from "@tabler/icons-react"
 import { IconLogout } from "@tabler/icons-react";
 
@@ -34,13 +35,15 @@ export const Navbar = () => {
       setItems([
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
         { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
+        { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
         { title: "Settings", icon: <IconSettingsFilled className="text-primary" />, href: "/settings" },
         { title: "Logout", icon: <IconLogout className="text-primary" />, href: "/logout" },
       ]);
     } else {
       setItems([
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
-        { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" }
+        { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
+        { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
       ]);
     }
   }, [authUser]);

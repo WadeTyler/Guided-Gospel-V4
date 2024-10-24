@@ -15,6 +15,9 @@ import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
+import Bible from './pages/Bible';
+
+// Components
 import { Navbar } from './components/floating-dock';
 import Loading from './components/Loading';
 
@@ -70,6 +73,7 @@ export default function App() {
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
           <Route path="/feedback" element={ <Feedback /> } />
+          <Route path="/bible" element={ <Bible /> } />
         </Routes>
         <Navbar />
     </div>
