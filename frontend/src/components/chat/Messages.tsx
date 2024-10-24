@@ -2,6 +2,7 @@
 import React from 'react';
 import { formatTimestamp } from '../../lib/utils'
 import Loading from '../Loading';
+import { motion } from 'framer-motion';
 
 
 const Messages = ({messages }: {
@@ -21,7 +22,11 @@ const Messages = ({messages }: {
     <div className="flex flex-col w-full h-full pl-48 pt-16 pb-16 mb-36 relative overflow-auto">
       
       {messages.map((message, index) => (
-          <div key={index} className={`flex flex-col relative group ${message.sender === 'ai' ? 'self-start translate-x-16' : 'self-end -translate-x-16'}`}>
+          <motion.div 
+          initial={{ opacity: 0, x: message.sender === 'ai' ? '-100%' : '100%'}}
+          animate={{ opacity: 1, x: 0}}
+          transition={{ duration: 0.5 }}
+          key={index} className={`flex flex-col relative group ${message.sender === 'ai' ? 'self-start translate-x-16 ml-10' : 'self-end -translate-x-16 mr-10'}`}>
             <p className={`text-neutral-800 w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>
@@ -38,7 +43,7 @@ const Messages = ({messages }: {
               
             </p>
             <span className='text-transparent group-hover:text-neutral-800 transition-all ease-in-out duration-300'>{formatTimestamp(message.timestamp)}</span>
-          </div>
+          </motion.div>
       ))}
     </div>
   )
