@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 
+const defaultRates = 50;
+
 const signUp = async (req, res) => {
   try {
     const { firstname, lastname, email, password } = req.body || {};
@@ -32,8 +34,8 @@ const signUp = async (req, res) => {
     const userid = uuidv4();
 
     // Insert user into database
-    const query = 'INSERT INTO user (userid, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?)';
-    const values = [userid, firstname, lastname, email, hashedPassword];
+    const query = 'INSERT INTO user (userid, firstname, lastname, email, password, rates) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [userid, firstname, lastname, email, hashedPassword, defaultRates];
 
     await db.query(query, values);
 

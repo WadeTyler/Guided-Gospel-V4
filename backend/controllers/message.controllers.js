@@ -30,16 +30,22 @@ const addMessage = async (req, res) => {
     const timestamp = getTimestampInSQLFormat();
     const messageid = uuidv4();
 
-    const query = 'INSERT INTO message (messageid, sessionid, userid, timestamp, sender, text) VALUES (?, ?, ?, ?, ?, ?)';
-    const values = [messageid, sessionid, userid, timestamp, sender, text];
+    const insertMessageQuery = 'INSERT INTO message (messageid, sessionid, userid, timestamp, sender, text) VALUES (?, ?, ?, ?, ?, ?)';
+    const insertMessagesValues = [messageid, sessionid, userid, timestamp, sender, text];
 
-    await db.query(query, values);
+    await db.query(insertMessageQuery, insertMessagesValues);
 
-    const lastmodified = new Date().toISOString().replace('T', ' ').substring(0, 19);
-    const query2 = 'UPDATE session SET lastmodified = ? WHERE sessionid = ?';
-    const values2 = [lastmodified, sessionid];
+    // Update Session last modified timestamp
+    const lastModifiedQuery = 'UPDATE session SET lastmodified = ? WHERE sessionid = ?';
+    const lastModifiedValues = [timestamp, sessionid];
 
-    await db.query(query2, values2);
+    await db.query(lastModifiedQuery, lastModifiedValues);
+
+    // Update user rates if message is sent by ai - we only want to decrement rates if the message is sent by the AI
+    if (sender === 'ai') {
+      const ratesQuery = 'UPDATE user SET rates = rates - 1 WHERE userid = ?';
+      await db.query(ratesQuery, [userid]);
+    }
 
     return res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});
 

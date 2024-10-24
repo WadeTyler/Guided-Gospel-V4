@@ -11,15 +11,23 @@ const openai = new OpenAI({
 });
 
 
-
 const getChatCompletion = async (req, res) => {
   try {
+    // Check if the user has rates
+    const userid = req.cookies.userid;
+    const ratesQuery = 'SELECT rates FROM user WHERE userid = ?';
+    const [rates] = await db.query(ratesQuery, [userid]);
+    console.log(rates[0].rates);
+    if (rates[0].rates <= 0) {
+      return res.status(400).json({ message: "You have hit your daily message limit. Please come back tomorrow." });
+    }
+
     const { message, sessionid, firstname, age, denomination } = req.body;
     if (!message) {
-      return res.status(400).json({ error: "Message is required" });
+      return res.status(400).json({ message: "Message is required" });
     }
     if (!sessionid) {
-      return res.status(400).json({ error: "Session id is required" });
+      return res.status(400).json({ message: "Session id is required" });
     }
 
     // System prompt
