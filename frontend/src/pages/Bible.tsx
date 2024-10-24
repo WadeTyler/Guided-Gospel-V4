@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { IconChevronRight } from '@tabler/icons-react';
 import { IconChevronLeft } from '@tabler/icons-react';
-import { setLocalWithExpiry, getLocalWithExpiry, manageCacheLimit } from '../lib/utils';
+
 
 
 interface Verse {
