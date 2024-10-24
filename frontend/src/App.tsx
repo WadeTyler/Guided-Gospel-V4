@@ -77,6 +77,8 @@ export default function App() {
           <Route path="/bugreport" element={ authUser ? <Feedback type="bugreport" /> : <Navigate to="/login" /> } />
           <Route path="/bible" element={ <Bible /> } />
           <Route path="/rates" element={ <Rates /> } />
+
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Navbar />
     </div>
