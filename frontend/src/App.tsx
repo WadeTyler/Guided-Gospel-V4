@@ -16,6 +16,7 @@ import Settings from './pages/Settings';
 import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
 import Bible from './pages/Bible';
+import Rates from './pages/Rates';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -75,6 +76,7 @@ export default function App() {
           <Route path="/feedback" element={ <Feedback /> } />
           <Route path="/bugreport" element={ authUser ? <Feedback type="bugreport" /> : <Navigate to="/login" /> } />
           <Route path="/bible" element={ <Bible /> } />
+          <Route path="/rates" element={ <Rates /> } />
         </Routes>
         <Navbar />
     </div>

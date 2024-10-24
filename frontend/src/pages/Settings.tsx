@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Settings = () => {
   // update request takes in the following: { firstname, lastname, email, age, denomination, currentPassword, newPassword }
@@ -197,13 +197,9 @@ const Settings = () => {
           </div>
           
         </form>
-        <p className={`relative h-16 text-center italic group w-fit
-          
-          after:content-['Default_Limit_is_50'] after:z-50 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:text-primary after:px-2 after:py-1 after:rounded-xl after:hidden hover:after:block after:w-full
-          
-          `}
-          >
-            Daily Messages Remaining: {authUser ? authUser.rates : 0}
+        <p className={`relative h-16 text-center italic group w-fit`}>
+            Daily Messages Remaining: {authUser ? authUser.rates : 0} <br/>
+            <Link to="/rates" className="text-primary underline not-italic text-sm" >Click here to learn more about Rates</Link>
         </p>
 
       </div>
