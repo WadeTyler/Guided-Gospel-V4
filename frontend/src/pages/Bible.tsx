@@ -12,8 +12,6 @@ interface Verse {
     text: string
 };
 
-type Verses = Verse[];
-
 type Chapter = {
   chapterid: number,
   bookid: number,
@@ -29,10 +27,6 @@ const fontSizes = [
   { size: '2xl', name: 'Super Large' },
 ]
 
-type FontSize = {
-  size: string,
-  name: string
-}
 
 const Bible = () => {
 
