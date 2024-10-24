@@ -17,6 +17,7 @@ const Settings = () => {
     age: string;
     denomination: string;
     email: string;
+    rates: number;
   }
   
   const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
@@ -135,7 +136,7 @@ const Settings = () => {
       </div>
 
       {/* Right Side */}
-      <div className="flex flex-col gap-4 w-[44rem]">
+      <div className="flex flex-col gap-4 w-[44rem] items-center">
         <h2 className="text-primary text-5xl w-full text-end">Settings</h2>
         <p className="w-full text-end">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 
@@ -196,6 +197,14 @@ const Settings = () => {
           </div>
           
         </form>
+        <p className={`relative h-16 text-center italic group w-fit
+          
+          after:content-['Default_Limit_is_50'] after:z-50 after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:text-primary after:px-2 after:py-1 after:rounded-xl after:hidden hover:after:block after:w-full
+          
+          `}
+          >
+            Daily Messages Remaining: {authUser ? authUser.rates : 0}
+        </p>
 
       </div>
 

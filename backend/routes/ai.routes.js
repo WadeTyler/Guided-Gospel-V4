@@ -1,10 +1,11 @@
 const express = require('express');
 const aiController = require('../controllers/ai.controllers');
 const protectedRoute = require('../lib/utils/protectedRoute');
+const rates = require('../lib/utils/rates');
 const router = express.Router();
 
 // Routes
-router.post('/completion', protectedRoute, aiController.getChatCompletion);
+router.post('/completion', protectedRoute, rates.checkRates, aiController.getChatCompletion);
 router.post('/summary', protectedRoute, aiController.getAndSetSummary);
 
 module.exports = router;

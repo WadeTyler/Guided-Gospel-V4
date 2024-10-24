@@ -19,7 +19,7 @@ const getMessages = async (req, res) => {
   }
 }
 
-const addMessage = async (req, res) => {
+const addMessage = async (req, res, next) => {
   try {
     const { sessionid, sender, text } = req.body || {};
 
@@ -41,14 +41,8 @@ const addMessage = async (req, res) => {
 
     await db.query(lastModifiedQuery, lastModifiedValues);
 
-    // Update user rates if message is sent by ai - we only want to decrement rates if the message is sent by the AI
-    if (sender === 'ai') {
-      const ratesQuery = 'UPDATE user SET rates = rates - 1 WHERE userid = ?';
-      await db.query(ratesQuery, [userid]);
-    }
-
-    return res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});
-
+    res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});
+    next();
   } catch (error) {
     console.log("Error in addMessage controller", error);
     return res.status(500).json({ message: "Internal server error" });

@@ -1,6 +1,7 @@
 
 const OpenAI = require('openai');
 const db = require('../db/db');
+const rates = require('../lib/utils/rates');
 
 // Load API key from .env file
 const openAIAPIKey = process.env.OPENAI_API_KEY;
@@ -13,14 +14,6 @@ const openai = new OpenAI({
 
 const getChatCompletion = async (req, res) => {
   try {
-    // Check if the user has rates
-    const userid = req.cookies.userid;
-    const ratesQuery = 'SELECT rates FROM user WHERE userid = ?';
-    const [rates] = await db.query(ratesQuery, [userid]);
-    console.log(rates[0].rates);
-    if (rates[0].rates <= 0) {
-      return res.status(400).json({ message: "You have hit your daily message limit. Please come back tomorrow." });
-    }
 
     const { message, sessionid, firstname, age, denomination } = req.body;
     if (!message) {
@@ -52,7 +45,11 @@ const getChatCompletion = async (req, res) => {
       messages: messages,
     });
 
+    
+
+
     return res.status(200).json( completion.choices[0].message );
+    
   } catch (error) {
     console.log("Error in getChatCompletion Controller", error);
     return res.status(500).json({ message: "Internal Server Error" });

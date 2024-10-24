@@ -151,6 +151,8 @@ const Chat = () => {
         });
         const aiData = await aiResponse.json();
         if (!aiResponse.ok) {
+          // Remove AI Loading Message
+          setMessages(prevMessages => prevMessages.slice(0, -1));
           throw new Error(aiData.message);
         }
         const content = aiData.content;
