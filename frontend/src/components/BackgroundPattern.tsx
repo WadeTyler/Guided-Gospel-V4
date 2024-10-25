@@ -24,7 +24,7 @@ const BackgroundPattern = ({cn}:{cn?:string}) => {
         width={120}
         height={120}
         x="50%"
-        className={`absolute inset-x-0 inset-y-[-30%] h-[100%] w-full skew-y-[-5deg] fill-primary stroke-gray-100 dark:stroke-neutral-950 `}
+        className={`absolute inset-x-0 inset-y-[-30%] h-[100%] w-full skew-y-[-5deg] fill-primary stroke-gray-100 dark:stroke-neutral-950 ${cn}`}
         {...pattern}
       />
     </div>
