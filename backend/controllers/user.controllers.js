@@ -294,7 +294,7 @@ const submitForgotPassword = async (req, res) => {
     const recoveryToken = await generateToken(email + email);
     await db.query('INSERT INTO RequestedRecovery (recoveryToken, email) VALUES (?, ?)', [recoveryToken, email]);
 
-    passwordRecoveryCron.removeToken(recoveryToken, 300000);
+    passwordRecoveryCron.removeToken(recoveryToken, 600000);
 
     sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
 
