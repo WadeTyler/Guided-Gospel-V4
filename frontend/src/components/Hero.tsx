@@ -28,25 +28,25 @@ export const Hero = () => {
   }, []);
 
   return (
-    <div className="px-4 group">
+    <div className="px-4 group bg-white dark:bg-darkbg">
       <BackgroundPattern />
       <div className="relative z-10 max-w-7xl mx-auto mt-32 flex flex-col justify-center items-center">
 
         
 
         <motion.h1 initial={{y: -100, opacity: 0}} whileInView={{y: 0, opacity: 1}} transition={{duration: .5}}
-        className="font-semibold text-4xl sm:text-7xl text-center max-w-5xl mx-auto text-zinc-800 leading-tight tracking-tight">
+        className="font-semibold text-4xl sm:text-7xl text-center max-w-5xl mx-auto text-zinc-800 dark:text-white leading-tight tracking-tight">
           Discover <span className="text-primary">Scripture</span> Anytime, Anywhere{" "}
           powered by <span className="text-primary">Faith</span>
         </motion.h1>
         <motion.p initial={{opacity: 0}} whileInView={{opacity: 1}} transition={{duration: .5, delay: .5}}
-        className="mx-auto mt-6 max-w-3xl text-xl tracking-tight text-zinc-600 text-center leading-normal">
+        className="mx-auto mt-6 max-w-3xl text-xl tracking-tight text-zinc-600 dark:text-darktext text-center leading-normal">
         Guided Gospel is your AI companion for exploring the Christian Bible.
         Whether you're seeking answers to life's questions or simply looking to deepen your understanding of Scripture, Guided is here to help you with biblical insights, any time of the day.
         </motion.p>
 
         <Link to="/chat"
-        className="mt-8 px-6 py-3 text-lg text-white bg-primary rounded-full shadow-xl transition duration-300 hover:scale-105 hover:shadow-2xl hover:bg-neutral-800 hover:text-primary"
+        className="submit-btn mt-8"
         >Chat With Guided Now</Link>
 
         <div

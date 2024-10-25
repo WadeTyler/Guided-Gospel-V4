@@ -258,9 +258,9 @@ const Chat = () => {
 
 
   return (
-    <div className="w-full h-screen flex relative group">
+    <div className="w-full h-screen flex relative group bg-white dark:bg-darkbg">
 
-      <BackgroundPattern />
+      <BackgroundPattern cn="" />
 
       <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid}  />
 
@@ -297,11 +297,11 @@ const Chat = () => {
               animate={{ x: 0, opacity: 1}}
               transition={{ duration: .5}}
             className="w-[40rem]">
-              <h3 className="text-3xl">Verse of the Day</h3>
+              <h3 className="text-3xl dark:text-white">Verse of the Day</h3>
               {!votdPending && votd && 
                 <div className="">
-                  <p className="text-lg italic">"{votd.verse}"</p>
-                  <p className="text-sm">{votd.location}</p>
+                  <p className="text-lg italic dark:text-darktext">"{votd.verse}"</p>
+                  <p className="text-sm dark:text-darktext">{votd.location}</p>
                 </div>
               }
               {votdPending && 
@@ -309,7 +309,7 @@ const Chat = () => {
               }
               {
                 votdError && 
-                <p className="text-lg">Sorry... something went wrong. No verse today 🥺</p>
+                <p className="text-lg dark:text-darktext">Sorry... something went wrong. No verse today 🥺</p>
               }
               
             </motion.div>
@@ -320,10 +320,10 @@ const Chat = () => {
             transition={{ duration: .5}} 
             >
               <div className="flex text-3xl">
-                <p className="">Ask me about </p>
+                <p className="dark:text-white">Ask me about </p>
                 <FlipWords words={words} />
               </div>
-              <p className="">
+              <p className="dark:text-darktext">
                 Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!
               </p>
             </motion.section>
@@ -337,15 +337,15 @@ const Chat = () => {
             e.preventDefault();
             handleSubmit();
           }}
-          className='absolute bottom-24 flex items-center justify-center bg-neutral-800 w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
+          className='absolute bottom-24 flex items-center justify-center bg-neutral-800 dark:bg-darktext w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
           <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
-            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white'}`}
+            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white dark:text-neutral-800'}`}
             placeholder='Message Guided'
             disabled={sendingMessage || refetchingMessages}
           />
           {!sendingMessage && 
             <button 
-              className="h-12 w-12 flex items-center justify-center text-3xl text-primary hover:text-white ease-in-out duration-300 transition-all"
+              className="h-12 w-12 flex items-center justify-center text-3xl text-primary hover:text-white dark:hover:text-darkaccent ease-in-out duration-300 transition-all"
             >
               <FaArrowAltCircleUp />
             </button>

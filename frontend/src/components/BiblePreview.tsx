@@ -13,7 +13,7 @@ const BiblePreview = () => {
           We have a bible built in ready for you to read with just 1 click, so you have all of your resources in the same place!
         </p>
       </motion.div>
-      <Link to="/bible" className='mb-10 bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 shadow-md hover:text-primary transition-all ease-in-out duration-300'>Check it Out Here</Link>
+      <Link to="/bible" className='mb-10 submit-btn'>Check it Out Here</Link>
       <motion.img 
       initial={{opacity:0, y:100}}
       whileInView={{opacity:1, y:0, boxShadow: '0px 4px 24px rgba(245,158,11,1)'}}

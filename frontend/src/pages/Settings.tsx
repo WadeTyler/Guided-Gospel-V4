@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
 import { Link, useNavigate } from 'react-router-dom';
 
+
+
 const Settings = () => {
   // update request takes in the following: { firstname, lastname, email, age, denomination, currentPassword, newPassword }
 
@@ -127,8 +129,10 @@ const Settings = () => {
     deleteUser();
   }
 
+  
+
   return (
-    <div className="flex gap-12 items-center justify-center w-full h-screen relative group">
+    <div className="flex gap-12 items-center justify-center w-full h-screen relative group bg-white dark:bg-darkbg">
     
 
       {/* Left Side */}
@@ -139,7 +143,7 @@ const Settings = () => {
       {/* Right Side */}
       <div className="flex flex-col gap-4 w-[44rem] items-center z-10">
         <h2 className="text-primary text-5xl w-full text-end">Settings</h2>
-        <p className="w-full text-end">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
+        <p className="w-full text-end dark:text-darktext">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 
         <form action="" className="w-full flex flex-col gap-4 justify-center items-center">
           <div className="flex gap-4 w-full">
@@ -198,7 +202,7 @@ const Settings = () => {
           </div>
           
         </form>
-        <p className={`relative h-16 text-center italic group w-fit`}>
+        <p className={`relative h-16 text-center italic group w-fit dark:text-darktext`}>
             Daily Messages Remaining: {authUser ? authUser.rates : 0} <br/>
             <Link to="/rates" className="text-primary underline not-italic text-sm" >Click here to learn more about Rates</Link>
         </p>

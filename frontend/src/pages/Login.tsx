@@ -45,7 +45,7 @@ const Login = () => {
   }
 
   return (
-    <div className='w-full h-screen bg-white flex justify-center items-center gap-16'>
+    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
 
       <div className="w-96">
         <img src="./images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
@@ -63,7 +63,7 @@ const Login = () => {
           <section className="w-full flex flex-col gap-1">
             <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
             className='form-input-bar' />
-            <Link to="/forgotpassword" className="text-secondary underline text-right">Forgot password?</Link>
+            <Link to="/forgotpassword" className="dark:text-darktext underline text-right ">Forgot password?</Link>
           </section>
           
           {isPending 
@@ -76,7 +76,7 @@ const Login = () => {
             
           }
         </form>
-        <Link to="/signup" className="text-secondary underline">Don't have an account? Signup</Link>
+        <Link to="/signup" className="dark:text-darktext underline">Don't have an account? Signup</Link>
         
       </div>  
     </div>

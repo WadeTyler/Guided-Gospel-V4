@@ -46,7 +46,7 @@ const Signup = () => {
   }
   
   return (
-    <div className='w-full h-screen bg-white flex justify-center items-center gap-16'>
+    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
       
       <div className="w-96 h-96 flex flex-col justify-center items-center gap-4">
         <h1 className="text-primary text-5xl font-bold text-start w-full">Signup</h1>
@@ -70,7 +70,7 @@ const Signup = () => {
           }
           {!isPending && <button className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Signup</button>}
         </form>
-        <Link to="/login" className="text-secondary underline">Already have an account? Login</Link>
+        <Link to="/login" className="dark:text-darktext underline">Already have an account? Login</Link>
       </div>
 
       <div className="w-96">

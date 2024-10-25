@@ -80,11 +80,11 @@ const UpdatePasswordForm = ({ recoveryToken, setPasswordUpdated }: { recoveryTok
   }
 
   return (
-    <div className='w-full h-screen bg-white flex justify-center items-center gap-16'>
+    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
         
         <div className="w-[30rem] h-96 flex flex-col justify-center items-center gap-4">
           <h1 className="text-primary text-5xl font-bold w-full">Reset Password</h1>
-          <p className="text-neutral-800 text-left w-full">Please enter your new password.</p>
+          <p className="text-neutral-800 dark:text-darktext text-left w-full">Please enter your new password.</p>
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
@@ -140,9 +140,9 @@ const RedirectingHome = () => {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen">
+    <div className="flex flex-col items-center justify-center w-full h-screen bg-white dark:bg-darkbg">
       <p className="text-4xl text-primary">Password Updated Successfully. Redirecting you to Login in {timer}</p>
-      <Link to="/login" className="text-secondary underline">Click here if you are not redirected</Link>
+      <Link to="/login" className="text-secondary dark:text-darktext underline">Click here if you are not redirected</Link>
     </div>
   )
 }

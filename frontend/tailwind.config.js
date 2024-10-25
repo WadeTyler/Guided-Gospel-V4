@@ -18,9 +18,12 @@ module.exports = {
       },
       colors: {
         primary: "#f59e0b",
-        secondary: "#3C4048",
+        secondary: "#3C4048", 
         tertiary: "#B2B2B2",
         quaternary: "#EAEAEA",
+        darkbg: "#171717",
+        darktext: "#e5e7eb",
+        darkaccent: "#262626",
         vulcan: {
           50: "#f4f4f4",
           100: "#e8e8e9",
@@ -36,6 +39,7 @@ module.exports = {
       },
     },
   },
+  darkMode: 'class',
   daisyui: {
     themes: ["light"]
   },

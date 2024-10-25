@@ -23,12 +23,37 @@ import { IconMessageCircleFilled } from "@tabler/icons-react";
 import { IconBible } from "@tabler/icons-react";
 import { IconSettingsFilled } from "@tabler/icons-react"
 import { IconLogout } from "@tabler/icons-react";
+import { IconSunMoon } from '@tabler/icons-react';
+
 
 export const Navbar = () => {
 
   const { data:authUser } = useQuery({ queryKey: ['authUser'] });
 
-  const [items, setItems] = useState<{ title: string; icon: React.ReactNode; href: string; }[]>([]);
+  // Dark Mode
+const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+
+useEffect(() => {
+  // Apply the 'dark' class to the HTML element based on darkMode state
+  if (darkMode) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+}, [darkMode]);
+
+const toggleDarkMode = () => {
+  // Update state and localStorage simultaneously
+  setDarkMode((prevMode) => {
+    const newMode = !prevMode;
+    localStorage.setItem('theme', newMode ? 'dark' : 'light');
+    return newMode;
+  });
+};
+
+
+
+  const [items, setItems] = useState<{ title: string; icon: React.ReactNode; href: string; func?: () => void }[]>([]);
 
   useEffect(() => {
     if (authUser) {
@@ -36,6 +61,8 @@ export const Navbar = () => {
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
         { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
         { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
+        { title: "Change Theme", icon: <IconSunMoon className="text-primary" />, href: "#", func: toggleDarkMode,
+        },
         { title: "Settings", icon: <IconSettingsFilled className="text-primary" />, href: "/settings" },
         { title: "Logout", icon: <IconLogout className="text-primary" />, href: "/logout" },
       ]);
@@ -44,7 +71,9 @@ export const Navbar = () => {
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
         { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
         { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
-      ]);
+        { title: "Change Theme", icon: <IconSunMoon className="text-primary" />, href: "#", func: toggleDarkMode,
+        },
+    ]);
     }
   }, [authUser]);
 
@@ -62,7 +91,7 @@ export const FloatingDock = ({
   desktopClassName,
   mobileClassName,
 }: {
-  items: { title: string; icon: React.ReactNode; href: string }[];
+  items: { title: string; icon: React.ReactNode; href: string; func?: () => void }[];
   desktopClassName?: string;
   mobileClassName?: string;
 }) => {
@@ -121,7 +150,7 @@ const FloatingDockMobile = ({
       </AnimatePresence>
       <button
         onClick={() => setOpen(!open)}
-        className="h-10 w-10 rounded-full bg-gray-50 dark:bg-neutral-800 flex items-center justify-center"
+        className="h-10 w-10 rounded-full bg-gray-50 dark:bg-darkbg flex items-center justify-center"
       >
         <IconLayoutNavbarCollapse className="h-6 w-6 text-primary" />
       </button>
@@ -158,11 +187,13 @@ function IconContainer({
   title,
   icon,
   href,
+  func,
 }: {
   mouseX: MotionValue;
   title: string;
   icon: React.ReactNode;
   href: string;
+  func?: () => void;
 }) {
   let ref = useRef<HTMLDivElement>(null);
 
@@ -206,14 +237,45 @@ function IconContainer({
 
   const [hovered, setHovered] = useState(false);
 
-  return (
+  if (func) return (
+    <button onClick={func}>
+      <motion.div
+        ref={ref}
+        style={{ width, height }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="aspect-square rounded-full dark:bg-zinc-900 bg-zinc-800 flex items-center justify-center relative"
+      >
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, x: "-50%" }}
+              animate={{ opacity: 1, y: 0, x: "-50%" }}
+              exit={{ opacity: 0, y: 2, x: "-50%" }}
+              className="px-2 py-0.5 whitespace-pre rounded-md bg-gray-100 border dark:bg-zinc-900 dark:border-neutral-900 dark:text-white border-gray-200 text-neutral-700 absolute left-1/2 -translate-x-1/2 -top-8 w-fit text-xs"
+            >
+              {title}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <motion.div
+          style={{ width: widthIcon, height: heightIcon }}
+          className="flex items-center justify-center"
+        >
+          {icon}
+        </motion.div>
+      </motion.div>
+    </button>
+  )
+  
+  if (!func) return (
     <Link to={href}>
       <motion.div
         ref={ref}
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center relative"
+        className="aspect-square rounded-full dark:bg-zinc-900 bg-zinc-800 flex items-center justify-center relative"
       >
         <AnimatePresence>
           {hovered && (

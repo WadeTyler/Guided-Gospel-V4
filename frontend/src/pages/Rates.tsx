@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Rates = () => {
   return (
-    <div className="flex items-center justify-center w-full h-screen gap-8">
+    <div className="flex items-center justify-center w-full h-screen gap-8 bg-white dark:bg-darkbg">
       
-      <div className="flex flex-col w-[40rem] gap-4">
+      <div className="flex flex-col w-[40rem] gap-4 dark:text-darktext">
         <h2 className="text-3xl text-primary">How do Daily Message Rates Work?</h2>
         <section>
           <p className="text-xl">Daily Limit</p>

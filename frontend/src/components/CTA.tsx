@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 
 export const CTA = ({ headerText, bodyText }: any) => {
   return (
-    <motion.div 
+    <div className="w-full h-full flex items-center justify-center bg-white dark:bg-darkbg">
+      <motion.div 
     initial={{y:100, opacity: 0}}
     whileInView={{y:0, opacity: 1}}
     transition={{duration: .5}}
-    className="relative rounded-2xl bg-vulcan-700 mx-4  mb-20 mt-20 text-gray-100 max-w-6xl lg:mx-auto  min-h-96 h-full  overflow-hidden pb-4">
+    className="relative rounded-2xl bg-vulcan-700 dark:bg-darkaccent mx-4  mb-20 mt-20 text-gray-100 max-w-6xl lg:mx-auto  min-h-96 h-full  overflow-hidden pb-4">
       <div
-        className="absolute inset-0 top-0  bg-grid-vulcan-500"
+        className="absolute inset-0 top-0  bg-grid-vulcan-500 dark:bg-grid-neutral-700"
         style={{
           maskImage:
             "linear-gradient(to bottom, transparent, white, transparent)",
@@ -30,10 +31,12 @@ export const CTA = ({ headerText, bodyText }: any) => {
           </p>
 
           <div className="flex justify-center">
-            <Link to="/chat" className="bg-primary px-4 py-2 rounded-2xl text-neutral-800 hover:bg-neutral-800 shadow-md hover:text-primary transition-all ease-in-out duration-300">Chat with Guided</Link>
+            <Link to="/chat" className="submit-btn">Chat with Guided</Link>
           </div>
         </div>
       </div>
     </motion.div>
+    </div>
+    
   );
 };

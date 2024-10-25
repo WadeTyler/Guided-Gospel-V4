@@ -130,10 +130,9 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
 
 
   return (
-    <div className='bg-neutral-800 w-48 h-full flex flex-col shadow-[rgba(0,0,0)_0px_2px_8px] gap-8 px-3 py-3 absolute z-10 pb-12'>
+    <div className='bg-neutral-800 dark:bg-darkaccent w-48 h-full flex flex-col shadow-[rgba(0,0,0)_0px_2px_8px] gap-8 px-3 py-3 absolute z-10 pb-12'>
 
       
-
       <h2 className="text-primary font-bold text-2xl mt-1 ">Guided Gospel</h2>
 
       <section className="text-white flex flex-row gap-2 items-center text-lg cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out"
@@ -181,9 +180,9 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
       {deletingAllSessions && <Loading size="md" cn="text-red-500 flex flex-row gap-2 items-center text-lg  absolute bottom-4" />}
 
       {isDeletingAll && <div className="absolute top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.8)] z-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
+        <div className="bg-white dark:bg-darkbg rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
           <p className="text-3xl text-primary">Confirm Delete All Sessions</p>
-          <p className="">Are you sure you want to delete all chat sessions?<br/>Once you do so, all previous messages will be lost.</p>
+          <p className="dark:text-darktext">Are you sure you want to delete all chat sessions?<br/>Once you do so, all previous messages will be lost.</p>
           <section className="flex gap-4 items-center justify-center">
             <button className="delete-btn" onClick={() => {
               handleDeleteAllButton();
@@ -197,9 +196,9 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
 
       {isDeletingSession && 
       <div className="absolute top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.8)] z-50 flex items-center justify-center">
-        <div className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
+        <div className="bg-white dark:bg-darkbg rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
           <p className="text-3xl text-primary">Confirm Delete Session</p>
-          <p className="">Are you sure you want to delete this session?<br/>Once you do so, all messages in the chat session will be lost.</p>
+          <p className="dark:text-darktext">Are you sure you want to delete this session?<br/>Once you do so, all messages in the chat session will be lost.</p>
           <section className="flex gap-4 items-center justify-center">
             <button className="delete-btn" onClick={() => {
               handleDeleteSession(currentDeleteSession);

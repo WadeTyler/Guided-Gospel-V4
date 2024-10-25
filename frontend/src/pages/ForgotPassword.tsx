@@ -44,11 +44,11 @@ const ForgotPasswordForm = ({setEmailSent }: {setEmailSent: React.Dispatch<React
   }
 
   return (
-    <div className='w-full h-screen bg-white flex justify-center items-center gap-16'>
+    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
         
         <div className="w-[30rem] h-96 flex flex-col justify-center items-center gap-4">
           <h1 className="text-primary text-5xl font-bold w-full">Password Recovery</h1>
-          <p className="text-neutral-800">Once you submit this form, please follow the steps in the email to recover your password.</p>
+          <p className="text-neutral-800 dark:text-darktext">Once you submit this form, please follow the steps in the email to recover your password.</p>
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
@@ -75,10 +75,10 @@ const ForgotPasswordForm = ({setEmailSent }: {setEmailSent: React.Dispatch<React
 
 const EmailSent = ({setEmailSent} : {setEmailSent: React.Dispatch<React.SetStateAction<boolean>>}) => {
   return (
-    <div className="w-full h-screen flex items-center justify-center flex-col text-center">
+    <div className="w-full h-screen flex items-center justify-center flex-col text-center bg-white dark:bg-darkbg">
       <h1 className="text-primary text-5xl font-bold w-full">Recovery Email Sent</h1>
-      <p className="">Check your email for further instructions to recover your password.</p>
-      <p className="text-primary cursor-pointer" onClick={() => {
+      <p className="dark:text-darktext">Check your email for further instructions to recover your password.</p>
+      <p className="text-primary cursor-pointer underline" onClick={() => {
         setEmailSent(false);
       }}>Wrong email? Click Here to try again.</p>
     </div>

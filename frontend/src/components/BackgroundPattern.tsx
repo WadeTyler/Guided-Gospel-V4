@@ -2,7 +2,7 @@
 import { GridPattern } from './GridPattern'
 import { useMemo } from 'react';
 
-const BackgroundPattern = () => {
+const BackgroundPattern = ({cn}:{cn?:string}) => {
 
   const pattern = useMemo(() => ({
     y: -6,
@@ -24,7 +24,7 @@ const BackgroundPattern = () => {
         width={120}
         height={120}
         x="50%"
-        className="absolute inset-x-0 inset-y-[-30%] h-[100%] w-full skew-y-[-5deg] fill-primary stroke-gray-100"
+        className={`absolute inset-x-0 inset-y-[-30%] h-[100%] w-full skew-y-[-5deg] fill-primary stroke-gray-100 dark:stroke-neutral-950 `}
         {...pattern}
       />
     </div>

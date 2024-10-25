@@ -147,20 +147,20 @@ const Bible = () => {
   }
 
   return (
-    <div className="flex items-center justify-center flex-col">
+    <div className="flex items-center justify-center flex-col bg-white dark:bg-darkbg">
       
       <motion.header 
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-0 pt-12 bg-white pb-2`}>
+      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-0 pt-12 bg-white dark:bg-darkbg pb-2 z-30`}>
         <div className="border-b-primary border-b-2 flex items-center flex-col pb-4 mb-4 w-full z-20">
           <h1 className="text-4xl text-primary">Guided Gospel</h1>
         </div>
 
         <div className="flex gap-4 w-full">
             <div className='flex flex-col w-full'>
-              <label htmlFor="book" className='pl-3'>Book:</label>
+              <label htmlFor="book" className='pl-3 dark:text-darktext'>Book:</label>
               <select name="book" id="book" className="form-input-bar"
               onChange={(e) => {
                 setCurrentBook(e.target.value);
@@ -173,7 +173,7 @@ const Bible = () => {
               </select>
             </div>
             <div className='flex flex-col w-full'>
-              <label htmlFor="chapter" className='pl-3'>Chapter:</label>
+              <label htmlFor="chapter" className='pl-3 dark:text-darktext'>Chapter:</label>
               <select name="chapter" id="chapter" className="form-input-bar"
               onChange={(e) => {
                 setCurrentChapter(parseInt(e.target.value));
@@ -190,7 +190,7 @@ const Bible = () => {
               </select>
             </div>
             <div className='flex flex-col w-full'>
-              <label htmlFor="fontsize" className='pl-3'>Font Size:</label>
+              <label htmlFor="fontsize" className='pl-3 dark:text-darktext'>Font Size:</label>
               <select name="fontsize" id="fontsize" className="form-input-bar"
               onChange={(e) => setCurrentFontSize(e.target.value)}
               value={currentFontSize}
@@ -201,8 +201,8 @@ const Bible = () => {
               </select>
             </div>
             <div className='flex flex-col w-full'>
-              <label htmlFor="widemode" className='pl-3'>Wide Mode:</label>
-              <input type="checkbox" className='border-primary border-[1px] rounded-2xl text-zinc-500 w-full hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 focus:border-primary h-10' 
+              <label htmlFor="widemode" className='pl-3 dark:text-darktext'>Wide Mode:</label>
+              <input type="checkbox" className='form-input-bar h-10' 
               onChange={(e) => setWideMode(e.target.checked)}
               checked={wideMode}
               />
@@ -212,16 +212,16 @@ const Bible = () => {
       
       {/* Display Verses */}
       {verses && 
-        <div className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} flex flex-col mt-52 overflow-y-auto  pb-28 -z-10`}>
+        <div className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} flex flex-col mt-52 overflow-y-auto  pb-28 z-10`}>
           {currentBook && currentChapter && 
-            <h2 className="text-3xl text-neutral-800">{currentBook} - {currentChapter}</h2>
+            <h2 className="text-3xl text-neutral-800 dark:text-white">{currentBook} - {currentChapter}</h2>
           }
           {verses.map((verse: Verse, index: number) => (
             <motion.div 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            key={index} className={`border-b-2 border-gray-200 p-2 flex gap-2 text-${currentFontSize}`}>
+            key={index} className={`border-b-2 border-gray-200 p-2 flex gap-2 text-${currentFontSize} dark:text-darktext`}>
               <p className="">{verse.verseNum}</p>
               <p className="">{verse.text}</p>
             </motion.div>

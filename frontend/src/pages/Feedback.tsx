@@ -75,15 +75,15 @@ const BugReport = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="w-full h-screen bg-white flex flex-col items-center justify-center ">
+    className="w-full h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
       <div className="w-[40rem] flex flex-col gap-4">
         <h1 className="text-primary text-3xl">Bug Report</h1>
-        <p className="">Ran into an issue? Let us know so we can fix it!</p>
+        <p className="dark:text-darktext">Ran into an issue? Let us know so we can fix it!</p>
         <form action="" className='flex flex-col gap-4'>
           <div className="flex gap-4">
 
             <section className="">
-              <label htmlFor="category" className='pl-3'>Category:</label>
+              <label htmlFor="category" className='pl-3 dark:text-darktext'>Category:</label>
               <select name="category" id="category" className='form-input-bar' onChange={(e) => setCategory(e.target.value)}>
                 {categories.map((category, index) => (
                   <option key={index} value={category}>{category}</option>
@@ -94,7 +94,7 @@ const BugReport = () => {
             
           </div>
           <section className="">
-            <label htmlFor="impact" className='pl-3 text-sm'>On a scale of 1-10, how has this impacted your experience? (1 being Minor - 10 being Severely):</label>
+            <label htmlFor="impact" className='pl-3 text-sm dark:text-darktext'>On a scale of 1-10, how has this impacted your experience? (1 being Minor - 10 being Severely):</label>
             <select name="impact" id="impact" className='form-input-bar' onChange={(e) => {
               setImpact(parseInt(e.target.value));
             }}>
@@ -182,10 +182,10 @@ const NormalFeedback = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="w-full h-screen bg-white flex flex-col items-center justify-center ">
+    className="w-full h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
       <div className="w-[40rem] flex flex-col gap-4">
         <h1 className="text-primary text-3xl">Share your Feedback</h1>
-        <p className="">We would love to hear your feedback, so we can improve Guided Gospel for everyone.</p>
+        <p className="dark:text-darktext">We would love to hear your feedback, so we can improve Guided Gospel for everyone.</p>
         <form action="" className='flex flex-col gap-4'>
           <textarea name="feedback" id="feedback" onChange={(e) => setFeedback(e.target.value)}
           placeholder='Share your feedback here...'
