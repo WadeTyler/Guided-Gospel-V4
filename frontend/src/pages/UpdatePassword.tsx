@@ -109,7 +109,7 @@ const UpdatePasswordForm = ({ recoveryToken, setPasswordUpdated }: { recoveryTok
 
 
         <div className="w-96">
-          <img src="./images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
+          <img src="/images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
         </div>
       </div>
   )

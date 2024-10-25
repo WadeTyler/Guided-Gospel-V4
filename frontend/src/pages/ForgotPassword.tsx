@@ -7,7 +7,7 @@ const ForgotPassword = () => {
   
 
   return (
-    !emailSent ? <ForgotPasswordForm setEmailSent={setEmailSent} /> : <EmailSent />
+    !emailSent ? <ForgotPasswordForm setEmailSent={setEmailSent} /> : <EmailSent setEmailSent={setEmailSent} />
   );
 }
 
@@ -73,11 +73,14 @@ const ForgotPasswordForm = ({setEmailSent }: {setEmailSent: React.Dispatch<React
   );
 }
 
-const EmailSent = () => {
+const EmailSent = ({setEmailSent} : {setEmailSent: React.Dispatch<React.SetStateAction<boolean>>}) => {
   return (
     <div className="w-full h-screen flex items-center justify-center flex-col text-center">
       <h1 className="text-primary text-5xl font-bold w-full">Recovery Email Sent</h1>
       <p className="">Check your email for further instructions to recover your password.</p>
+      <p className="text-primary cursor-pointer" onClick={() => {
+        setEmailSent(false);
+      }}>Wrong email? Click Here to try again.</p>
     </div>
   );
 }
