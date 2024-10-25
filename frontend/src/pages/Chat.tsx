@@ -260,8 +260,7 @@ const Chat = () => {
   return (
     <div className="w-full h-screen flex relative group">
 
-        <BackgroundPattern />
-      
+      <BackgroundPattern />
 
       <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid}  />
 

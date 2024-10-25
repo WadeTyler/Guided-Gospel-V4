@@ -81,6 +81,8 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
     }
     deleteAllSessions();
     setIsDeletingAll(false);
+
+    
   }
 
   const { mutate:deleteSession, isPending:deletingSession } = useMutation({
@@ -108,22 +110,29 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
     onSuccess: () => {
       toast.success("Session deleted");
       queryClient.invalidateQueries({ queryKey: ['sessionData']});
+
     },
     onError: (error: Error) => {
       toast.error(error.message || "Something went wrong");
     }
   })
 
+  const [currentDeleteSession, setCurrentDeleteSession] = useState<string>('');
+  const [isDeletingSession, setIsDeletingSession] = useState<boolean>(false);
+
   const handleDeleteSession = (sessionid: string) => {
     if (!sessionid) {
       return;
     }
     deleteSession(sessionid);
+    setIsDeletingSession(false);
   }
 
 
   return (
     <div className='bg-neutral-800 w-48 h-full flex flex-col shadow-[rgba(0,0,0)_0px_2px_8px] gap-8 px-3 py-3 absolute z-10 pb-12'>
+
+      
 
       <h2 className="text-primary font-bold text-2xl mt-1 ">Guided Gospel</h2>
 
@@ -151,7 +160,8 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
               {!deletingSession && 
                 <div className="absolute right-0 top-0 hover:text-red-500" onClick={(e) => {
                   e.stopPropagation();
-                  handleDeleteSession(session.sessionid);
+                  setCurrentDeleteSession(session.sessionid);
+                  setIsDeletingSession(true);
                 }}>
                   <FaDeleteLeft />
                 </div>
@@ -162,14 +172,6 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
         }
       </section>
 
-      
-      {isDeletingAll &&
-        <div className="flex gap-2 items-center absolute bottom-16">
-          <button className='text-red-500 text-md px-2 py-1 rounded-xl hover:scale-105 transition-all duration-300 ease-in-out ' onClick={() => handleDeleteAllButton()}>Confirm</button>
-          <button className='text-white text-md px-2 py-1 rounded-xl  hover:scale-105 transition-all duration-300 ease-in-out' onClick={() => setIsDeletingAll(false)}>Cancel</button>
-        </div>
-      }
-
       {!deletingAllSessions && 
         <section className="text-red-500 flex flex-row gap-2 items-center text-lg cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out absolute bottom-4" onClick={() => setIsDeletingAll(true)}>
           <MdDelete />
@@ -177,6 +179,37 @@ const Sidebar = ({currentSessionid, setCurrentSessionid}: {currentSessionid: str
         </section>
       }
       {deletingAllSessions && <Loading size="md" cn="text-red-500 flex flex-row gap-2 items-center text-lg  absolute bottom-4" />}
+
+      {isDeletingAll && <div className="absolute top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.8)] z-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
+          <p className="text-3xl text-primary">Confirm Delete All Sessions</p>
+          <p className="">Are you sure you want to delete all chat sessions?<br/>Once you do so, all previous messages will be lost.</p>
+          <section className="flex gap-4 items-center justify-center">
+            <button className="delete-btn" onClick={() => {
+              handleDeleteAllButton();
+            }}>Confirm Delete All</button>
+            <button className="submit-btn" onClick={() => {
+              setIsDeletingAll(false);
+            }}>Cancel</button>
+          </section>
+        </div>
+      </div> }
+
+      {isDeletingSession && 
+      <div className="absolute top-0 left-0 w-screen h-screen bg-[rgba(0,0,0,.8)] z-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2">
+          <p className="text-3xl text-primary">Confirm Delete Session</p>
+          <p className="">Are you sure you want to delete this session?<br/>Once you do so, all messages in the chat session will be lost.</p>
+          <section className="flex gap-4 items-center justify-center">
+            <button className="delete-btn" onClick={() => {
+              handleDeleteSession(currentDeleteSession);
+            }}>Confirm Delete</button>
+            <button className="submit-btn" onClick={() => {
+              setIsDeletingSession(false);
+            }}>Cancel</button>
+          </section>
+        </div>
+      </div> }
 
     </div>
   )
