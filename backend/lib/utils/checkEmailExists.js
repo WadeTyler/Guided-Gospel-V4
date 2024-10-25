@@ -2,7 +2,7 @@ const db = require('../../db/db');
 
 const checkIfEmailExists = async(email) => {
   try {
-    const query = 'SELECT * FROM user WHERE email = ?';
+    const query = 'SELECT email FROM user WHERE email = ?';
     const [rows] = await db.query(query, [email]);
 
     if (rows.length > 0) {

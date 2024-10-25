@@ -17,6 +17,8 @@ import Logout from './pages/Logout';
 import Feedback from './pages/Feedback';
 import Bible from './pages/Bible';
 import Rates from './pages/Rates';
+import ForgotPassword from './pages/ForgotPassword';
+import UpdatePassword from './pages/UpdatePassword';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -70,13 +72,16 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={ authUser ? <Navigate to="/chat" /> : <Login />} />
           <Route path="/signup" element={ authUser ? <Navigate to="/chat" /> : <Signup />} />
+          <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
-          <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
           <Route path="/feedback" element={ <Feedback /> } />
           <Route path="/bugreport" element={ authUser ? <Feedback type="bugreport" /> : <Navigate to="/login" /> } />
           <Route path="/bible" element={ <Bible /> } />
           <Route path="/rates" element={ <Rates /> } />
+
+          <Route path="/forgotpassword" element={ <ForgotPassword /> } />
+          <Route path="/updatepassword/:recoveryToken" element={ <UpdatePassword /> } />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

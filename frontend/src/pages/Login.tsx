@@ -59,8 +59,13 @@ const Login = () => {
         }}>
           <input type="text" name="email" placeholder='Email' onChange={(e) => {setEmail(e.target.value)}}
           className='form-input-bar' />
-          <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
-          className='form-input-bar' />
+          
+          <section className="w-full flex flex-col gap-1">
+            <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
+            className='form-input-bar' />
+            <Link to="/forgotpassword" className="text-secondary underline text-right">Forgot password?</Link>
+          </section>
+          
           {isPending 
             ? 
             <div className="w-full flex items-center justify-center">
@@ -68,10 +73,12 @@ const Login = () => {
             </div>
             :
             <button className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Login</button>
+            
           }
         </form>
         <Link to="/signup" className="text-secondary underline">Don't have an account? Signup</Link>
-      </div>
+        
+      </div>  
     </div>
   )
 }

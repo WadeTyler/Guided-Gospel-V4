@@ -2,7 +2,11 @@
 const db = require('../db/db.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
+const generateToken = require('../middleware/generateToken');
 const checkIfEmailExists = require('../lib/utils/checkEmailExists');
+const passwordRecoveryCron = require('../lib/cronjobs/passwordRecovery');
+const emailMessages = require('../lib/email/emailMessages');
+const sendEmail = require('../lib/email/sendEmail.js');
 
 const defaultRates = 50;
 
@@ -253,11 +257,126 @@ const deleteUser = async (req, res) => {
   }
 }
 
+const submitForgotPassword = async (req, res) => {
+  try {
+
+    // Check for spamCookie
+    const spamCookie = req.cookies['forgotPasswordSpam'];
+    if (spamCookie) {
+      return res.status(400).json({ message: "Please wait before submitting another request" });
+    }
+
+
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Check if email exists
+    const emailExists = await checkIfEmailExists(email);
+    if (!emailExists) {
+      return res.status(400).json({ message: "No account exists with the provided email." });
+    }
+
+    
+
+    // Add spam cookie
+    const spamToken = await generateToken(email);
+
+    res.cookie('forgotPasswordSpam', spamToken, { 
+      httpOnly: true, 
+      maxAge: 60000,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict'
+    });
+
+    // Add recovery token to database
+    const recoveryToken = await generateToken(email + email);
+    await db.query('INSERT INTO RequestedRecovery (recoveryToken, email) VALUES (?, ?)', [recoveryToken, email]);
+
+    passwordRecoveryCron.removeToken(recoveryToken, 300000);
+
+    sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
+
+    res.status(200).json({ message: "Password recovery email sent" });
+
+  } catch (error) {
+    console.log("Error in submitForgotPassword controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+    const { recoveryToken, newPassword, confirmNewPassword } = req.body || {};
+    if (!recoveryToken) {
+      return res.status(400).json({ message: "Recovery token is required" });
+    }
+
+    if (!newPassword || !confirmNewPassword) {
+      return res.status(400).json({ message: "New password and confirm new password are required" });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const [emails] = await db.query('SELECT email FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+
+    if (!emails || emails.length === 0) {
+      return res.status(400).json({ message: "This session has expired. Please submit another password reset request." });
+    }
+
+    const email = emails[0].email;
+
+    await db.query('UPDATE user SET password = ? WHERE email = ?', [hashedPassword, email]);
+
+
+    return res.status(200).json({ message: "Password reset successfully" });
+
+  } catch (error) {
+    console.log("Error in resetPassword controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+const isValidRecoveryToken = async (req, res) => {
+  try {
+    const { recoveryToken } = req.params || {};
+
+    if (!recoveryToken) {
+      return res.status(400).json({ message: "Recovery token is required" });
+    } 
+
+    const [email] = await db.query('SELECT * FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+
+    if (!email || email.length === 0) {
+      return res.status(400).json({ message: "Invalid recovery token" });
+    }
+
+    return res.status(200).json({ message: "Valid recovery token" });
+
+  } catch (error) {
+    console.log("Error in isValidRecoveryToken controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+
 module.exports = {
   signUp,
   login,
   logout,
   updateUser,
   getMe,
-  deleteUser
+  deleteUser,
+  submitForgotPassword,
+  resetPassword,
+  isValidRecoveryToken
 }
