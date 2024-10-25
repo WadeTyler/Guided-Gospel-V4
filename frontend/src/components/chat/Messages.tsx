@@ -33,9 +33,18 @@ const Messages = ({messages }: {
             <p className={`max-w-[40rem] w-fit p-3 text-white rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800' : 'bg-zinc-500 self-end'}`}>
               {/* Split the message into parts using '<br/><br/>' which is added by the AI */}
               { message.text === '...' ? <Loading size='sm' cn='text-primary' /> : 
-                message.text.split('<br/><br/>').map((part, index) => (
+                message.text.split('<br/><br/>').map((paragraph, index) => (
                   <React.Fragment key={index}>
-                    {part}
+                    {paragraph.split('(jq)').map((text, index) => (
+                      <React.Fragment key={index}>
+                        {index % 2 !== 0 ? (
+                          <span className="text-primary italic">{text}</span>
+                        ) : (
+                          text
+                        )}
+                      </React.Fragment>
+                    ))}
+
                     {index < message.text.split('<br/><br/>').length - 1 && <><br /><br/></>}
                   </React.Fragment>
                 ))
