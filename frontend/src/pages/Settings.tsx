@@ -128,15 +128,16 @@ const Settings = () => {
   }
 
   return (
-    <div className="flex gap-12 items-center justify-center w-full h-screen">
-      
+    <div className="flex gap-12 items-center justify-center w-full h-screen relative group">
+    
+
       {/* Left Side */}
-      <div className="flex flex-col items-center w-[25rem]">
+      <div className="flex flex-col items-center w-[25rem] z-10">
         <img src="./images/logo-3.png" alt="" className="w-full rounded-full" />
       </div>
 
       {/* Right Side */}
-      <div className="flex flex-col gap-4 w-[44rem] items-center">
+      <div className="flex flex-col gap-4 w-[44rem] items-center z-10">
         <h2 className="text-primary text-5xl w-full text-end">Settings</h2>
         <p className="w-full text-end">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 

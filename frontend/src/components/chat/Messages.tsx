@@ -26,7 +26,7 @@ const Messages = ({messages }: {
           initial={{ opacity: 0, x: message.sender === 'ai' ? '-100%' : '100%'}}
           animate={{ opacity: 1, x: 0}}
           transition={{ duration: 0.5 }}
-          key={index} className={`flex flex-col relative group ${message.sender === 'ai' ? 'self-start translate-x-16 ml-10' : 'self-end -translate-x-16 mr-10'}`}>
+          key={index} className={`flex flex-col relative group-parent ${message.sender === 'ai' ? 'self-start translate-x-16 ml-10' : 'self-end -translate-x-16 mr-10'}`}>
             <p className={`text-neutral-800 w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>
@@ -51,7 +51,7 @@ const Messages = ({messages }: {
               }
               
             </p>
-            <span className='text-transparent group-hover:text-neutral-800 transition-all ease-in-out duration-300'>{formatTimestamp(message.timestamp)}</span>
+            <span className='text-transparent group-parent-hover:text-neutral-800 transition-all ease-in-out duration-300'>{formatTimestamp(message.timestamp)}</span>
           </motion.div>
       ))}
     </div>

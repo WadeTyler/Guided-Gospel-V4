@@ -10,6 +10,8 @@ import toast from 'react-hot-toast';
 import { formatName } from '../lib/utils';
 
 import { motion } from 'framer-motion';
+import BackgroundPattern from '../components/BackgroundPattern';
+
 
 const Chat = () => {
   const queryClient = useQueryClient();
@@ -254,8 +256,13 @@ const Chat = () => {
     "The Holy Spirit",
   ]
 
+
   return (
-    <div className="w-full h-screen flex relative">
+    <div className="w-full h-screen flex relative group">
+
+        <BackgroundPattern />
+      
+
       <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid}  />
 
       <div className="w-full h-screen relative flex flex-col items-center">

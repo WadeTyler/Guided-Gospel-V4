@@ -7,21 +7,9 @@ import { motion, useScroll } from "framer-motion";
 
 
 import { Link } from "react-router-dom";
+import BackgroundPattern from "./BackgroundPattern";
 export const Hero = () => {
 
-
-  const pattern = {
-    y: -6,
-    squares: [
-      [-1, 2],
-      [1, 3],
-      // Random values between -10 and 10
-      ...Array.from({ length: 10 }, () => [
-        Math.floor(Math.random() * 20) - 10,
-        Math.floor(Math.random() * 20) - 10,
-      ]),
-    ],
-  };
 
   const [isHalf, setIsHalf] = useState(false);
   const { scrollY } = useScroll();
@@ -40,16 +28,8 @@ export const Hero = () => {
   }, []);
 
   return (
-    <div className="px-4">
-      <div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
-        <GridPattern
-          width={120}
-          height={120}
-          x="50%"
-          className="absolute inset-x-0 inset-y-[-30%] h-[160%]  w-full skew-y-[-5deg] fill-primary stroke-gray-100"
-          {...pattern}
-        />
-      </div>
+    <div className="px-4 group">
+      <BackgroundPattern />
       <div className="relative z-10 max-w-7xl mx-auto mt-32 flex flex-col justify-center items-center">
 
         

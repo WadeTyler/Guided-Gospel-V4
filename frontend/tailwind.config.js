@@ -74,5 +74,9 @@ module.exports = {
         }
       );
     },
+    function({ addVariant }) {
+      addVariant('group-grandparent-hover', ':merge(.group-grandparent):hover &');
+      addVariant('group-parent-hover', ':merge(.group-parent):hover &');
+    },
   ],
 };
