@@ -1,8 +1,5 @@
 
 import { useEffect, useState } from "react";
-
-
-import { GridPattern } from "./GridPattern";
 import { motion, useScroll } from "framer-motion";
 
 

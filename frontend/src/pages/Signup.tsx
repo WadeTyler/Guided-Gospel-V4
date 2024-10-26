@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { SetStateAction, useState } from 'react'
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
