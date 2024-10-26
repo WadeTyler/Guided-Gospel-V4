@@ -4,7 +4,7 @@ const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
 module.exports = {
-  content: ["./**/*.{ts,tsx}", "./_app.tsx"],
+  content: ["./src/*/**.{ts,tsx}", "./src/App.tsx"],
   theme: {
     extend: {
       animation: {
@@ -45,7 +45,6 @@ module.exports = {
   },
   plugins: [
     require("@tailwindcss/forms"),
-    require("@tailwindcss/line-clamp"),
     require("@tailwindcss/typography"),
     require('daisyui'),
     function ({ matchUtilities, theme }) {
