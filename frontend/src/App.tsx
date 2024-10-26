@@ -19,6 +19,7 @@ import Bible from './pages/Bible';
 import Rates from './pages/Rates';
 import ForgotPassword from './pages/ForgotPassword';
 import UpdatePassword from './pages/UpdatePassword';
+import CompleteSignup from './pages/CompleteSignup';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={ authUser ? <Navigate to="/chat" /> : <Login />} />
           <Route path="/signup" element={ authUser ? <Navigate to="/chat" /> : <Signup />} />
+          <Route path="/completesignup/:verificationToken" element={ authUser ? <Navigate to="/chat" /> : <CompleteSignup />} />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />

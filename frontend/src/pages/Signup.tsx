@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react'
+import { SetStateAction, useState } from 'react'
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
 
 const Signup = () => {
+  const [signupEmailSent, setSignupEmailSent] = useState<boolean>(false);
   const queryClient = useQueryClient();
 
   const [firstname, setFirstname] = useState<string>('');
@@ -33,8 +34,8 @@ const Signup = () => {
       }
     },
     onSuccess: () => {
-      toast.success("Signup successful");
-      queryClient.invalidateQueries({queryKey: ['authUser']});
+      toast.success("Verification Email Sent");
+      setSignupEmailSent(true);
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -49,34 +50,48 @@ const Signup = () => {
     <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
       
       <div className="w-96 h-96 flex flex-col justify-center items-center gap-4">
-        <h1 className="text-primary text-5xl font-bold text-start w-full">Signup</h1>
-        <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}>
-          <input type="text" name="firstname" placeholder='First Name' onChange={(e) => {setFirstname(e.target.value)}}
-            className='form-input-bar' />
-          <input type="text" name="lastname" placeholder='Last Name' onChange={(e) => {setLastname(e.target.value)}}
-            className='form-input-bar' />
-          <input type="text" name="email" placeholder='Email' onChange={(e) => {setEmail(e.target.value)}}
-            className='form-input-bar' />
-          <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
-            className='form-input-bar' />
-          
-          {isPending && 
-            <div className="w-full flex items-center justify-center">
-              <Loading size='sm' cn="text-primary text-center" />
-            </div>
-          }
-          {!isPending && <button className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Signup</button>}
-        </form>
-        <Link to="/login" className="dark:text-darktext underline">Already have an account? Login</Link>
+        <h1 className="text-primary text-5xl font-bold text-start w-full">Check your Email</h1>
+        {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} />}
+        {!signupEmailSent &&
+          <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}>
+            <input type="text" name="firstname" placeholder='First Name' onChange={(e) => {setFirstname(e.target.value)}}
+              className='form-input-bar' />
+            <input type="text" name="lastname" placeholder='Last Name' onChange={(e) => {setLastname(e.target.value)}}
+              className='form-input-bar' />
+            <input type="text" name="email" placeholder='Email' onChange={(e) => {setEmail(e.target.value)}}
+              className='form-input-bar' />
+            <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
+              className='form-input-bar' />
+            
+            {isPending && 
+              <div className="w-full flex items-center justify-center">
+                <Loading size='sm' cn="text-primary text-center" />
+              </div>
+            }
+            {!isPending && <button className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Signup</button>}
+          </form>
+        }
+        {!signupEmailSent && <Link to="/login" className="dark:text-darktext underline w-full text-center">Already have an account? Login</Link>}
       </div>
 
       <div className="w-96">
         <img src="./images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
       </div>
 
+    </div>
+  )
+}
+
+const EmailSent = ({setSignupEmailSent} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>}) => {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="dark:text-darktext ">A verification email has been sent to your provided email. You must follow the steps in the email to complete your account registration.</p>
+      <p className="dark:text-darktext underline cursor-pointer text-left" onClick={() => {
+        setSignupEmailSent(false);
+      }}>Didn't get an Email? Try Again</p>
     </div>
   )
 }

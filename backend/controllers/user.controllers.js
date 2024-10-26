@@ -5,10 +5,70 @@ const { v4: uuidv4 } = require('uuid');
 const generateToken = require('../middleware/generateToken');
 const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 const passwordRecoveryCron = require('../lib/cronjobs/passwordRecovery');
+const signupRequestsCron = require('../lib/cronjobs/signupRequests');
 const emailMessages = require('../lib/email/emailMessages');
 const sendEmail = require('../lib/email/sendEmail.js');
+const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 
 const defaultRates = 50;
+
+const completeSignUp = async (req, res) => {
+  try {
+    const { verificationToken } = req.body || {};
+    if (!verificationToken) {
+      return res.status(400).json({ message: "Verification token is required" });
+    }
+
+    // Get User from SignUpRequests table
+    const [users] = await db.query('SELECT * FROM SignUpRequests WHERE verificationToken = ?', [verificationToken]);
+
+    if (!users || users.length === 0) {
+      return res.status(400).json({ message: "Invalid verification token" });
+    }
+
+    const userData = users[0];
+
+    // Check if email already exists
+    if (await checkIfEmailExists(userData.email)) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Generate userid
+    const userid = uuidv4();
+
+    // Insert user into database
+    const query = 'INSERT INTO user (userid, firstname, lastname, email, age, denomination, password, rates, createdat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const values = [userid, userData.firstname, userData.lastname, userData.email, null, null, userData.password, defaultRates, getTimestampInSQLFormat()];
+
+    await db.query(query, values);
+
+    // Store userid in a cookie (with HttpOnly flag to secure it)
+    res.cookie('userid', userid, { 
+      httpOnly: true, 
+      maxAge: 604800000, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict'
+    });
+
+    const user = {
+      userid,
+      firstname: userData.firstname,
+      lastname: userData.lastname,
+      email: userData.email,
+      age: "",
+      denomination: "",
+      rates: defaultRates,
+    }
+
+    // Remove user from SignUpRequests table
+    await db.query('DELETE FROM SignUpRequests WHERE verificationToken = ?', [verificationToken]);
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log("Error in completeSignUp controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 const signUp = async (req, res) => {
   try {
@@ -17,6 +77,14 @@ const signUp = async (req, res) => {
     // Check if all fields are provided
     if (!firstname || !lastname || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (firstname.length < 2) {
+      return res.status(400).json({ message: "First name must be at least 2 characters" });
+    }
+
+    if (lastname.length < 2) {
+      return res.status(400).json({ message: "Last name must be at least 2 characters" });
     }
 
     // Check if email already exists
@@ -34,33 +102,23 @@ const signUp = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Generate userid
-    const userid = uuidv4();
+    // Generate verification token
+    const verificationToken = await generateToken(email + firstname + lastname);
 
-    // Insert user into database
-    const query = 'INSERT INTO user (userid, firstname, lastname, email, password, rates) VALUES (?, ?, ?, ?, ?, ?)';
-    const values = [userid, firstname, lastname, email, hashedPassword, defaultRates];
+    // Insert user into SignUpRequests table
+    const query = 'INSERT INTO SignUpRequests (verificationToken, firstname, lastname, email, password, timestamp) VALUES (?, ?, ?, ?, ?, ?)';
 
+    const values = [verificationToken, firstname, lastname, email, hashedPassword, getTimestampInSQLFormat()];
     await db.query(query, values);
 
-    // Store userid in a cookie (with HttpOnly flag to secure it)
-    res.cookie('userid', userid, { 
-      httpOnly: true, 
-      maxAge: 604800000, 
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict'
-    });
+    // Send email
+    sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(verificationToken));
 
-    const user = {
-      userid,
-      firstname,
-      lastname,
-      email,
-      age: "",
-      denomination: "",
-    }
+    // Activate Cronjob to remove token after 10 minutes
+    signupRequestsCron.removeToken(verificationToken, 600000);
 
-    return res.status(200).json(user);
+    return res.status(200).json({ message: "Verification email sent" });
+    
 
   } catch (error) {
     console.log("Error in signUp controller", error);
@@ -370,6 +428,7 @@ const isValidRecoveryToken = async (req, res) => {
 
 
 module.exports = {
+  completeSignUp,
   signUp,
   login,
   logout,

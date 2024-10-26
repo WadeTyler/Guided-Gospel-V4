@@ -5,6 +5,7 @@ const protectedRoute = require('../middleware/protectedRoute');
 
 router.get("/", protectedRoute, userController.getMe);
 router.post("/signup", userController.signUp);
+router.post("/completesignup", userController.completeSignUp);
 router.post("/login", userController.login);
 router.post("/logout", protectedRoute, userController.logout);
 router.post("/update", protectedRoute, userController.updateUser);
