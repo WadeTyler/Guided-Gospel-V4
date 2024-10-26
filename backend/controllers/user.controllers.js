@@ -9,6 +9,7 @@ const signupRequestsCron = require('../lib/cronjobs/signupRequests');
 const emailMessages = require('../lib/email/emailMessages');
 const sendEmail = require('../lib/email/sendEmail.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
+const checkEmailFormat = require('../lib/utils/checkEmailFormat');
 
 const defaultRates = 50;
 
@@ -32,6 +33,8 @@ const completeSignUp = async (req, res) => {
     if (await checkIfEmailExists(userData.email)) {
       return res.status(400).json({ message: "Email already exists" });
     }
+
+
 
     // Generate userid
     const userid = uuidv4();
@@ -91,6 +94,11 @@ const signUp = async (req, res) => {
     const emailExists = await checkIfEmailExists(email);
     if (emailExists) {
       return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Check email format
+    if (!checkEmailFormat(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
     }
 
     // Check password length
@@ -217,6 +225,11 @@ const updateUser = async (req, res) => {
     const emailExists = await checkIfEmailExists(email);
     if (email !== user.email && emailExists) {
       return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Check email format
+    if (email && !checkEmailFormat(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
     }
 
     // Make sure both current and newPassword are provided

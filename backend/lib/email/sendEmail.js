@@ -1,6 +1,7 @@
 
 
 const nodemailer = require('nodemailer');
+const checkEmailFormat = require('../utils/checkEmailFormat');
 require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
@@ -15,8 +16,18 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async (to, subject, text, html) => {
   try {
-    // send email with defined transport object
 
+    if (!to) {
+      console.error("No recipient specified");
+      return;
+    }
+
+    if (!checkEmailFormat(to)) {
+      console.error("Invalid email format");
+      return;
+    }
+
+    // send email with defined transport object
     const info = await transporter.sendMail({
       from: ' "Guided Gospel" <contact@guidedgospel.net>', // sender address
       to: to, // list of receivers

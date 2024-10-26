@@ -6,7 +6,6 @@ import Loading from '../components/Loading';
 
 const Signup = () => {
   const [signupEmailSent, setSignupEmailSent] = useState<boolean>(false);
-  const queryClient = useQueryClient();
 
   const [firstname, setFirstname] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
@@ -50,7 +49,7 @@ const Signup = () => {
     <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
       
       <div className="w-96 h-96 flex flex-col justify-center items-center gap-4">
-        <h1 className="text-primary text-5xl font-bold text-start w-full">Check your Email</h1>
+        <h1 className="text-primary text-5xl font-bold text-start w-full">{signupEmailSent ? "Check Your Email" : "Signup"}</h1>
         {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} />}
         {!signupEmailSent &&
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
