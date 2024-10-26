@@ -4,7 +4,7 @@ const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
 module.exports = {
-  content: ["./src/*/**.{ts,tsx}", "./src/App.tsx"],
+  content: ["./src/**/*.{ts,tsx}", "./_app.tsx"],
   theme: {
     extend: {
       animation: {
