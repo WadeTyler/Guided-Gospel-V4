@@ -36,7 +36,6 @@ export default function App() {
         const data = await response.json();
 
         if (data.error) {
-          console.log("ERROR");
           return null;
         }
 
