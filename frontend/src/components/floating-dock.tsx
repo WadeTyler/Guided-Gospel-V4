@@ -247,7 +247,7 @@ function IconContainer({
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full dark:bg-zinc-900 bg-zinc-800 flex items-center justify-center relative"
+        className="aspect-square rounded-full dark:bg-zinc-950 bg-zinc-800 flex items-center justify-center relative"
       >
         <AnimatePresence>
           {hovered && (
@@ -278,7 +278,7 @@ function IconContainer({
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="aspect-square rounded-full dark:bg-zinc-900 bg-zinc-800 flex items-center justify-center relative"
+        className="aspect-square rounded-full dark:bg-zinc-950 bg-zinc-800 flex items-center justify-center relative"
       >
         <AnimatePresence>
           {hovered && (
