@@ -11,11 +11,7 @@ const authenticatedAdmin = async (req, res, next) => {
       return res.status(401).json({ error: "Unauthorized" });
     } 
 
-    console.log("Checking Admin");
-    console.log("Userid: ", userid);
     const [admins] = await db.query("SELECT administratorid FROM Administrators WHERE userid = ?", [userid]);
-
-    console.log(admins);
 
     if (admins.length === 0 || !admins[0].administratorid) {
       return res.status(401).json({ error: "Unauthorized" });

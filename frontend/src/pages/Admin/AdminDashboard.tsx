@@ -1,7 +1,11 @@
 
+import AdminSidebar from "../../components/admin/AdminSidebar"
+
 const AdminDashboard = () => {
   return (
-    <div>AdminDashboard</div>
+    <div className="flex w-full min-h-screen">
+      <AdminSidebar />
+    </div>
   )
 }
 

@@ -20,7 +20,9 @@ import Rates from './pages/Rates';
 import ForgotPassword from './pages/ForgotPassword';
 import UpdatePassword from './pages/UpdatePassword';
 import CompleteSignup from './pages/CompleteSignup';
-import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminUserPage from './pages/admin/AdminUserPage';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -120,7 +122,10 @@ export default function App() {
           <Route path="/forgotpassword" element={ <ForgotPassword /> } />
           <Route path="/updatepassword/:recoveryToken" element={ <UpdatePassword /> } />
 
+          {/* Admin Routes */}
           <Route path="/admin" element={ authAdmin ? <AdminDashboard /> : <Navigate to="/login" /> } />
+          <Route path="/admin/users" element={ authAdmin ? <AdminUsers /> : <Navigate to="/login" /> } />
+          <Route path="/admin/users/:userid" element={ authAdmin ? <AdminUserPage /> : <Navigate to="/login" /> } />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

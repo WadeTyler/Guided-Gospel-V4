@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.admin-sidebar-item {
+  @apply text-white text-lg font-bold flex items-center w-full gap-2 hover:scale-95 hover:text-primary transition-all duration-300 ease-in-out cursor-pointer;
+}
+
+.admin-panel-header {
+  @apply flex flex-col gap-4 pb-4 border-b-primary border-b-[1px] w-full;
+}
+
+.admin-panel-header-nav {
+  
+}
