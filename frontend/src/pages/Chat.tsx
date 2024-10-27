@@ -255,71 +255,80 @@ const Chat = () => {
     "Prayer",
     "The Holy Spirit",
   ]
+  
+  // Handle screensize
+  const [screenLg, setScreenLg] = useState<Boolean>(false);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenLg(window.innerWidth > 1024);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <div className="w-full h-screen flex relative group bg-white dark:bg-darkbg">
-
+    <div className="w-full h-screen flex flex-col relative group bg-white dark:bg-darkbg">
+  
       <BackgroundPattern cn="" />
-
-      <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid}  />
-
-      <div className="w-full h-screen relative flex flex-col items-center">
-
-        {
-          currentSessionid && !refetchingMessages &&
-          <Messages messages={messages} />
-        }
-        {
-          refetchingMessages && 
+  
+      {/* Sidebar */}
+      <Sidebar currentSessionid={currentSessionid} setCurrentSessionid={setCurrentSessionid} />
+  
+      <div className="w-full h-full relative flex flex-col items-center px-4 sm:px-8">
+  
+        {/* Messages Section */}
+        {currentSessionid && !refetchingMessages && <Messages messages={messages} />}
+  
+        {/* Loading Indicator */}
+        {refetchingMessages && (
           <div className="w-full h-full flex justify-center items-center">
-
-              <Loading cn="text-primary" size="lg"/>
+            <Loading cn="text-primary" size="lg" />
           </div>
-        }
-        {
-          !currentSessionid &&
+        )}
+  
+        {/* Initial Section */}
+        {!currentSessionid && (
           <div className="w-full h-full flex flex-col justify-center items-center gap-6">
-
-
-            {authUser && 
-              <motion.h2 
-              initial={{ x: 100, opacity: 0}}
-              animate={{ x: 0, opacity: 1}}
-              transition={{ duration: .5}}
-              className="text-5xl w-[40rem] text-end text-primary">
+  
+            {/* Greeting */}
+            {authUser && (
+              <motion.h2
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-3xl sm:text-5xl w-full sm:w-[40rem] text-end sm:text-end text-primary">
                 {`Hey ${formatName(authUser.firstname)}!`}
               </motion.h2>
-            }
-
-            <motion.div 
-              initial={{ x: -100, opacity: 0}}
-              animate={{ x: 0, opacity: 1}}
-              transition={{ duration: .5}}
-            className="w-[40rem]">
-              <h3 className="text-3xl dark:text-white">Verse of the Day</h3>
-              {!votdPending && votd && 
-                <div className="">
-                  <p className="text-lg italic dark:text-darktext">"{votd.verse}"</p>
-                  <p className="text-sm dark:text-darktext">{votd.location}</p>
+            )}
+  
+            {/* Verse of the Day */}
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="w-full sm:w-[40rem] sm:text-start">
+              <h3 className="text-2xl sm:text-3xl dark:text-white">Verse of the Day</h3>
+              {!votdPending && votd && (
+                <div>
+                  <p className="text-base sm:text-lg italic dark:text-darktext">"{votd.verse}"</p>
+                  <p className="text-xs sm:text-sm dark:text-darktext">{votd.location}</p>
                 </div>
-              }
-              {votdPending && 
-                <Loading cn="text-primary" size="md"/>
-              }
-              {
-                votdError && 
-                <p className="text-lg dark:text-darktext">Sorry... something went wrong. No verse today 🥺</p>
-              }
-              
+              )}
+              {votdPending && <Loading cn="text-primary" size="md" />}
+              {votdError && <p className="text-base sm:text-lg dark:text-darktext">Sorry... something went wrong. No verse today 🥺</p>}
             </motion.div>
-
-            <motion.section className="w-[40rem]"
-            initial={{ x: -100, opacity: 0}}
-            animate={{ x: 0, opacity: 1}}
-            transition={{ duration: .5}} 
-            >
-              <div className="flex text-3xl">
+  
+            {/* Info Section */}
+            <motion.section
+              className="w-full sm:w-[40rem] sm:text-start"
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}>
+              <div className="flex sm:justify-start text-xl sm:text-3xl">
                 <p className="dark:text-white">Ask me about </p>
                 <FlipWords words={words} />
               </div>
@@ -327,37 +336,39 @@ const Chat = () => {
                 Guided Gospel is your spiritual companion. You choose how you want to be guided! Have a question about a bible verse? Or maybe you want to learn more about something you heard? Whatever it is, ask away!
               </p>
             </motion.section>
-            
-            
           </div>
-        }
-
-        <form action="" 
+        )}
+  
+        {/* Input Form */}
+        <form
+          action=""
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
-          className='absolute bottom-24 flex items-center justify-center bg-neutral-800 dark:bg-darktext w-[40rem] rounded-xl hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out'>
-          <input type="text" name="inputMessage" onChange={(e) => setInputMessage(e.target.value)} value={inputMessage}
-            className={`w-full h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white dark:text-neutral-800'}`}
-            placeholder='Message Guided'
+          className="absolute bottom-20 sm:bottom-24 flex items-center justify-center bg-neutral-800 dark:bg-darktext w-11/12 sm:w-[40rem] rounded-xl px-4 sm:px-0 hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out">
+          <input
+            type="text"
+            name="inputMessage"
+            onChange={(e) => setInputMessage(e.target.value)}
+            value={inputMessage}
+            className={`w-full h-10 sm:h-12 bg-transparent border-none rounded-xl focus:outline-none focus:border-none focus:ring-0 placeholder:text-zinc-500 group ${sendingMessage ? 'text-zinc-500 cursor-not-allowed' : 'text-white dark:text-neutral-800'}`}
+            placeholder="Message Guided"
             disabled={sendingMessage || refetchingMessages}
           />
-          {!sendingMessage && 
-            <button 
-              className="h-12 w-12 flex items-center justify-center text-3xl text-primary hover:text-white dark:hover:text-darkaccent ease-in-out duration-300 transition-all"
-            >
+          {!sendingMessage && (
+            <button
+              className="h-10 sm:h-12 w-10 sm:w-12 flex items-center justify-center text-2xl sm:text-3xl text-primary hover:text-white dark:hover:text-darkaccent ease-in-out duration-300 transition-all">
               <FaArrowAltCircleUp />
             </button>
-          }
-          {sendingMessage &&
-            <Loading cn="h-12 w-12 flex items-center justify-center text-primary" size="sm" />
-          }
-          
+          )}
+          {sendingMessage && <Loading cn="h-10 sm:h-12 flex items-center justify-center text-primary" size="sm" />}
         </form>
       </div>
     </div>
-  )
+  );
+  
 }
+
 
 export default Chat

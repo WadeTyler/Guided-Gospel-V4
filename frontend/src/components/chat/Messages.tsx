@@ -19,14 +19,14 @@ const Messages = ({messages }: {
 
   return (
 
-    <div className="flex flex-col w-full h-full pl-48 pt-16 pb-16 mb-36 relative overflow-auto">
+    <div className="flex flex-col w-full h-full lg:pl-48 pt-16 lg:pb-16 mb-36 relative overflow-auto">
       
       {messages.map((message, index) => (
           <motion.div 
           initial={{ opacity: 0, x: message.sender === 'ai' ? '-100%' : '100%'}}
           animate={{ opacity: 1, x: 0}}
           transition={{ duration: 0.5 }}
-          key={index} className={`flex flex-col relative group-parent ${message.sender === 'ai' ? 'self-start translate-x-16 ml-10' : 'self-end -translate-x-16 mr-10'}`}>
+          key={index} className={`flex flex-col relative group-parent ${message.sender === 'ai' ? 'self-start translate-x-16 lg:ml-10' : 'self-end -translate-x-16 lg:mr-10'}`}>
             <p className={`text-neutral-800 dark:text-darktext w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>

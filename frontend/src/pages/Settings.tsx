@@ -210,10 +210,10 @@ const Settings = () => {
 
       {isDeletingUser &&
         <div className="bg-[rgba(0,0,0,0.8)] w-full h-full absolute z-[100] flex items-center justify-center">
-            <div className="bg-white w-96 p-4 md:m-0 m-4 rounded-2xl flex flex-col">
+            <div className="bg-white dark:bg-darkbg w-96 p-4 md:m-0 m-4 rounded-2xl flex flex-col">
               <h1 className="text-primary text-3xl">Wait {authUser?.firstname}!</h1>
-              <p className="mb-4">Are you sure you want to delete your account?</p>
-              <p className="mb-4">By deleting your account you'll lose access to Guided Gospel! You'll have to make another one to chat again.</p>
+              <p className="mb-4 dark:text-darktext">Are you sure you want to delete your account?</p>
+              <p className="mb-4 dark:text-darktext">By deleting your account you'll lose access to Guided Gospel! You'll have to make another one to chat again.</p>
               {!isPendingDeletingUser && 
                 <section className="flex gap-4 items-center justify-center">
                   <button 
