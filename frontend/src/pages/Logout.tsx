@@ -45,7 +45,7 @@ const Logout = () => {
   }, [authUser])
 
   return (
-    <div className="flex w-full h-screen justify-center items-center">
+    <div className="flex w-full min-h-screen justify-center items-center">
       <Loading size='lg' />
     </div>
   )

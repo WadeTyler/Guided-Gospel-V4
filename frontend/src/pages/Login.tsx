@@ -45,14 +45,14 @@ const Login = () => {
   }
 
   return (
-    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
+    <div className='w-full min-h-screen bg-white dark:bg-darkbg flex md:flex-row flex-col justify-center items-center md:gap-16 gap-8'>
 
-      <div className="w-96">
+      <div className="logo-container">
         <img src="./images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
       </div>
 
-      <div className="w-96 h-96 flex flex-col justify-center items-center gap-4">
-        <h1 className="text-primary text-5xl font-bold text-end w-full">Login</h1>
+      <div className="form-container">
+        <h1 className="text-primary text-5xl font-bold text-center md:text-end w-full">Login</h1>
         <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
@@ -63,7 +63,9 @@ const Login = () => {
           <section className="w-full flex flex-col gap-1">
             <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
             className='form-input-bar' />
-            <Link to="/forgotpassword" className="dark:text-darktext underline text-right ">Forgot password?</Link>
+            <div className="w-full flex items-center md:justify-end justify-center">
+              <Link to="/forgotpassword" className="dark:text-darktext underline">Forgot password?</Link>
+            </div>
           </section>
           
           {isPending 

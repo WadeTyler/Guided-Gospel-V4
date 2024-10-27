@@ -15,11 +15,11 @@ export const Testimonials = () => {
       className=" px-4 bg-white dark:bg-darkbg py-20 md:py-40 relative group overflow-hidden"
     >
       <div className="absolute  h-96 -top-64 inset-x-0 w-1/2 mx-auto bg-gradient-to-t from-[#9890e3] to-[#b1f4cf] blur-3xl  rounded-full opacity-50" />
-      <div className="max-w-xl md:mx-auto md:text-center xl:max-w-none relative z-10">
-        <h2 className="font-display text-3xl tracking-tight text-zinc-900 dark:text-white sm:text-4xl md:text-5xl">
+      <div className="max-w-xl md:mx-auto md:text-center xl:max-w-none relative z-10 flex flex-col items-center">
+        <h2 className="font-display text-3xl tracking-tight text-zinc-900 dark:text-white sm:text-4xl md:text-5xl text-center">
           See what our users say about us
         </h2>
-        <p className="mt-6 mb-6 text-lg tracking-tight text-zinc-600 dark:text-darktext">
+        <p className="mt-6 mb-6 text-lg tracking-tight text-zinc-600 dark:text-darktext text-center">
           How has Guided Helped you in your Faith?
         </p>
         <Link to="/feedback" className="submit-btn">Let us Know</Link>

@@ -33,9 +33,9 @@ export const Pricing = () => {
       className="min-h-[40rem] px-4 bg-zinc-900 py-20 md:py-40 relative group overflow-hidden"
       onMouseMove={onMouseMove}
     >
-      <div className="max-w-xl md:mx-auto md:text-center xl:max-w-none relative z-10">
+      <div className="max-w-xl md:mx-auto md:text-center xl:max-w-none relative z-10 flex flex-col items-center">
         <h2
-        className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+        className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl text-center">
           Our pricing will surprise you
         </h2>
         <motion.p initial={{y:100, opacity: 0}} whileInView={{y:0, opacity: 1}} transition={{duration: .5}}

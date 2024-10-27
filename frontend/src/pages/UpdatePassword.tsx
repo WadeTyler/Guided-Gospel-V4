@@ -36,7 +36,7 @@ const UpdatePassword = () => {
 
   if (!recoveryToken || invalidToken) {
     return (
-      <div className='w-full h-screen flex flex-col items-center justify-center'>
+      <div className='w-full min-h-screen flex flex-col items-center justify-center'>
         <p className="text-5xl font-bold text-primary">Invalid Link or This session has expired</p>
         <Link to="/forgotpassword" className="underline">Click here to recover your password</Link>
       </div>
@@ -80,7 +80,7 @@ const UpdatePasswordForm = ({ recoveryToken, setPasswordUpdated }: { recoveryTok
   }
 
   return (
-    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
+    <div className='w-full min-h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
         
         <div className="w-[30rem] h-96 flex flex-col justify-center items-center gap-4">
           <h1 className="text-primary text-5xl font-bold w-full">Reset Password</h1>
@@ -140,7 +140,7 @@ const RedirectingHome = () => {
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen bg-white dark:bg-darkbg">
+    <div className="flex flex-col items-center justify-center w-full min-h-screen bg-white dark:bg-darkbg">
       <p className="text-4xl text-primary">Password Updated Successfully. Redirecting you to Login in {timer}</p>
       <Link to="/login" className="text-secondary dark:text-darktext underline">Click here if you are not redirected</Link>
     </div>

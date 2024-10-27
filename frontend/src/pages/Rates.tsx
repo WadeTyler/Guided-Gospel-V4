@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 const Rates = () => {
   return (
-    <div className="flex items-center justify-center w-full h-screen gap-8 bg-white dark:bg-darkbg">
+    <div className="flex md:flex-row flex-col-reverse items-center justify-center w-full min-h-screen md:gap-16 gap-8 bg-white dark:bg-darkbg">
       
-      <div className="flex flex-col w-[40rem] gap-4 dark:text-darktext">
+      <div className="form-container !h-full dark:text-darktext">
         <h2 className="text-3xl text-primary">How do Daily Message Rates Work?</h2>
         <section>
           <p className="text-xl">Daily Limit</p>
@@ -17,11 +17,13 @@ const Rates = () => {
           <p>Daily Limits reset at 12:00 AM EST (Midnight) every night. At the moment, there currently is no official way to get more than 50 message rates per day, but there is plans for in the future.</p>
         </section>
 
-        <Link to="/" className="text-primary underline">Back to Home</Link>
+        <Link to="/settings" className="text-primary underline">Go Back</Link>
 
       </div>
 
-      <img src="./images/logo-3.png" alt="" className="rounded-full w-[25rem]" />
+      <div className="logo-container">
+        <img src="./images/logo-3.png" alt="" className="rounded-full" /> 
+      </div>
 
     </div>
   )

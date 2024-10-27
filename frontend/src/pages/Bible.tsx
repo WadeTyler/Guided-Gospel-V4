@@ -106,6 +106,11 @@ const Bible = () => {
   }, [currentFontSize])
 
   useEffect(() => {
+
+    if (!screenLg) {
+      setWideMode(false);
+    }
+
     localStorage.setItem('wideMode', wideMode.toString());
   }, [wideMode])
 
@@ -146,6 +151,23 @@ const Bible = () => {
     }
   }
 
+  // Handle screensize
+  const [screenLg, setScreenLg] = useState<Boolean>(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenLg(window.innerWidth > 1024);
+      if (window.innerWidth <= 1024) {
+        setWideMode(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className="flex items-center justify-center flex-col bg-white dark:bg-darkbg">
       
@@ -153,12 +175,16 @@ const Bible = () => {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} fixed top-0 pt-12 bg-white dark:bg-darkbg pb-2 z-30`}>
+      className={`${wideMode ? 'w-full' : 'lg:w-[40rem] w-full'} px-4 fixed top-0 pt-12 bg-white dark:bg-darkbg pb-2 z-30`}>
         <div className="border-b-primary border-b-2 flex items-center flex-col pb-4 mb-4 w-full z-20">
           <h1 className="text-4xl text-primary">Guided Gospel</h1>
         </div>
 
         <div className="flex gap-4 w-full">
+            <button onClick={previousPage}
+              className={`text-primary transition-all duration-300 ease-in-out p-1 rounded-full scale-150 active:scale-100 hover:scale-125`}>
+                <IconChevronLeft />
+            </button>
             <div className='flex flex-col w-full'>
               <label htmlFor="book" className='pl-3 dark:text-darktext'>Book:</label>
               <select name="book" id="book" className="form-input-bar"
@@ -190,7 +216,7 @@ const Bible = () => {
               </select>
             </div>
             <div className='flex flex-col w-full'>
-              <label htmlFor="fontsize" className='pl-3 dark:text-darktext'>Font Size:</label>
+              <label htmlFor="fontsize" className='pl-3 dark:text-darktext'>Font:</label>
               <select name="fontsize" id="fontsize" className="form-input-bar"
               onChange={(e) => setCurrentFontSize(e.target.value)}
               value={currentFontSize}
@@ -200,19 +226,25 @@ const Bible = () => {
                 ))}
               </select>
             </div>
-            <div className='flex flex-col w-full'>
+            {screenLg && <div className='flex flex-col w-full'>
               <label htmlFor="widemode" className='pl-3 dark:text-darktext'>Wide Mode:</label>
               <input type="checkbox" className='form-input-bar h-10' 
               onChange={(e) => setWideMode(e.target.checked)}
               checked={wideMode}
               />
             </div>
+            
+            }
+            <button onClick={nextPage}
+              className={`text-primary transition-all duration-300 ease-in-out p-1 rounded-full scale-150 active:scale-100 hover:scale-125`}>
+                <IconChevronRight />
+            </button>
         </div>
       </motion.header>
       
       {/* Display Verses */}
       {verses && 
-        <div className={`${wideMode ? 'w-10/12' : 'w-[40rem]'} flex flex-col mt-52 overflow-y-auto  pb-28 z-10`}>
+        <div className={`${wideMode ? 'w-full' : 'lg:w-[40rem] w-full'} px-4 flex flex-col mt-52 overflow-y-auto  pb-28 z-10`}>
           {currentBook && currentChapter && 
             <h2 className="text-3xl text-neutral-800 dark:text-white">{currentBook} - {currentChapter}</h2>
           }
@@ -227,19 +259,6 @@ const Bible = () => {
             </motion.div>
           ))}
         </div>
-      }
-      {verses && currentBook && currentChapter && 
-        <>
-          <button onClick={nextPage}
-            className={`fixed ${!wideMode ? 'right-1/4' : 'right-14'} translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
-              <IconChevronRight />
-          </button>
-
-          <button onClick={previousPage}
-            className={`fixed ${!wideMode ? 'left-1/4' : 'left-14'} -translate-x-1/2 top-1/2 text-primary hover:bg-neutral-800 transition-all duration-300 ease-in-out p-1 rounded-full scale-150`}>
-              <IconChevronLeft />
-          </button>
-        </>
       }
 
 

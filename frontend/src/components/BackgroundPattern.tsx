@@ -19,7 +19,7 @@ const BackgroundPattern = ({cn}:{cn?:string}) => {
 
   return (
     // Notes: Add group to the parent div to apply the opacity effect
-    <div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] group-hover:opacity-50">
+    <div className="absolute inset-0 rounded-2xl transition duration-300 [mask-image:linear-gradient(white,transparent)] md:opacity-100 opacity-50 md:group-hover:opacity-50">
       <GridPattern
         width={120}
         height={120}

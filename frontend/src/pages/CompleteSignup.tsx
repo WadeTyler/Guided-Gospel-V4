@@ -47,7 +47,7 @@ const CompleteSignup = () => {
       {signupCompleted && <RegistrationComplete />}
       {invalidToken && !signupCompleted &&  <InvalidToken />}
       {!signupCompleted && !invalidToken && 
-        <div className="w-full h-screen flex items-center justify-center">
+        <div className="w-full min-h-screen flex items-center justify-center">
           <Loading size="lg" cn="text-primary" />
         </div>
       }
@@ -58,14 +58,14 @@ const CompleteSignup = () => {
 
 const RegistrationComplete = () => {
   return (
-    <div className="w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16">
-      <div className="w-96">
+    <div className="w-full min-h-screen bg-white dark:bg-darkbg flex flex-col md:flex-row justify-center items-center md:gap-16 gap-8">
+      <div className="logo-container">
         <img src="/images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
-        <h1 className="text-primary text-5xl font-bold w-full text-right">Registration Complete</h1>
-        <p className="dark:text-darktext">Your Account has been successfully created!</p>
+      <div className="form-container">
+        <h1 className="text-primary text-5xl font-bold w-full text-center">Registration Complete</h1>
+        <p className="dark:text-darktext text-center">Your Account has been successfully created!</p>
         <Link to="/chat" className="submit-btn flex items-center justify-center w-fit" onClick={() => useQueryClient().invalidateQueries({ queryKey: ['authUser'] })}>Get Started</Link>
       </div>
 
@@ -75,14 +75,14 @@ const RegistrationComplete = () => {
 
 const InvalidToken = () => {
   return (
-    <div className="w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16">
-      <div className="w-96">
+    <div className="w-full min-h-screen bg-white dark:bg-darkbg flex flex-col md:flex-row justify-center items-center md:gap-16 gap-8">
+      <div className="logo-container">
         <img src="/images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
-        <h1 className="text-primary text-5xl font-bold w-full text-right">This Link has expired</h1>
-        <p className="dark:text-darktext">Please try again</p>
+      <div className="form-container">
+        <h1 className="text-primary text-5xl font-bold w-full text-center">This Link Has Expired</h1>
+        <p className="dark:text-darktext text-center">Please try again</p>
         <Link to="/login" className="submit-btn flex items-center justify-center w-fit" >Sign Up</Link>
       </div>
 

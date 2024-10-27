@@ -46,10 +46,10 @@ const Signup = () => {
   }
   
   return (
-    <div className='w-full h-screen bg-white dark:bg-darkbg flex justify-center items-center gap-16'>
+    <div className='w-full min-h-screen bg-white dark:bg-darkbg flex-col-reverse md:flex-row flex justify-center items-center md:gap-16 gap-8'>
       
-      <div className="w-96 h-96 flex flex-col justify-center items-center gap-4">
-        <h1 className="text-primary text-5xl font-bold text-start w-full">{signupEmailSent ? "Check Your Email" : "Signup"}</h1>
+      <div className="form-container">
+        <h1 className="text-primary text-5xl font-bold w-full md:text-start text-center">{signupEmailSent ? "Check Your Email" : "Signup"}</h1>
         {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} />}
         {!signupEmailSent &&
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
@@ -76,7 +76,7 @@ const Signup = () => {
         {!signupEmailSent && <Link to="/login" className="dark:text-darktext underline w-full text-center">Already have an account? Login</Link>}
       </div>
 
-      <div className="w-96">
+      <div className="logo-container">
         <img src="./images/logo-3.png" alt="guided gospel logo" className='rounded-full' />
       </div>
 
@@ -87,8 +87,8 @@ const Signup = () => {
 const EmailSent = ({setSignupEmailSent} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>}) => {
   return (
     <div className="flex flex-col gap-4">
-      <p className="dark:text-darktext ">A verification email has been sent to your provided email. You must follow the steps in the email to complete your account registration.</p>
-      <p className="dark:text-darktext underline cursor-pointer text-left" onClick={() => {
+      <p className="dark:text-darktext md:text-start text-center">A verification email has been sent to your provided email. You must follow the steps in the email to complete your account registration.</p>
+      <p className="dark:text-darktext underline cursor-pointer md:text-start text-center" onClick={() => {
         setSignupEmailSent(false);
       }}>Didn't get an Email? Try Again</p>
     </div>

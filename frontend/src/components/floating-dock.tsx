@@ -107,7 +107,7 @@ const FloatingDockMobile = ({
   items,
   className,
 }: {
-  items: { title: string; icon: React.ReactNode; href: string }[];
+  items: { title: string; icon: React.ReactNode; href: string, func?: () => void }[];
   className?: string;
 }) => {
   const [open, setOpen] = useState(false);
@@ -139,7 +139,10 @@ const FloatingDockMobile = ({
                 <Link
                   to={item.href}
                   key={item.title}
-                  className="h-10 w-10 rounded-full bg-neutral-900 flex justify-center items-center"
+                  onClick={() => 
+                    item.func && item.func()
+                  }
+                  className="h-12 w-12 rounded-full bg-zinc-600 dark:bg-white flex justify-center items-center"
                 >
                   <div className="h-6 w-6">{item.icon}</div>
                 </Link>
@@ -150,7 +153,7 @@ const FloatingDockMobile = ({
       </AnimatePresence>
       <button
         onClick={() => setOpen(!open)}
-        className="h-10 w-10 rounded-full bg-gray-50 dark:bg-darkbg flex items-center justify-center"
+        className="h-12 w-12 rounded-full bg-zinc-600 dark:bg-white flex items-center justify-center"
       >
         <IconLayoutNavbarCollapse className="h-6 w-6 text-primary" />
       </button>
@@ -171,7 +174,7 @@ const FloatingDockDesktop = ({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto hidden md:flex h-16 gap-4 items-end  rounded-2xl bg-zinc-500 px-4 pb-3",
+        "mx-auto hidden md:flex h-16 gap-4 items-end  rounded-2xl bg-zinc-600 px-4 pb-3",
         className
       )}
     >

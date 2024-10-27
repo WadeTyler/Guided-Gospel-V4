@@ -75,15 +75,15 @@ const BugReport = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="w-full h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
-      <div className="w-[40rem] flex flex-col gap-4">
+    className="w-full min-h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
+      <div className="w-72 sm:w-96 md:w-[40rem] flex flex-col gap-4">
         <h1 className="text-primary text-3xl">Bug Report</h1>
         <p className="dark:text-darktext">Ran into an issue? Let us know so we can fix it!</p>
         <form action="" className='flex flex-col gap-4'>
           <div className="flex gap-4">
 
             <section className="">
-              <label htmlFor="category" className='pl-3 dark:text-darktext'>Category:</label>
+              <label htmlFor="category" className=' dark:text-darktext'>Category:</label>
               <select name="category" id="category" className='form-input-bar' onChange={(e) => setCategory(e.target.value)}>
                 {categories.map((category, index) => (
                   <option key={index} value={category}>{category}</option>
@@ -94,7 +94,7 @@ const BugReport = () => {
             
           </div>
           <section className="">
-            <label htmlFor="impact" className='pl-3 text-sm dark:text-darktext'>On a scale of 1-10, how has this impacted your experience? (1 being Minor - 10 being Severely):</label>
+            <label htmlFor="impact" className=' text-sm dark:text-darktext'>On a scale of 1-10, how has this impacted your experience? (1 being Minor - 10 being Severely):</label>
             <select name="impact" id="impact" className='form-input-bar' onChange={(e) => {
               setImpact(parseInt(e.target.value));
             }}>
@@ -118,14 +118,14 @@ const BugReport = () => {
                 e.stopPropagation();
                 handleSubmit();
               }}
-              className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Submit Bug Report</button>
+              className="submit-btn">Submit Bug Report</button>
               <button 
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                navigate('/');
+                navigate('/settings');
               }}
-              className="bg-zinc-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-white transition-all ease-in-out duration-300">Go Home</button>
+              className="neutral-btn">Go Back</button>
             </section>
           }
           {
@@ -182,8 +182,8 @@ const NormalFeedback = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}
-    className="w-full h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
-      <div className="w-[40rem] flex flex-col gap-4">
+    className="w-full min-h-screen bg-white dark:bg-darkbg flex flex-col items-center justify-center ">
+      <div className="w-72 sm:w-96 md:w-[40rem] flex flex-col gap-4">
         <h1 className="text-primary text-3xl">Share your Feedback</h1>
         <p className="dark:text-darktext">We would love to hear your feedback, so we can improve Guided Gospel for everyone.</p>
         <form action="" className='flex flex-col gap-4'>

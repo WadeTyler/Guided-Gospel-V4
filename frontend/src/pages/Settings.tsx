@@ -130,26 +130,25 @@ const Settings = () => {
   }
 
   
-
   return (
-    <div className="flex gap-12 items-center justify-center w-full h-screen relative group bg-white dark:bg-darkbg">
+    <div className="flex md:flex-row flex-col gap-16 items-center justify-center w-full min-h-screen relative group bg-white dark:bg-darkbg">
     
 
       {/* Left Side */}
-      <div className="flex flex-col items-center w-[25rem] z-10">
-        <img src="./images/logo-3.png" alt="" className="w-full rounded-full" />
+      <div className="logo-container">
+        <img src="./images/logo-3.png" alt="" className="rounded-full" />
       </div>
 
       {/* Right Side */}
-      <div className="flex flex-col gap-4 w-[44rem] items-center z-10">
-        <h2 className="text-primary text-5xl w-full text-end">Settings</h2>
-        <p className="w-full text-end dark:text-darktext">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
+      <div className="form-container">
+        <h2 className="text-primary text-5xl w-full md:text-end text-center">Settings</h2>
+        <p className="w-full md:text-end text-center dark:text-darktext">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 
         <form action="" className="w-full flex flex-col gap-4 justify-center items-center">
           <div className="flex gap-4 w-full">
             <input type="text" name="firstname" placeholder="First Name" defaultValue={formData.firstname} onChange={(e) => formData.firstname = e.target.value} disabled={isUpdating} className="form-input-bar" />
             <input type="text" name="lastname" placeholder="Last Name" defaultValue={formData.lastname} onChange={(e) => formData.lastname = e.target.value} disabled={isUpdating} className="form-input-bar" />
-            <input type="number" name="age" placeholder="Age" defaultValue={formData.age}  onChange={(e) => formData.age = e.target.value} disabled={isUpdating} className="form-input-bar !w-1/3" />
+            <input type="number" name="age" placeholder="Age" defaultValue={formData.age}  onChange={(e) => formData.age = e.target.value} disabled={isUpdating} className="form-input-bar !w-1/3 remove-spin-appearance lg:text-base text-xs" />
           </div>
           <input type="text" name="email" placeholder="Email" defaultValue={formData.email} onChange={(e) => formData.email = e.target.value} disabled={isUpdating} className="form-input-bar" />
           <input type="text" name="denomination" placeholder="Denomination" defaultValue={formData.denomination} onChange={(e) => formData.denomination = e.target.value} disabled={isUpdating} className="form-input-bar" />
@@ -176,7 +175,7 @@ const Settings = () => {
                 e.preventDefault();
                 handleSubmit();
               }}
-              className="bg-primary px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">Update Settings</button>
+              className="submit-btn">Update Settings</button>
             }
             {isUpdating &&
               <Loading size='md' cn='text-primary' />
@@ -187,7 +186,7 @@ const Settings = () => {
               e.preventDefault();
               navigate('/bugreport');
             }}
-            className="bg-zinc-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-primary transition-all ease-in-out duration-300">
+            className="neutral-btn">
               Report a Bug
             </button>
             <button 
@@ -196,7 +195,7 @@ const Settings = () => {
               e.preventDefault();
               setIsDeletingUser(true);
             }}
-            className="bg-red-500 px-4 py-2 rounded-2xl text-white hover:bg-neutral-800 hover:text-red-500 transition-all ease-in-out duration-300">
+            className="delete-btn">
               Delete Account
             </button>
           </div>
@@ -211,7 +210,7 @@ const Settings = () => {
 
       {isDeletingUser &&
         <div className="bg-[rgba(0,0,0,0.8)] w-full h-full absolute z-[100] flex items-center justify-center">
-            <div className="bg-white w-96 p-4 rounded-2xl flex flex-col">
+            <div className="bg-white w-96 p-4 md:m-0 m-4 rounded-2xl flex flex-col">
               <h1 className="text-primary text-3xl">Wait {authUser?.firstname}!</h1>
               <p className="mb-4">Are you sure you want to delete your account?</p>
               <p className="mb-4">By deleting your account you'll lose access to Guided Gospel! You'll have to make another one to chat again.</p>
@@ -219,10 +218,10 @@ const Settings = () => {
                 <section className="flex gap-4 items-center justify-center">
                   <button 
                   onClick={handleDeleteAccount}
-                  className="bg-red-500 px-3 py-1 rounded-2xl text-white hover:text-red-500 hover:bg-neutral-800 transition-all duration-300 ease-in-out">Confirm Delete Account</button>
+                  className="delete-btn">Confirm Delete</button>
                   <button 
                   onClick={() => setIsDeletingUser(false)}
-                  className="bg-primary px-3 py-1 rounded-2xl hover:bg-green-500 transition-all duration-300 ease-in-out">Cancel</button>
+                  className="neutral-btn">Cancel</button>
                 </section>
               }
               {isPendingDeletingUser && 
