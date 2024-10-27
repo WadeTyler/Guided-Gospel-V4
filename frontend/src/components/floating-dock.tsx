@@ -24,11 +24,13 @@ import { IconBible } from "@tabler/icons-react";
 import { IconSettingsFilled } from "@tabler/icons-react"
 import { IconLogout } from "@tabler/icons-react";
 import { IconSunMoon } from '@tabler/icons-react';
+import { IconShieldLockFilled } from '@tabler/icons-react';
 
 
 export const Navbar = () => {
 
   const { data:authUser } = useQuery({ queryKey: ['authUser'] });
+  const { data:authAdmin } = useQuery({ queryKey: ['authAdmin'] });
 
   // Dark Mode
 const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
@@ -75,7 +77,12 @@ const toggleDarkMode = () => {
         },
     ]);
     }
-  }, [authUser]);
+
+    if (authAdmin) {
+      console.log("Here");
+      setItems((prev) => [...prev, { title: "Admin Panel", icon: <IconShieldLockFilled className="text-primary" />, href: "/admin" }]);
+    }
+  }, [authUser, authAdmin]);
 
   return (
     <FloatingDock 

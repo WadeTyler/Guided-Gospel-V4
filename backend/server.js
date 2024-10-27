@@ -15,6 +15,7 @@ const aiRoutes = require('./routes/ai.routes');
 const verseRoutes = require('./routes/verses.routes');
 const feedbackRoutes = require('./routes/feedback.routes');
 const bibleRoutes = require('./routes/bible/bible.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 require('dotenv').config();
 
@@ -33,6 +34,7 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/verse", verseRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/bible", bibleRoutes);
+app.use("/api/admin", adminRoutes);
 
 
 resetRates();
