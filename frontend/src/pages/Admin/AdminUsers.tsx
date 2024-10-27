@@ -8,17 +8,6 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 
-interface User  {
-  userid: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  age?: number;
-  denomination?: string;
-  rates: number;
-  createdat: string;
-}
-
 const AdminUsers = () => {
 
   const queryClient = useQueryClient();
@@ -98,11 +87,11 @@ const AdminUsers = () => {
 
 
   return (
-    <div className="w-full min-h-screen flex">
+    <div className="w-full min-h-screen flex bg-white dark:bg-darkbg dark:text-dark">
       <AdminSidebar />
       
 
-      <div className="w-full h-full flex flex-col bg-white p-4 gap-4">
+      <div className="w-full h-full flex flex-col p-4 gap-4">
 
         <header className="admin-panel-header">
           <h1 className="text-primary text-5xl">Users</h1>
@@ -111,7 +100,7 @@ const AdminUsers = () => {
               e.preventDefault();
               submitSearch();
             }}>
-              <input type="text" placeholder="Search by First Name, Last Name, or Email..." className="border-none w-full focus:ring-0 rounded-2xl" onChange={(e) => {setSearchValue(e.target.value)}} />
+              <input type="text" placeholder="Search by First Name, Last Name, or Email..." className="border-none w-full focus:ring-0 rounded-2xl bg-transparent" onChange={(e) => {setSearchValue(e.target.value)}} />
               <button className="pr-2"><IconSearch /></button>
             </form>
           </div>
@@ -139,7 +128,7 @@ const AdminUsers = () => {
                   <div className="truncate">{user.email}</div>
                   <div className="truncate">{user.age ?? 'N/A'}</div>
                   <div className="truncate">{user.denomination ?? 'N/A'}</div>
-                  <div className="truncate">${user.rates.toFixed(2)}</div>
+                  <div className="truncate">{user.rates}</div>
                   <div className="truncate">{new Date(user.createdat).toLocaleDateString()}</div>
                 </div>
               ))}

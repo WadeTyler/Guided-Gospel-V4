@@ -7,6 +7,10 @@ const router = express.Router();
 router.get("/", protectedRoute, authenticatedAdmin, adminController.getAdmin);
 router.get("/users", protectedRoute, authenticatedAdmin, adminController.getUsers);
 router.get("/users/search/:value", protectedRoute, authenticatedAdmin, adminController.searchForUser);
+router.get("/users/:userid", protectedRoute, authenticatedAdmin, adminController.getUserData);
+router.post("/users/:userid/suspend", protectedRoute, authenticatedAdmin, adminController.suspendAndUnsuspendUser);
+router.post("/users/:userid/setDefaultRates", protectedRoute, authenticatedAdmin, adminController.setDefaultRates);
+router.post("/users/:userid/resetRates", protectedRoute, authenticatedAdmin, adminController.resetRates);
 
 
 module.exports = router;

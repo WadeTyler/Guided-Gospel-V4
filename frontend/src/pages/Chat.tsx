@@ -15,15 +15,8 @@ import BackgroundPattern from '../components/BackgroundPattern';
 
 const Chat = () => {
   const queryClient = useQueryClient();
-  interface AuthUser {
-    firstname: string;
-    lastname: string;
-    age: number;
-    denomination: string;
-    email: string;
-  }
 
-  const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
+  const { data:authUser } = useQuery<User>({queryKey: ['authUser']});
 
   const { data:votd, isPending:votdPending, error:votdError } = useQuery({
     queryKey: ['votd'],
@@ -229,7 +222,11 @@ const Chat = () => {
   }, [messagesData])
 
   const handleSubmit = () => {
-    console.log(inputMessage);
+
+    if (authUser?.suspended) {
+      toast.error("You have been suspended from using this service. Please contact support if you believe this is an error.");
+      return;
+    }
 
     // Check if the input message is empty
     if (!inputMessage) {

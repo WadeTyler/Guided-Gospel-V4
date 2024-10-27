@@ -39,6 +39,13 @@ const addMessage = async (req, res, next) => {
     const lastModifiedQuery = 'UPDATE session SET lastmodified = ? WHERE sessionid = ?';
     const lastModifiedValues = [timestamp, sessionid];
 
+    if (sender === 'user') {
+      const lastActiveQuery = 'UPDATE user SET lastactive = ? WHERE userid = ?';
+      const lastActiveValues = [timestamp, userid];
+
+      await db.query(lastActiveQuery, lastActiveValues);
+    }
+
     await db.query(lastModifiedQuery, lastModifiedValues);
 
     res.status(200).json({ messageid, sessionid, userid, timestamp, sender, text});

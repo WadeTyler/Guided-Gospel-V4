@@ -34,7 +34,7 @@ export default function App() {
 
   const queryClient = useQueryClient();
 
-  const { data:authUser, isLoading } = useQuery({ 
+  const { data:authUser, isLoading } = useQuery<User | null>({ 
     queryKey: ['authUser'],
     queryFn: async () => {
       console.log("Fetching User");
