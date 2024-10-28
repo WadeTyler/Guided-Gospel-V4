@@ -37,7 +37,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/bible", bibleRoutes);
 app.use("/api/admin", adminRoutes);
 
-
+const __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
   app.get("*", (req, res) => {
