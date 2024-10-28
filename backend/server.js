@@ -3,7 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-import path from 'path';
+const path = require('path');
 
 // Cron Jobs
 const resetRates = require('./lib/cronjobs/resetRates');
