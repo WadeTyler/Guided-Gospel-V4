@@ -253,19 +253,7 @@ const Chat = () => {
     "The Holy Spirit",
   ]
   
-  // Handle screensize
-  const [screenLg, setScreenLg] = useState<Boolean>(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenLg(window.innerWidth > 1024);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <div className="w-full h-screen flex flex-col relative group bg-white dark:bg-darkbg">

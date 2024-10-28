@@ -1,5 +1,5 @@
 import AdminSidebar from "../../components/admin/AdminSidebar";
-import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 
 import { IconSearch } from '@tabler/icons-react';
@@ -10,12 +10,11 @@ import { useNavigate } from "react-router-dom";
 
 const AdminUsers = () => {
 
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [users, setUsers] = useState<User[]>([]);
 
-  const { data:allUsers, isLoading } = useQuery({
+  const { data:allUsers } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       console.log("Fetching Users");
