@@ -37,11 +37,17 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/bible", bibleRoutes);
 app.use("/api/admin", adminRoutes);
 
-__dirname = path.resolve();
+const staticPath = path.join(__dirname, "../frontend/dist");
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  app.use(express.static(staticPath));
+
+  // Catch all for routing on the frontend
   app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+      if (!req.path.includes(".")) {
+        res.sendFile(path.resolve(staticPath, "index.html"));
+      } else {
+        res.status(404).send("Not Found");
+      }
   })
 }
 
