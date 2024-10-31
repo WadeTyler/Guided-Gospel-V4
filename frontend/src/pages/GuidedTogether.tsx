@@ -54,7 +54,7 @@ const GuidedTogether = () => {
         toast.error((error as Error).message || "Something went wrong");
       }
     }
-  })
+  });
 
   useEffect(() => {
     // Refresh liked posts when the posts are changed
@@ -82,7 +82,7 @@ const GuidedTogether = () => {
           </header>
 
           {/* Posts */}
-          <div className="flex flex-col w-full pt-14">
+          <div className="flex flex-col w-full pt-14 gap-4">
             {isLoadingPosts && <Loading size="md" />}
             {isError && <p>Something went wrong</p>}
             {posts && posts.map((post) => (

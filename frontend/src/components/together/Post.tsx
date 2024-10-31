@@ -4,11 +4,13 @@ import { IconHeartFilled, IconMessageDots } from '@tabler/icons-react';
 import { checkIfPostLikedByUser, formatTimestampToDifference } from "../../lib/utils"
 import toast from 'react-hot-toast';
 import { useQuery } from '@tanstack/react-query';
+import Comments from './Comments';
 
 
 const Post = ({post}: {post:Post}) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState<Boolean>(false);
   const { data:likedPosts } = useQuery<Like[]>({ queryKey: ['likedPosts'] });
+  const [viewingComments, setViewingComments] = useState<Boolean>(false);
 
   useEffect(() => {
     if (likedPosts) {
@@ -43,7 +45,7 @@ const Post = ({post}: {post:Post}) => {
   }
 
   return (
-    <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 dark:text-darktext p-4'>
+    <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 dark:text-darktext p-4 rounded-2xl'>
       <div className="flex gap-2 items-center">
         <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10" />
         <section className="flex flex-col justify-center">
@@ -58,15 +60,17 @@ const Post = ({post}: {post:Post}) => {
       <div className="action-btns w-full flex gap-8">
         <section 
         className={`flex gap-2 items-center justify-center text-xs ${isLiked ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-300'}`}>
-          <IconHeartFilled onClick={() => handleLike()} className='cursor-pointer hover:scale-90 transition-all duration-300 ease-in-out' />
+          <IconHeartFilled onClick={() => handleLike()} className={`cursor-pointer hover:scale-90 transition-all duration-300 ease-in-out hover:text-red-800`} />
           <p className="">{post.likes}</p>
         </section>
 
         <section className="flex gap-2 items-center justify-center text-xs text-zinc-500 dark:text-zinc-300">
-          <IconMessageDots />
+          <IconMessageDots onClick={() => {setViewingComments(true)}} className={`cursor-pointer hover:scale-90 transition-all duration-300 ease-in-out hover:text-zinc-800 dark:hover:text-zinc-600`}/>
           <p className="">{post.comments}</p>
         </section>
       </div>
+
+      {viewingComments && <Comments post={post} handleLike={handleLike} isLiked={isLiked} setViewingComments={setViewingComments} />}
     </div>
   )
 }

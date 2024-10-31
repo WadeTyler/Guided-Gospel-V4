@@ -8,5 +8,7 @@ router.get("/", protectedRoute, postsController.getAllPosts);
 router.post("/", protectedRoute, postsController.createPost);
 router.get("/likes", protectedRoute, postsController.getUserLikes);
 router.post("/:postid/like", protectedRoute, checkIfPostExists, postsController.likeUnlikePost);
+router.post("/:postid/addComment", protectedRoute, checkIfPostExists, postsController.addComment);
+router.get("/:postid/comments", protectedRoute, checkIfPostExists, postsController.getComments);
 
 module.exports = router;

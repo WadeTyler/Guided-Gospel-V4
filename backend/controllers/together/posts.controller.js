@@ -113,14 +113,30 @@ const addComment = async (req, res) => {
     const commentQuery = 'INSERT INTO together_comments (postid, userid, content) VALUES (?, ?, ?)';
     await db.execute(commentQuery, [postid, userid, content]);
 
-    const getComment = 'SELECT * FROM together_comments WHERE postid = ? AND userid = ? AND content = ?';
-    const [comment] = await db.query(getComment, [postid, userid, content]);
+    // Update post counter
+    const updatePostQuery = 'UPDATE together_posts SET comments = comments + 1 WHERE postid = ?';
+    await db.execute(updatePostQuery, [postid]);
 
-    res.status(201).json(comment[0]);
+    res.status(201).json({ message: "Comment added successfully" });
   } catch (error) {
     console.error("Error in addComment controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
     
+  }
+}
+
+const getComments = async (req, res) => {
+  try {
+    const postid = req.params.postid;
+
+    const query = 'SELECT together_comments.*, user.username FROM together_comments JOIN user ON together_comments.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
+
+    const [comments] = await db.query(query, [postid]);
+
+    return res.status(200).json(comments);
+  } catch (error) {
+    console.log("Error in getComments controller", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -129,5 +145,7 @@ module.exports = {
   getAllPosts,
   createPost,
   likeUnlikePost,
-  getUserLikes
+  getUserLikes,
+  addComment,
+  getComments
 }

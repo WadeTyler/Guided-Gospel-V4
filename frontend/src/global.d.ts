@@ -31,5 +31,14 @@ declare global{
     postid: number;
     timestamp: string;
   }
+
+  interface Comment {
+    username: string;
+    commentid: number;
+    postid: number;
+    userid: string;
+    timestamp: string;
+    content: string;
+  }
 }
 

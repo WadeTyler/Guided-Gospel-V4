@@ -1,4 +1,4 @@
-import { UseQueryResult } from "@tanstack/react-query";
+
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
