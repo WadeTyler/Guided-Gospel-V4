@@ -1,6 +1,6 @@
 import { IconHeartFilled, IconMessageDots, IconX } from "@tabler/icons-react"
 import { formatTimestampToDifference } from "../../lib/utils"
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Comment from "./Comment";
 import { useMutation } from "@tanstack/react-query";

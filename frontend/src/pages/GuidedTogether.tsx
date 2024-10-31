@@ -70,12 +70,12 @@ const GuidedTogether = () => {
         A recommended users list on the right side.
       */}
 
-      <div className="flex justify-center items-center relative w-full h-full pt-20">
+      <div className="flex justify-center items-center relative w-full h-full pt-20 pb-24">
         <div className="w-[10rem]"></div>
 
 
         {/* Posts section */}
-        <div className="w-[40rem] flex flex-col gap-4 h-full items-center">
+        <div className="w-[40rem] flex flex-col gap-4 h-full items-center ">
           <header className="flex justify-center items-center gap-16 fixed w-full bg-white dark:bg-darkbg z-10 p-4">
             <button className="text-primary font-bold">For You</button>
             <button className="text-primary font-bold">Following</button>

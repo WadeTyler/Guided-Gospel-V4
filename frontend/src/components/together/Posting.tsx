@@ -1,5 +1,5 @@
 import { IconMessageDots, IconX } from '@tabler/icons-react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { SetStateAction, useState } from 'react'
 import toast from 'react-hot-toast';
 import Loading from '../Loading';
