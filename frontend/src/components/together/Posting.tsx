@@ -1,5 +1,5 @@
 import { IconMessageDots, IconX } from '@tabler/icons-react'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { SetStateAction, useState } from 'react'
 import toast from 'react-hot-toast';
 import Loading from '../Loading';
@@ -7,6 +7,8 @@ import Loading from '../Loading';
 const Posting = ({setIsPosting}: {setIsPosting:React.Dispatch<SetStateAction<Boolean>>} ) => {
 
   const queryClient = useQueryClient();
+
+  const { data:posts } = useQuery<Post[]>({ queryKey: ['posts'] });
 
   const [postContent, setPostContent] = useState<string>('');
 
@@ -35,6 +37,7 @@ const Posting = ({setIsPosting}: {setIsPosting:React.Dispatch<SetStateAction<Boo
       toast.success("Post Created");
       setPostContent('');
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['userPosts']});
       setIsPosting(false);
     },
     onError: (error: Error) => {

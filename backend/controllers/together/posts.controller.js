@@ -1,5 +1,6 @@
 
 const db = require("../../db/db");
+const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -15,6 +16,23 @@ const getAllPosts = async (req, res) => {
   }
 }
 
+const getUserPosts = async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    const query = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid WHERE user.username = ? ORDER BY timestamp DESC';
+
+    const [posts] = await db.query(query, [username]);
+
+    return res.status(200).json(posts);
+
+  } catch (error) {
+    console.error("Error in getUsersPosts controller", error);
+    res.status(500).json({ error: "Internal Server Error" });
+    
+  }
+}
+
 const createPost = async (req, res) => {
   try {
     const userid = req.cookies.userid;
@@ -24,8 +42,10 @@ const createPost = async (req, res) => {
       return res.status(400).json({ error: "Content is required" });
     }
 
-    const query = 'INSERT INTO together_posts (userid, content) VALUES (?, ?)';
-    const [result] = await db.execute(query, [userid, content]);
+    const timestamp = getTimestampInSQLFormat();
+
+    const query = 'INSERT INTO together_posts (userid, content, timestamp) VALUES (?, ?, ?)';
+    const [result] = await db.execute(query, [userid, content, timestamp]);
 
     const postid = result.insertId
     const selectPostQuery = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
@@ -72,8 +92,10 @@ const likeUnlikePost = async (req, res) => {
 
     // Add Like
 
-    const likeQuery = 'INSERT INTO together_likes (userid, postid) VALUES (?, ?)';
-    await db.execute(likeQuery, [userid, postid]);
+    const timestamp = getTimestampInSQLFormat();
+
+    const likeQuery = 'INSERT INTO together_likes (userid, postid, timestamp) VALUES (?, ?, ?)';
+    await db.execute(likeQuery, [userid, postid, timestamp]);
 
     const addLikeQuery = 'UPDATE together_posts SET likes = likes + 1 WHERE postid = ?';
     await db.execute(addLikeQuery, [postid]);
@@ -110,8 +132,10 @@ const addComment = async (req, res) => {
       return res.status(400).json({ error: "Content is required" });
     }
 
-    const commentQuery = 'INSERT INTO together_comments (postid, userid, content) VALUES (?, ?, ?)';
-    await db.execute(commentQuery, [postid, userid, content]);
+    const timestamp = getTimestampInSQLFormat();
+
+    const commentQuery = 'INSERT INTO together_comments (postid, userid, content, timestamp) VALUES (?, ?, ?, ?)';
+    await db.execute(commentQuery, [postid, userid, content, timestamp]);
 
     // Update post counter
     const updatePostQuery = 'UPDATE together_posts SET comments = comments + 1 WHERE postid = ?';
@@ -147,5 +171,6 @@ module.exports = {
   likeUnlikePost,
   getUserLikes,
   addComment,
-  getComments
+  getComments,
+  getUserPosts
 }

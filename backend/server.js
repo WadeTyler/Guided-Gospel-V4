@@ -18,6 +18,7 @@ const feedbackRoutes = require('./routes/feedback.routes');
 const bibleRoutes = require('./routes/bible/bible.routes');
 const adminRoutes = require('./routes/admin.routes');
 const postsRoutes = require('./routes/together/posts.routes');
+const followsRoutes = require('./routes/together/follows.routes');
 
 require('dotenv').config();
 
@@ -38,6 +39,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/bible", bibleRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/together/posts", postsRoutes);
+app.use("/api/together/follows", followsRoutes);
 
 const staticPath = path.join(__dirname, "../frontend/dist");
 if (process.env.NODE_ENV === "production") {

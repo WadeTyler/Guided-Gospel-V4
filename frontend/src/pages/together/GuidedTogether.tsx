@@ -1,15 +1,19 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import Header from "../components/together/Header"
+import Header from "../../components/together/Header"
 import toast from "react-hot-toast"
-import Loading from "../components/Loading";
-import Post from "../components/together/Post";
-import { useEffect } from "react";
+import Loading from "../../components/Loading";
+import Post from "../../components/together/Post";
+import { useEffect, useState } from "react";
 
 const GuidedTogether = () => {
 
   const queryClient = useQueryClient();
 
+  // Can be either 'For You' or 'Following'
+  const [type, setType] = useState<string>("For You");
+
+  // Retreive posts from the server
   const { data:posts, isLoading:isLoadingPosts, isError } = useQuery<Post>({
     queryKey: ['posts'],
     queryFn: async () => {
@@ -33,6 +37,7 @@ const GuidedTogether = () => {
     }
   });
 
+  // Retreive liked posts from the server
   const { data:likedPosts } = useQuery<Like[]>({
     queryKey: ['likedPosts'],
     queryFn: async () => {
@@ -56,9 +61,12 @@ const GuidedTogether = () => {
     }
   });
 
+
+
   useEffect(() => {
     // Refresh liked posts when the posts are changed
     queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
+    console.log(posts);
   }, [posts])
 
   return (
@@ -75,10 +83,18 @@ const GuidedTogether = () => {
 
 
         {/* Posts section */}
-        <div className="w-[40rem] flex flex-col gap-4 h-full items-center ">
-          <header className="flex justify-center items-center gap-16 fixed w-full bg-white dark:bg-darkbg z-10 p-4">
-            <button className="text-primary font-bold">For You</button>
-            <button className="text-primary font-bold">Following</button>
+        <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
+          <header className="flex justify-center items-center gap-16 fixed w-full bg-white dark:bg-darkbg z-10">
+            <button 
+            onClick={() => setType('For You')}
+            className={`text-primary p-2 flex items-center justify-center ${type === 'For You' ? 'border-b-2 border-b-primary' : ''}`}>
+              <p className="">For You</p>
+            </button>
+            <button 
+            onClick={() => setType('Following')}
+            className={`text-primary p-2 flex items-center justify-center ${type === 'Following' ? 'border-b-2 border-b-primary' : ''}`}>
+              <p className="">Following</p>
+            </button>
           </header>
 
           {/* Posts */}

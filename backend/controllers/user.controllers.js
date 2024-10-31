@@ -439,6 +439,18 @@ const isValidRecoveryToken = async (req, res) => {
   }
 }
 
+const getUserProfile = async (req, res) => {
+  try {
+    const username = req.params.username;
+    const [userData] = await db.query('SELECT username, followers, following, bio, createdat FROM user WHERE username = ?', [username]);
+
+    res.status(200).json(userData[0]);
+  } catch (error) {
+    console.log("Error in getUserProfile controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+    
+  }
+}
 
 module.exports = {
   completeSignUp,
@@ -450,5 +462,6 @@ module.exports = {
   deleteUser,
   submitForgotPassword,
   resetPassword,
-  isValidRecoveryToken
+  isValidRecoveryToken,
+  getUserProfile
 }

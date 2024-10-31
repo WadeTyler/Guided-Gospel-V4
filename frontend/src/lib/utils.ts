@@ -20,83 +20,33 @@ export const formatTimestamp = (timestamp: string) => {
   return date.toLocaleString('en-US', options);
 };
 
-export const formatTimestampToDifference = (timestamp: string) => {
+export const formatTimestampToDifference = (timestamp: string): string => {
   if (!timestamp) return '';
+
   const date = new Date(timestamp);
+  const currentDate = new Date();
+  const yearDifference = currentDate.getFullYear() - date.getFullYear();
+  
+  if (yearDifference > 0) return `${yearDifference} ${yearDifference > 1 ? 'years' : 'year'} ago`;
 
-  if (date < new Date(new Date().setDate(new Date().getDate() - 365))) {
-    return 'over a year ago';
-  }
-  if (date < new Date(new Date().setDate(new Date().getDate() - 182))) {
-    return 'over 6 months ago';
-  }
+  const monthDifference = currentDate.getMonth() - date.getMonth();
+  if (monthDifference > 0) return `${monthDifference} ${monthDifference > 1 ? 'months' : 'month'} ago`;
 
-  if (date < new Date(new Date().setDate(new Date().getDate() - 152))) {
-    return 'over 5 months ago';
-  }
+  const dayDifference = currentDate.getDate() - date.getDate();
+  if (dayDifference > 0) return `${dayDifference} ${dayDifference > 1 ? 'days' : 'day'} ago`;
 
-  if (date < new Date(new Date().setDate(new Date().getDate() - 121))) {
-    return 'over 4 months ago';
-  }
+  const hourDifference = currentDate.getHours() - date.getHours();
+  if (hourDifference > 0) return `${hourDifference} ${hourDifference > 1 ? 'hours' : 'hour'} ago`;
 
-  if (date < new Date(new Date().setDate(new Date().getDate() - 91))) {
-    return 'over 3 months ago';
-  }
+  const minuteDifference = currentDate.getMinutes() - date.getMinutes();
+  if (minuteDifference > 0) return `${minuteDifference} ${minuteDifference > 1 ? 'minutes' : 'minute'} ago`;
 
-  if (date < new Date(new Date().setDate(new Date().getDate() - 60))) {
-    return 'over 2 months ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 30))) {
-    return 'over 1 month ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 14))) {
-    return 'over 2 weeks ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 7))) {
-    return 'over 7 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 6))) {
-    return '6 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 5))) {
-    return '5 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 4))) {
-    return '4 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 3))) {
-    return '3 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 2))) {
-    return '2 days ago';
-  }
-
-  if (date < new Date(new Date().setDate(new Date().getDate() - 1))) {
-    return '1 days ago';
-  }
-
-  const hoursDifference = new Date().getHours() - date.getHours();
-
-  if (hoursDifference > 1) {
-    return `${hoursDifference} hours ago`;
-  }
-
-  const minutesDifference = new Date().getMinutes() - date.getMinutes();
-
-  if (minutesDifference > 1) {
-    return `${minutesDifference} minutes ago`;
-  }
-
+  const secondDifference = currentDate.getSeconds() - date.getSeconds();
+  if (secondDifference > 10) return `${secondDifference} ${secondDifference > 1 ? 'seconds' : 'second'} ago`;
+  
   return 'Just now';
-}
+};
+
 
 export const convertToDateUSFormat = (timestamp:string) => {
   const date = new Date(timestamp);

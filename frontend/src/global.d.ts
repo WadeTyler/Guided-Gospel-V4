@@ -3,6 +3,7 @@ export {};
 declare global{
   interface User  {
     userid: string;
+    username: string;
     firstname: string;
     lastname: string;
     email: string;
@@ -13,6 +14,9 @@ declare global{
     createdat: string;
     lastactive: string;
     suspended: boolean;
+    bio: string;
+    followers: number;
+    following: number;
   }
 
   interface Post {
@@ -39,6 +43,13 @@ declare global{
     userid: string;
     timestamp: string;
     content: string;
+  }
+
+  interface Follow {
+    followid: string;
+    followerid: string;
+    followingid: string;
+    timestamp: string;
   }
 }
 

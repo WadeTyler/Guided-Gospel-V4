@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/user.controllers');
 const protectedRoute = require('../middleware/protectedRoute');
+const { checkUsernameExistsParam } = require('../middleware/checkUsernameExists');
 
 router.get("/", protectedRoute, userController.getMe);
 router.post("/signup", userController.signUp);
@@ -13,5 +14,6 @@ router.post("/forgotpassword/submit", userController.submitForgotPassword);
 router.post("/resetpassword", userController.resetPassword);
 router.get("/validrecoverytoken/:recoveryToken", userController.isValidRecoveryToken);
 router.delete("/", protectedRoute, userController.deleteUser);
+router.get("/:username", protectedRoute, checkUsernameExistsParam, userController.getUserProfile);
 
 module.exports = router;
