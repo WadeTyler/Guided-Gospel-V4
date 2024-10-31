@@ -1,3 +1,4 @@
+import { UseQueryResult } from "@tanstack/react-query";
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -18,6 +19,84 @@ export const formatTimestamp = (timestamp: string) => {
 
   return date.toLocaleString('en-US', options);
 };
+
+export const formatTimestampToDifference = (timestamp: string) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 365))) {
+    return 'over a year ago';
+  }
+  if (date < new Date(new Date().setDate(new Date().getDate() - 182))) {
+    return 'over 6 months ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 152))) {
+    return 'over 5 months ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 121))) {
+    return 'over 4 months ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 91))) {
+    return 'over 3 months ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 60))) {
+    return 'over 2 months ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 30))) {
+    return 'over 1 month ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 14))) {
+    return 'over 2 weeks ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 7))) {
+    return 'over 7 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 6))) {
+    return '6 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 5))) {
+    return '5 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 4))) {
+    return '4 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 3))) {
+    return '3 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 2))) {
+    return '2 days ago';
+  }
+
+  if (date < new Date(new Date().setDate(new Date().getDate() - 1))) {
+    return '1 days ago';
+  }
+
+  const hoursDifference = new Date().getHours() - date.getHours();
+
+  if (hoursDifference > 1) {
+    return `${hoursDifference} hours ago`;
+  }
+
+  const minutesDifference = new Date().getMinutes() - date.getMinutes();
+
+  if (minutesDifference > 1) {
+    return `${minutesDifference} minutes ago`;
+  }
+
+  return 'Just now';
+}
 
 export const convertToDateUSFormat = (timestamp:string) => {
   const date = new Date(timestamp);
@@ -60,4 +139,29 @@ export const manageCacheLimit = (limit: number) => {
   if (keys.length > limit) {
       localStorage.removeItem(keys[0]); // Remove the oldest item
   }
+}
+
+// Binary Search algorithm to check if a post is liked by the user
+export const checkIfPostLikedByUser = (likedPosts: Like[], postid: number) => {
+
+  let left = 0;
+  let right = likedPosts.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (likedPosts[mid].postid === postid) {
+      return true;
+    }
+    
+    if (postid < likedPosts[mid].postid) {
+      right = mid - 1;
+    }
+
+    if (postid > likedPosts[mid].postid) {
+      left = mid + 1;
+    }
+  }
+
+  return false;
+
 }

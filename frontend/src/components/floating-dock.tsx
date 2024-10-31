@@ -25,6 +25,7 @@ import { IconSettingsFilled } from "@tabler/icons-react"
 import { IconLogout } from "@tabler/icons-react";
 import { IconSunMoon } from '@tabler/icons-react';
 import { IconShieldLockFilled } from '@tabler/icons-react';
+import { IconFriends } from '@tabler/icons-react';
 
 
 export const Navbar = () => {
@@ -62,6 +63,7 @@ const toggleDarkMode = () => {
       setItems([
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
         { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
+        { title: "Guided Together", icon: <IconFriends className="text-primary" />, href: "/together" },
         { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
         { title: "Change Theme", icon: <IconSunMoon className="text-primary" />, href: "#", func: toggleDarkMode,
         },
@@ -72,6 +74,7 @@ const toggleDarkMode = () => {
       setItems([
         { title: "Home", icon: <IconHomeFilled className="text-primary" />, href: "/" },
         { title: "Guided Chat", icon: <IconMessageCircleFilled className="text-primary" />, href: "/chat" },
+        { title: "Guided Together", icon: <IconFriends className="text-primary" />, href: "/together" },
         { title: "Bible", icon: <IconBible className="text-primary" />, href: "/bible" },
         { title: "Change Theme", icon: <IconSunMoon className="text-primary" />, href: "#", func: toggleDarkMode,
         },

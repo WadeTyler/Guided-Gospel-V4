@@ -23,6 +23,7 @@ import CompleteSignup from './pages/CompleteSignup';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminUserPage from './pages/admin/AdminUserPage';
+import GuidedTogether from './pages/GuidedTogether';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -126,6 +127,9 @@ export default function App() {
           <Route path="/admin" element={ authAdmin ? <AdminDashboard /> : <Navigate to="/login" /> } />
           <Route path="/admin/users" element={ authAdmin ? <AdminUsers /> : <Navigate to="/login" /> } />
           <Route path="/admin/users/:userid" element={ authAdmin ? <AdminUserPage /> : <Navigate to="/login" /> } />
+
+          {/* Guided Together */}
+          <Route path="/together" element={ authUser ? <GuidedTogether /> : <Navigate to="/login" /> } />
 
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
