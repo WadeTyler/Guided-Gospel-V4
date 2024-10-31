@@ -100,6 +100,30 @@ const getUserLikes = async (req, res) => {
   }
 }
 
+const addComment = async (req, res) => {
+  try {
+    const userid = req.cookies.userid;
+    const postid = req.params.postid;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: "Content is required" });
+    }
+
+    const commentQuery = 'INSERT INTO together_comments (postid, userid, content) VALUES (?, ?, ?)';
+    await db.execute(commentQuery, [postid, userid, content]);
+
+    const getComment = 'SELECT * FROM together_comments WHERE postid = ? AND userid = ? AND content = ?';
+    const [comment] = await db.query(getComment, [postid, userid, content]);
+
+    res.status(201).json(comment[0]);
+  } catch (error) {
+    console.error("Error in addComment controller", error);
+    res.status(500).json({ error: "Internal Server Error" });
+    
+  }
+}
+
 
 module.exports = {
   getAllPosts,
