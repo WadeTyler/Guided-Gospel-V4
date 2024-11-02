@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { SetStateAction, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { SetStateAction, useState } from 'react'
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
 
@@ -88,11 +88,10 @@ const Signup = () => {
 const EmailSent = ({setSignupEmailSent, firstname, lastname, email, password} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>, firstname: string; lastname: string; email: string; password: string;}) => {
   
   const queryClient = useQueryClient();
-  const { data:authUser } = useQuery({ queryKey: ['authUser'] });
 
   const [verificationToken, setVerificationToken] = useState<string>('');
 
-  const { mutate:completeSignup, isPending } = useMutation({
+  const { mutate:completeSignup } = useMutation({
     mutationFn: async ({verificationToken, firstname, lastname, email, password}: { verificationToken: string; firstname: string; lastname: string; email: string; password: string; }) => {
       try {
         const response = await fetch('/api/user/completesignup', {
