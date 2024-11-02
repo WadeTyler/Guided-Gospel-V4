@@ -9,7 +9,7 @@ const passwordRecovery = (recoveryToken) => {
   <p>You have requested a password recovery.</p>
   <p>Please click the link below to reset your password.</p>
   <br/>
-  <a href="${link}">Reset Password</a>
+  <p>Your Recovery Code is: <strong style="color: #f59e0b;">${recoveryToken}</strong></p>
   <br/>
   <p>If you did not request this recovery, please ignore this email.</p>
   <p>Thank you for using <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none;">Guided Gospel</a>.</p>

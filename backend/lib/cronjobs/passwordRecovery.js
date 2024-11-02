@@ -13,9 +13,14 @@ const removeToken = (token, milliseconds) => {
 
   const now = new Date();
   
-  const cronMinutes = now.getMinutes() + minutes;
-  const cronHours = now.getHours() + hours;
-
+  var cronHours = now.getHours() + hours;
+  
+  var cronMinutes = now.getMinutes() + minutes;
+  if (cronMinutes >= 60) {
+    cronMinutes -= 60;
+    cronHours++;
+  }
+  
   // minute hour day_of_month month day_of_week
   const cronSchedule = `${cronMinutes} ${cronHours} * * *`;
   

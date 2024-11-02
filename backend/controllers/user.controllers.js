@@ -341,7 +341,6 @@ const submitForgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Please wait before submitting another request" });
     }
 
-
     const { email } = req.body || {};
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -352,8 +351,6 @@ const submitForgotPassword = async (req, res) => {
     if (!emailExists) {
       return res.status(400).json({ message: "No account exists with the provided email." });
     }
-
-    
 
     // Add spam cookie
     const spamToken = await generateToken(email);
@@ -366,10 +363,16 @@ const submitForgotPassword = async (req, res) => {
     });
 
     // Add recovery token to database
-    const recoveryToken = await generateToken(email + email);
+
+    // Create recovery token
+    var recoveryToken = '';
+    for (let i = 0; i < 6; i++) {
+      recoveryToken += Math.floor(Math.random() * 10);
+    }
+
     await db.query('INSERT INTO RequestedRecovery (recoveryToken, email) VALUES (?, ?)', [recoveryToken, email]);
 
-    passwordRecoveryCron.removeToken(recoveryToken, 600000);
+    passwordRecoveryCron.removeToken(recoveryToken, 300000);
 
     sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
 
@@ -383,35 +386,37 @@ const submitForgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { recoveryToken, newPassword, confirmNewPassword } = req.body || {};
+    const { recoveryToken, newPassword } = req.body || {};
+
     if (!recoveryToken) {
       return res.status(400).json({ message: "Recovery token is required" });
     }
 
-    if (!newPassword || !confirmNewPassword) {
-      return res.status(400).json({ message: "New password and confirm new password are required" });
+    // Check if recovery token is correct
+    const [recoveryData] = await db.query('SELECT * FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+
+    if (!recoveryData || recoveryData.length === 0) {
+      return res.status(400).json({ message: "Invalid recovery token. Please submit another password reset request." });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password is required" });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
-    if (newPassword !== confirmNewPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const [emails] = await db.query('SELECT email FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+    const email = recoveryData[0].email;
 
-    if (!emails || emails.length === 0) {
-      return res.status(400).json({ message: "This session has expired. Please submit another password reset request." });
-    }
-
-    const email = emails[0].email;
-
+    // Update password in database
     await db.query('UPDATE user SET password = ? WHERE email = ?', [hashedPassword, email]);
 
+
+    // Remove recovery token from database
+    await db.execute('DELETE FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
 
     return res.status(200).json({ message: "Password reset successfully" });
 

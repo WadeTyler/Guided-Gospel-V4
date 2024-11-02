@@ -18,8 +18,6 @@ import Feedback from './pages/Feedback';
 import Bible from './pages/Bible';
 import Rates from './pages/Rates';
 import ForgotPassword from './pages/ForgotPassword';
-import UpdatePassword from './pages/UpdatePassword';
-import CompleteSignup from './pages/CompleteSignup';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminUserPage from './pages/admin/AdminUserPage';
@@ -110,8 +108,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={ authUser ? <Navigate to="/chat" /> : <Login />} />
           <Route path="/signup" element={ authUser ? <Navigate to="/chat" /> : <Signup />} />
-          <Route path="/completesignup/:verificationToken" element={ authUser ? <Navigate to="/chat" /> : <CompleteSignup />} />
           <Route path="/logout" element={ authUser ? <Logout /> : <Navigate to="/" /> } />
+          <Route path="/forgotpassword" element={ <ForgotPassword /> } />
           <Route path="/chat" element={ authUser ? <Chat /> : <Navigate to="/login" /> } />
           <Route path="/settings" element={ authUser ? <Settings /> : <Navigate to="/login" /> } />
           <Route path="/feedback" element={ <Feedback /> } />
@@ -119,8 +117,6 @@ export default function App() {
           <Route path="/bible" element={ <Bible /> } />
           <Route path="/rates" element={ <Rates /> } />
 
-          <Route path="/forgotpassword" element={ <ForgotPassword /> } />
-          <Route path="/updatepassword/:recoveryToken" element={ <UpdatePassword /> } />
 
           {/* Admin Routes */}
           <Route path="/admin" element={ authAdmin ? <AdminDashboard /> : <Navigate to="/login" /> } />
