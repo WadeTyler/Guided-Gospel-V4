@@ -2,7 +2,7 @@
 
 const passwordRecovery = (recoveryToken) => {
 
-  const link = `http://localhost:3000/updatepassword/${recoveryToken}`;
+  const link = `http://guidedgospel.net/updatepassword/${recoveryToken}`;
 
   const message = `
   <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none; font-size: 2rem; font-weight: bold">Guided Gospel</a>
@@ -21,7 +21,7 @@ const passwordRecovery = (recoveryToken) => {
 }
 
 const emailVerification = (verificationToken) => {
-  const link = `http://localhost:3000/completesignup/${verificationToken}`;
+  const link = `http://guidedgospel.net/completesignup/${verificationToken}`;
   const message = `
   <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none; font-size: 2rem; font-weight: bold">Guided Gospel</a>
   <p>Please click the link below to complete your account registration.</p>
