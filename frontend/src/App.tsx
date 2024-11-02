@@ -5,7 +5,7 @@
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Pages
 import Home from './pages/Home';
@@ -90,6 +90,54 @@ export default function App() {
       }
     },
     retry: false
+  });
+
+   // Retreive liked posts from the server
+   const { data:likedPosts } = useQuery<Like[]>({
+    queryKey: ['likedPosts'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/together/posts/likes', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
+      }
+    }
+  });
+
+  // Retreive the user's following list
+  const { data:followingList } = useQuery({
+    queryKey: ['followingList'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/together/follows/following', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          } 
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
+        
+      }
+    }
   });
 
   useEffect(() => {

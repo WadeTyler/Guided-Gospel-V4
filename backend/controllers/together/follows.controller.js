@@ -28,12 +28,19 @@ const followUnfollowUser = async (req, res) => {
       const followQuery = 'INSERT INTO together_follows (followerid, followingid, timestamp) VALUES (?, ?, ?)';
       const timestamp = getTimestampInSQLFormat();
       await db.execute(followQuery, [userid, targetUserID, timestamp]);
+
+      await db.execute('UPDATE user SET following = following + 1 WHERE userid = ?', [userid]);
+      await db.execute('UPDATE user SET followers = followers + 1 WHERE userid = ?', [targetUserID]);
+
       return res.status(200).json({ message: "Followed" });
     }
 
     // Unfollow
     const unfollowQuery = 'DELETE FROM together_follows WHERE followerid = ? AND followingid = ?';
     await db.execute(unfollowQuery, [userid, targetUserID]);
+
+    await db.execute('UPDATE user SET following = following - 1 WHERE userid = ?', [userid]);
+    await db.execute('UPDATE user SET followers = followers - 1 WHERE userid = ?', [targetUserID]);
     
     return res.status(200).json({ message: "User Unfollowed" });
   
@@ -49,10 +56,10 @@ const getFollowing = async (req, res) => {
   try {
     const userid = req.cookies.userid;
 
-    const query = 'SELECT * FROM together_follows WHERE followerid = ?';
+    const query = 'SELECT followingid FROM together_follows WHERE followerid = ?';
     const [following] = await db.query(query, [userid]);
 
-    return res.status(200).json({ following });
+    return res.status(200).json(following);
   } catch (error) {
     console.error("Error in getFollowing controller", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -65,10 +72,10 @@ const getFollowers = async (req, res) => {
   try {
     const userid = req.cookies.userid;
 
-    const query = 'SELECT * FROM together_follows WHERE followingid = ?';
-    const [following] = await db.query(query, [userid]);
+    const query = 'SELECT followerid FROM together_follows WHERE followingid = ?';
+    const [followers] = await db.query(query, [userid]);
 
-    return res.status(200).json({ following });
+    return res.status(200).json(followers);
   } catch (error) {
     console.error("Error in getFollowing controller", error);
     res.status(500).json({ message: "Internal Server Error" });

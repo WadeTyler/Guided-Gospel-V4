@@ -45,11 +45,8 @@ declare global{
     content: string;
   }
 
-  interface Follow {
-    followid: string;
-    followerid: string;
+  interface Following {
     followingid: string;
-    timestamp: string;
   }
 }
 

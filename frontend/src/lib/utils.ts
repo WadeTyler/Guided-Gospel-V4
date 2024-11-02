@@ -115,3 +115,12 @@ export const checkIfPostLikedByUser = (likedPosts: Like[], postid: number) => {
   return false;
 
 }
+
+export const checkIfFollowingTarget = (followingList: Following[], targetid: string) => {
+  const exists = followingList.some(item => {
+    console.log(`Check if ${item.followingid} is equal to target ${targetid}`);  
+    return item.followingid === targetid;
+  });
+
+  return exists;
+}

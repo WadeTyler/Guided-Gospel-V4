@@ -10,6 +10,11 @@ const GuidedTogether = () => {
 
   const queryClient = useQueryClient();
 
+  // AuthUser
+  const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
+  const { data:followingList } = useQuery<Following[]>({ queryKey: ['followingList'] });
+  const { data:likedPosts } = useQuery<Like[]>({ queryKey: ['likedPosts'] });
+
   // Can be either 'For You' or 'Following'
   const [type, setType] = useState<string>("For You");
 
@@ -37,37 +42,23 @@ const GuidedTogether = () => {
     }
   });
 
-  // Retreive liked posts from the server
-  const { data:likedPosts } = useQuery<Like[]>({
-    queryKey: ['likedPosts'],
-    queryFn: async () => {
-      try {
-        const response = await fetch('/api/together/posts/likes', {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          }
-        });
+ 
 
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || "Something went wrong");
-        }
-
-        return data;
-      } catch (error) {
-        toast.error((error as Error).message || "Something went wrong");
-      }
-    }
-  });
-
-
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
+    queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
+    queryClient.invalidateQueries({ queryKey: ['followingList'] });
+    
+  }, [authUser]);
 
   useEffect(() => {
     // Refresh liked posts when the posts are changed
     queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
-    console.log(posts);
   }, [posts])
+
+  useEffect(() => {
+    console.log(followingList);
+  }, [authUser, followingList])
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-white dark:bg-darkbg relative">

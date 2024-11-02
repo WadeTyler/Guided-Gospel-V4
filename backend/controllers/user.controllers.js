@@ -442,7 +442,7 @@ const isValidRecoveryToken = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const username = req.params.username;
-    const [userData] = await db.query('SELECT username, followers, following, bio, createdat FROM user WHERE username = ?', [username]);
+    const [userData] = await db.query('SELECT userid, username, followers, following, bio, createdat FROM user WHERE username = ?', [username]);
 
     res.status(200).json(userData[0]);
   } catch (error) {

@@ -1,13 +1,12 @@
 
 import { useEffect, useState } from 'react';
 import Header from '../../components/together/Header'
-import { IconUserPlus, IconMessages } from '@tabler/icons-react'
+import { IconUserPlus, IconMessages, IconFriendsOff } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { formatTimestampToDifference } from '../../lib/utils';
-import { checkIfUserFollows } from '../../lib/utils';
+import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
 
 
 
@@ -15,9 +14,12 @@ const UserProfile = () => {
 
   const queryClient = useQueryClient();
   const username = useParams<{username:string}>().username;
-  
-  const { data:followingList } = useQuery<Follow[]>({ queryKey: ['followingList'] });
+
+  const [followingTarget, setFollowingTarget] = useState<boolean>(false);
+  const [isSelf, setIsSelf] = useState<boolean>(false);
+
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
+  const { data:followingList } = useQuery<Following[]>({ queryKey: ['followingList'] });
 
   const { data:targetUser } = useQuery<User>({
     queryKey: ['targetUser'],
@@ -42,8 +44,8 @@ const UserProfile = () => {
     }
   });
   
-  const { data:userPosts } = useQuery<Post[]>({
-    queryKey: ['userPosts'],
+  const { data:targetPosts } = useQuery<Post[]>({
+    queryKey: ['targetPosts'],
     queryFn: async () => {
       try {
         const response = await fetch(`/api/together/posts/users/${username}`, {
@@ -86,18 +88,54 @@ const UserProfile = () => {
       }
     },
     onSuccess: () => {
-      toast.success(`You are now following/unfollowing ${username}`);
-      queryClient.invalidateQueries({ queryKey: ['targetUser'] });
+
+      // Update the following List
+      if (followingTarget) {
+        setFollowingTarget(false);
+        followingList?.splice(followingList?.findIndex((following) => following.followingid === targetUser?.userid), 1);
+        if (targetUser) {
+          targetUser.followers -= 1;
+        }
+      }
+      else {
+        setFollowingTarget(true);
+        if (targetUser) {
+          followingList?.push({ followingid: targetUser.userid });
+          targetUser.followers += 1;
+        }
+      }
+
     },
     onError: (error) => {
       toast.error((error as Error).message || "Something went wrong");
     }
   });
 
+  // Invalidate the query when the username changes
   useEffect(() => {
+    
     queryClient.invalidateQueries({ queryKey: ['targetUser'] });
-    queryClient.invalidateQueries({ queryKey: ['userPosts'] });
-  }, [username])
+    queryClient.invalidateQueries({ queryKey: ['targetPosts'] });
+
+    // Check if is self
+    if (authUser && username === authUser?.username) {
+      setIsSelf(true);
+    } else {
+      setIsSelf(false);
+    }
+
+  }, [username]);
+
+  // Check if the user is following the target user
+  useEffect(() => {
+    if (followingList && targetUser) {
+      setFollowingTarget(checkIfFollowingTarget(followingList, targetUser.userid));
+    }
+
+    console.log(targetUser);
+
+    console.log(followingList);
+  }, [targetUser, followingList]);
   
 
   return (
@@ -124,8 +162,13 @@ const UserProfile = () => {
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
                   <section className="action-btns flex items-center justify-center gap-8 text-primary">
-                    <button className="flex gap-2"><IconMessages /> Message</button>
-                    <button onClick={() => followUser()} className="flex gap-2"><IconUserPlus /> Follow</button>
+                    <button className="flex gap-2">
+                      {!isSelf && <span className='flex gap-2'><IconMessages /> Message</span>}
+                    </button>
+                    <button onClick={() => followUser()}>
+                      {!followingTarget && !isSelf && <span className='flex gap-2'> <IconUserPlus /> Follow</span>}
+                      {followingTarget && !isSelf && <span className='flex gap-2'> <IconFriendsOff /> Unfollow</span>}   
+                    </button>
                   </section>
                 </div>
                 <section className="flex gap-2">
@@ -143,7 +186,7 @@ const UserProfile = () => {
           {/* User Posts */}
           <div className="flex flex-col gap-4 mt-4">
             <p className="text-primary text-2xl">User's Posts</p>
-            {userPosts?.map((post) => (
+            {targetPosts?.map((post) => (
               <Post key={post.postid} post={post} />
             ))}
           </div>
