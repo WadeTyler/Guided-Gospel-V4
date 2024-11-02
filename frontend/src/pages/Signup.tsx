@@ -1,10 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
-import { SetStateAction, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { SetStateAction, useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
 
 const Signup = () => {
+
   const [signupEmailSent, setSignupEmailSent] = useState<boolean>(false);
 
   const [firstname, setFirstname] = useState<string>('');
@@ -50,7 +51,7 @@ const Signup = () => {
       
       <div className="form-container">
         <h1 className="text-primary text-5xl font-bold w-full md:text-start text-center">{signupEmailSent ? "Check Your Email" : "Signup"}</h1>
-        {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} />}
+        {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} firstname={firstname} lastname={lastname} email={email} password={password} />}
         {!signupEmailSent &&
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
             e.preventDefault();
@@ -84,13 +85,66 @@ const Signup = () => {
   )
 }
 
-const EmailSent = ({setSignupEmailSent} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>}) => {
+const EmailSent = ({setSignupEmailSent, firstname, lastname, email, password} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>, firstname: string; lastname: string; email: string; password: string;}) => {
+  
+  const queryClient = useQueryClient();
+  const { data:authUser } = useQuery({ queryKey: ['authUser'] });
+
+  const [verificationToken, setVerificationToken] = useState<string>('');
+
+  const { mutate:completeSignup, isPending } = useMutation({
+    mutationFn: async ({verificationToken, firstname, lastname, email, password}: { verificationToken: string; firstname: string; lastname: string; email: string; password: string; }) => {
+      try {
+        const response = await fetch('/api/user/completesignup', {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ verificationToken, firstname, lastname, email, password })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Signup Complete. Welcome to Guided Gospel!");
+      queryClient.invalidateQueries({ queryKey: ['authUser'] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    }
+  })
+
+  const handleSubmit = async () => {
+    completeSignup({verificationToken, firstname, lastname, email, password});
+  }
+
+
   return (
     <div className="flex flex-col gap-4">
-      <p className="dark:text-darktext md:text-start text-center">A verification email has been sent to your provided email. You must follow the steps in the email to complete your account registration.</p>
-      <p className="dark:text-darktext underline cursor-pointer md:text-start text-center" onClick={() => {
-        setSignupEmailSent(false);
-      }}>Didn't get an Email? Try Again</p>
+        <p className="dark:text-darktext md:text-start text-center">A verification email has been sent to your provided email. Please enter the verification code sent to your email:</p>
+
+        <form action="" className="flex flex-col gap-4" onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }
+          }>
+          <input type="text" className="form-input-bar" placeholder='Verification Code' onChange={(e) => setVerificationToken(e.target.value)} />
+          <button className="submit-btn">Complete Registration</button>
+        </form>
+
+
+
+        <p className="dark:text-darktext underline cursor-pointer md:text-start text-center" onClick={() => {
+          setSignupEmailSent(false);
+        }}>Didn't get an Email? Try Again</p>
     </div>
   )
 }

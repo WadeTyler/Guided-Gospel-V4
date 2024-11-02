@@ -26,7 +26,7 @@ const emailVerification = (verificationToken) => {
   <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none; font-size: 2rem; font-weight: bold">Guided Gospel</a>
   <p>Please click the link below to complete your account registration.</p>
   <br/>
-  <a href="${link}">Complete Registration</a>
+  <p>Your Verification Code is: <strong style="color: #f59e0b;">${verificationToken}</strong></p>
   <br/>
   <p>If you did not request this, please ignore this email.</p>
   <p>Thank you for using <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none;">Guided Gospel</a>.</p>

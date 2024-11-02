@@ -27,7 +27,7 @@ const removeToken = (token, milliseconds) => {
   
   const job = cron.schedule(cronSchedule, async () => {
     try {
-      const deleteQuery = 'DELETE FROM SignUpRequests WHERE verificationToken = ?';
+      const deleteQuery = 'DELETE FROM SignUpRequests WHERE signupid = ?';
       await db.query(deleteQuery, [token]);
 
       // Stop the job after execution
