@@ -14,6 +14,7 @@ const Settings = () => {
   const queryClient = useQueryClient();
 
   interface AuthUser {
+    username: string;
     firstname: string;
     lastname: string;
     age: string;
@@ -25,29 +26,27 @@ const Settings = () => {
   const { data:authUser } = useQuery<AuthUser>({queryKey: ['authUser']});
   
   const formData = {
+    username: authUser?.username || '',
     firstname: authUser?.firstname || '',
     lastname: authUser?.lastname || '',
     email: authUser?.email || '',
     age: authUser?.age || '',
     denomination: authUser?.denomination || '',
     currentPassword: '',
-    newPassword: ''
+    newPassword: '',
+    rates: authUser?.rates || 0
   }
 
   const [changingPassword, setChangingPassword] = useState<Boolean>(false);
 
   const { mutate:updateUser, isPending:isUpdating } = useMutation({
-    mutationFn: async (formData:{
-      firstname?:string;
-      lastname?:string;
-      email?:string;
-      age?:string;
-      denomination?:string;
-      currentPassword?:string;
-      newPassword?:string;
-    }) => {
+    mutationFn: async (formData:AuthUser) => {
       try {
         
+        if (!formData.username) {
+          throw new Error("Username is required");
+        }
+
         if (!formData.firstname) {
           throw new Error("First name is required");
         }
@@ -145,6 +144,7 @@ const Settings = () => {
         <p className="w-full md:text-end text-center dark:text-darktext">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 
         <form action="" className="w-full flex flex-col gap-4 justify-center items-center">
+          <input type="text" name="username" placeholder="Username" defaultValue={formData.username} onChange={(e) => formData.username = e.target.value} disabled={isUpdating} className="form-input-bar" />
           <div className="flex gap-4 w-full">
             <input type="text" name="firstname" placeholder="First Name" defaultValue={formData.firstname} onChange={(e) => formData.firstname = e.target.value} disabled={isUpdating} className="form-input-bar" />
             <input type="text" name="lastname" placeholder="Last Name" defaultValue={formData.lastname} onChange={(e) => formData.lastname = e.target.value} disabled={isUpdating} className="form-input-bar" />

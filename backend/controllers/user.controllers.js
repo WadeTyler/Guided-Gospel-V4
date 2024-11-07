@@ -10,22 +10,35 @@ const emailMessages = require('../lib/email/emailMessages');
 const sendEmail = require('../lib/email/sendEmail.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 const checkEmailFormat = require('../lib/utils/checkEmailFormat');
+const isUsernameTaken = require('../lib/username/isUsernameTaken');
 
 const defaultRates = 50;
 
 const completeSignUp = async (req, res) => {
   try {
-    const { verificationToken, firstname, lastname, email, password } = req.body || {};
+    const { verificationToken, username, firstname, lastname, email, password } = req.body || {};
     if (!verificationToken) {
       return res.status(400).json({ message: "Verification token is required" });
+    }
+
+    if (!username || !firstname || !lastname || !email || !password) {
+      console.log(username, firstname, lastname, email, password);
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     // Get User from SignUpRequests table
     const [users] = await db.query('SELECT * FROM SignUpRequests WHERE signupid = ?', [verificationToken]);
 
     if (!users || users.length === 0) {
-      return res.status(400).json({ message: "Invalid verification token" });
+      return res.status(400).json({ message: "Invalid verification token. Please try again." });
     }
+
+    // Check if username already exists
+    const usernameTaken = await isUsernameTaken(username);
+    if (usernameTaken) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
 
     // Check if email already exists
     if (await checkIfEmailExists(email)) {
@@ -34,12 +47,12 @@ const completeSignUp = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate userid
-    const userid = uuidv4();
+    // Generate userid using JWT
+    const userid = uuidv4() + generateToken(email + username);
 
     // Insert user into database
-    const query = 'INSERT INTO user (userid, firstname, lastname, email, age, denomination, password, rates, createdat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const values = [userid, firstname, lastname, email, null, null, hashedPassword, defaultRates, getTimestampInSQLFormat()];
+    const query = 'INSERT INTO user (userid, username, firstname, lastname, email, age, denomination, password, rates, createdat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const values = [userid, username, firstname, lastname, email, null, null, hashedPassword, defaultRates, getTimestampInSQLFormat()];
 
     await db.query(query, values);
 
@@ -53,6 +66,7 @@ const completeSignUp = async (req, res) => {
 
     const user = {
       userid,
+      username: username,
       firstname: firstname,
       lastname: lastname,
       email: email,
@@ -75,11 +89,15 @@ const completeSignUp = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const { firstname, lastname, email, password } = req.body || {};
+    const { username, firstname, lastname, email, password } = req.body || {};
 
     // Check if all fields are provided
-    if (!firstname || !lastname || !email || !password) {
+    if (!username || !firstname || !lastname || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (username.length < 3) {
+      return res.status(400).json({ message: "Username must be at least 3 characters" });
     }
 
     if (firstname.length < 2) {
@@ -88,6 +106,12 @@ const signUp = async (req, res) => {
 
     if (lastname.length < 2) {
       return res.status(400).json({ message: "Last name must be at least 2 characters" });
+    }
+
+    // Check if username already exists
+    const usernameTaken = await isUsernameTaken(username);
+    if (usernameTaken) {
+      return res.status(400).json({ message: "Username already taken" });
     }
 
     // Check if email already exists
@@ -207,10 +231,14 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const { firstname, lastname, email, age, denomination, currentPassword, newPassword } = req.body || {};
+    const { username, firstname, lastname, email, age, denomination, currentPassword, newPassword } = req.body || {};
 
-    if (!firstname && !lastname && !email && !age && !denomination) { 
+    if (!username && !firstname && !lastname && !email && !age && !denomination) { 
       return res.status(400).json({ message: "No fields to update" });
+    }
+
+    if (username && username.length < 3) {
+      return res.status(400).json({ message: "Username must be at least 3 characters" });
     }
 
     if (age && (age < 13 || age > 130)) {
@@ -263,9 +291,10 @@ const updateUser = async (req, res) => {
     }
 
     // Update user in database
-    const query = 'UPDATE user SET firstname = ?, lastname = ?, email = ?, age = ?, denomination = ?, password = ? WHERE userid = ?';
+    const query = 'UPDATE user SET username = ?, firstname = ?, lastname = ?, email = ?, age = ?, denomination = ?, password = ? WHERE userid = ?';
 
     const values = [
+      username || user.username,
       firstname || user.firstname,
       lastname || user.lastname,
       email || user.email,

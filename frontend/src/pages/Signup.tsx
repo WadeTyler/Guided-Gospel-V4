@@ -8,20 +8,21 @@ const Signup = () => {
 
   const [signupEmailSent, setSignupEmailSent] = useState<boolean>(false);
 
+  const [username, setUsername] = useState<string>('');
   const [firstname, setFirstname] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const {mutate:signupMutation, isPending} = useMutation({
-    mutationFn: async ({firstname, lastname, email, password}: {firstname: string; lastname: string; email: string; password: string}) => {
+    mutationFn: async ({username, firstname, lastname, email, password}: {username: string; firstname: string; lastname: string; email: string; password: string}) => {
       try {
         const response = await fetch('/api/user/signup', {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({firstname, lastname, email, password})
+          body: JSON.stringify({username, firstname, lastname, email, password})
         });
         const data = await response.json();
         if (!response.ok) {
@@ -43,7 +44,7 @@ const Signup = () => {
   })
 
   const handleSubmit = () => {
-    signupMutation({firstname, lastname, email, password});
+    signupMutation({username, firstname, lastname, email, password});
   }
   
   return (
@@ -51,12 +52,14 @@ const Signup = () => {
       
       <div className="form-container">
         <h1 className="text-primary text-5xl font-bold w-full md:text-start text-center">{signupEmailSent ? "Check Your Email" : "Signup"}</h1>
-        {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} firstname={firstname} lastname={lastname} email={email} password={password} />}
+        {signupEmailSent && <EmailSent setSignupEmailSent={setSignupEmailSent} username={username} firstname={firstname} lastname={lastname} email={email} password={password} />}
         {!signupEmailSent &&
           <form action="" className='w-full flex flex-col gap-4' onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}>
+            <input type="text" name="username" placeholder='Username' onChange={(e) => {setUsername(e.target.value)}}
+              className='form-input-bar' />
             <input type="text" name="firstname" placeholder='First Name' onChange={(e) => {setFirstname(e.target.value)}}
               className='form-input-bar' />
             <input type="text" name="lastname" placeholder='Last Name' onChange={(e) => {setLastname(e.target.value)}}
@@ -85,21 +88,21 @@ const Signup = () => {
   )
 }
 
-const EmailSent = ({setSignupEmailSent, firstname, lastname, email, password} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>, firstname: string; lastname: string; email: string; password: string;}) => {
+const EmailSent = ({setSignupEmailSent, username, firstname, lastname, email, password} : {setSignupEmailSent: React.Dispatch<SetStateAction<boolean>>, username: string; firstname: string; lastname: string; email: string; password: string;}) => {
   
   const queryClient = useQueryClient();
 
   const [verificationToken, setVerificationToken] = useState<string>('');
 
   const { mutate:completeSignup } = useMutation({
-    mutationFn: async ({verificationToken, firstname, lastname, email, password}: { verificationToken: string; firstname: string; lastname: string; email: string; password: string; }) => {
+    mutationFn: async ({verificationToken, username, firstname, lastname, email, password}: { verificationToken: string; username: string; firstname: string; lastname: string; email: string; password: string; }) => {
       try {
         const response = await fetch('/api/user/completesignup', {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ verificationToken, firstname, lastname, email, password })
+          body: JSON.stringify({ verificationToken, username, firstname, lastname, email, password })
         });
         const data = await response.json();
 
@@ -122,7 +125,7 @@ const EmailSent = ({setSignupEmailSent, firstname, lastname, email, password} : 
   })
 
   const handleSubmit = async () => {
-    completeSignup({verificationToken, firstname, lastname, email, password});
+    completeSignup({verificationToken, username, firstname, lastname, email, password});
   }
 
 
