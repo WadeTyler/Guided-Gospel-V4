@@ -16,24 +16,11 @@ const Sidebar = () => {
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
 
   return (
-    <div className="fixed flex flex-col p-4 bg-neutral-800 dark:bg-darkaccent w-48 min-h-screen left-0 top-0 gap-8 z-50">
-      {/* User Profile Section */}
-      {authUser && 
-        <section className="flex gap-4 text-white items-center justify-center">
-          <img src="/images/testimonials/David.png" alt="User Profile Image" className="w-12 h-12" />
-          <div className="flex flex-col">
-            <p className="font-bold">{authUser.username}</p>
-            <Link to={`/together/users/${authUser?.username}`} className="text-xs text-gray-200 hover:underline">View Profile</Link>
-          </div>
-        </section>
-      }
-      {/* Login Button */}
-      {!authUser &&
-        <Link to="/login" className="flex items-center justify-center text-primary font-bold">
-            <IconLogin />
-            <p>Login</p>
-        </Link>
-      }
+    <div className="fixed flex flex-col p-4 bg-neutral-800 dark:bg-darkaccent w-48 min-h-screen left-0 top-0 gap-8 z-50 shadow-[rgba(0,0,0)_0px_2px_8px]">
+
+      <h2 className="text-primary font-bold text-xl text-center mt-1 lg:mb-8 ">Guided Together</h2>
+
+      
 
 
       {/* Nav Section */}
@@ -55,6 +42,27 @@ const Sidebar = () => {
           <p>Groups</p>
         </Link>
       </section>
+
+
+
+
+      {/* User Profile Section */}
+      {authUser && 
+        <section className="flex gap-4 text-white items-center justify-center absolute bottom-5">
+          <img src="/images/testimonials/David.png" alt="User Profile Image" className="w-12 h-12" />
+          <div className="flex flex-col">
+            <p className="font-bold">{authUser.username}</p>
+            <Link to={`/together/users/${authUser?.username}`} className="text-xs text-gray-200 hover:underline">View Profile</Link>
+          </div>
+        </section>
+      }
+      {/* Login Button */}
+      {!authUser &&
+        <Link to="/login" className="flex items-center justify-center text-primary font-bold">
+            <IconLogin />
+            <p>Login</p>
+        </Link>
+      }
     </div>
   )
 }
