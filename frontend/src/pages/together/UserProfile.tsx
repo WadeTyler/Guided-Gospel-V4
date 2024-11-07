@@ -1,13 +1,12 @@
 
 import { useEffect, useState } from 'react';
-import Header from '../../components/together/Header'
 import { IconUserPlus, IconMessages, IconFriendsOff } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
-
+import Sidebar from '../../components/together/Sidebar';
 
 
 const UserProfile = () => {
@@ -140,7 +139,7 @@ const UserProfile = () => {
 
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
-      <Header />
+      <Sidebar />
 
       {/* Body Content */}
       <div className="w-[40rem] mt-20">

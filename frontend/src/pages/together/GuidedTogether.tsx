@@ -1,6 +1,6 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import Header from "../../components/together/Header"
+import Sidebar from "../../components/together/Sidebar"
 import toast from "react-hot-toast"
 import Loading from "../../components/Loading";
 import Post from "../../components/together/Post";
@@ -62,7 +62,7 @@ const GuidedTogether = () => {
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-white dark:bg-darkbg relative">
-      <Header />
+      <Sidebar />
 
       {/* Body Section 
         Body Section will contain a list of posts from users in the middle.
@@ -75,7 +75,7 @@ const GuidedTogether = () => {
 
         {/* Posts section */}
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
-          <header className="flex justify-center items-center gap-16 fixed w-full bg-white dark:bg-darkbg z-10">
+          <header className="flex justify-center items-center gap-16 fixed w-fit bg-white dark:bg-darkbg z-10">
             <button 
             onClick={() => setType('For You')}
             className={`text-primary p-2 flex items-center justify-center ${type === 'For You' ? 'border-b-2 border-b-primary' : ''}`}>
