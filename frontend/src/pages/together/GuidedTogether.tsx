@@ -69,13 +69,13 @@ const GuidedTogether = () => {
         A recommended users list on the right side.
       */}
 
-      <div className="flex justify-center items-center relative w-full h-full pt-20 pb-24">
+      <div className="flex justify-center items-center relative w-full h-full pb-24">
         <div className="w-[10rem]"></div>
 
 
         {/* Posts section */}
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
-          <header className="flex justify-center items-center gap-16 fixed w-fit bg-white dark:bg-darkbg z-10">
+          <header className="flex justify-center items-center gap-16 fixed w-fit z-20">
             <button 
             onClick={() => setType('For You')}
             className={`text-primary p-2 flex items-center justify-center ${type === 'For You' ? 'border-b-2 border-b-primary' : ''}`}>

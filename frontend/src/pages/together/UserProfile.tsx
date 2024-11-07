@@ -142,7 +142,7 @@ const UserProfile = () => {
       <Sidebar />
 
       {/* Body Content */}
-      <div className="w-[40rem] mt-20">
+      <div className="w-[40rem]">
         
         {targetUser && <div className="">
           {/* Banner Image */}
