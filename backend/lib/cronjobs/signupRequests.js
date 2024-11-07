@@ -12,16 +12,22 @@ const removeToken = (token, milliseconds) => {
   const hours = totalHours % 24;
 
   const now = new Date();
+
+  var cronHours = now.getHours() + hours;
   
-  const cronMinutes = now.getMinutes() + minutes;
-  const cronHours = now.getHours() + hours;
+  var cronMinutes = now.getMinutes() + minutes;
+  if (cronMinutes >= 60) {
+    cronMinutes -= 60;
+    cronHours++;
+  }
+
 
   // minute hour day_of_month month day_of_week
   const cronSchedule = `${cronMinutes} ${cronHours} * * *`;
   
   const job = cron.schedule(cronSchedule, async () => {
     try {
-      const deleteQuery = 'DELETE FROM SignUpRequests WHERE verificationToken = ?';
+      const deleteQuery = 'DELETE FROM SignUpRequests WHERE signupid = ?';
       await db.query(deleteQuery, [token]);
 
       // Stop the job after execution

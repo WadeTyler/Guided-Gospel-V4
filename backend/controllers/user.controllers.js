@@ -15,33 +15,31 @@ const defaultRates = 50;
 
 const completeSignUp = async (req, res) => {
   try {
-    const { verificationToken } = req.body || {};
+    const { verificationToken, firstname, lastname, email, password } = req.body || {};
     if (!verificationToken) {
       return res.status(400).json({ message: "Verification token is required" });
     }
 
     // Get User from SignUpRequests table
-    const [users] = await db.query('SELECT * FROM SignUpRequests WHERE verificationToken = ?', [verificationToken]);
+    const [users] = await db.query('SELECT * FROM SignUpRequests WHERE signupid = ?', [verificationToken]);
 
     if (!users || users.length === 0) {
       return res.status(400).json({ message: "Invalid verification token" });
     }
 
-    const userData = users[0];
-
     // Check if email already exists
-    if (await checkIfEmailExists(userData.email)) {
+    if (await checkIfEmailExists(email)) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate userid
     const userid = uuidv4();
 
     // Insert user into database
     const query = 'INSERT INTO user (userid, firstname, lastname, email, age, denomination, password, rates, createdat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const values = [userid, userData.firstname, userData.lastname, userData.email, null, null, userData.password, defaultRates, getTimestampInSQLFormat()];
+    const values = [userid, firstname, lastname, email, null, null, hashedPassword, defaultRates, getTimestampInSQLFormat()];
 
     await db.query(query, values);
 
@@ -55,18 +53,20 @@ const completeSignUp = async (req, res) => {
 
     const user = {
       userid,
-      firstname: userData.firstname,
-      lastname: userData.lastname,
-      email: userData.email,
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
       age: "",
       denomination: "",
       rates: defaultRates,
     }
 
-    // Remove user from SignUpRequests table
-    await db.query('DELETE FROM SignUpRequests WHERE verificationToken = ?', [verificationToken]);
+    // Remove signupid from SignUpRequests table
+    await db.query('DELETE FROM SignUpRequests WHERE signupid = ?', [verificationToken]);
 
     return res.status(200).json(user);
+
+
   } catch (error) {
     console.log("Error in completeSignUp controller", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -111,23 +111,27 @@ const signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Generate verification token
-    const verificationToken = await generateToken(email + firstname + lastname);
+    var signupid = '';
+    for (let i = 0; i < 6; i++) {
+      signupid += Math.floor(Math.random() * 10);
+    }
+
+    console.log("Verification Token: ", signupid);
+
+
 
     // Insert user into SignUpRequests table
-    const query = 'INSERT INTO SignUpRequests (verificationToken, firstname, lastname, email, password, timestamp) VALUES (?, ?, ?, ?, ?, ?)';
-
-    const values = [verificationToken, firstname, lastname, email, hashedPassword, getTimestampInSQLFormat()];
-    await db.query(query, values);
+    const query = 'INSERT INTO SignUpRequests (signupid) VALUES (?)';
+    await db.query(query, [signupid]);
 
     // Send email
-    sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(verificationToken));
+    sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(signupid));
 
-    // Activate Cronjob to remove token after 10 minutes
-    signupRequestsCron.removeToken(verificationToken, 600000);
+    // Activate Cronjob to remove token after 5 minutes
+    signupRequestsCron.removeToken(signupid, 300000);
 
-    return res.status(200).json({ message: "Verification email sent" });
-    
-
+    return res.status(200).json({ message: "Email Sent" });
+  
   } catch (error) {
     console.log("Error in signUp controller", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -337,7 +341,6 @@ const submitForgotPassword = async (req, res) => {
       return res.status(400).json({ message: "Please wait before submitting another request" });
     }
 
-
     const { email } = req.body || {};
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
@@ -348,8 +351,6 @@ const submitForgotPassword = async (req, res) => {
     if (!emailExists) {
       return res.status(400).json({ message: "No account exists with the provided email." });
     }
-
-    
 
     // Add spam cookie
     const spamToken = await generateToken(email);
@@ -362,10 +363,16 @@ const submitForgotPassword = async (req, res) => {
     });
 
     // Add recovery token to database
-    const recoveryToken = await generateToken(email + email);
+
+    // Create recovery token
+    var recoveryToken = '';
+    for (let i = 0; i < 6; i++) {
+      recoveryToken += Math.floor(Math.random() * 10);
+    }
+
     await db.query('INSERT INTO RequestedRecovery (recoveryToken, email) VALUES (?, ?)', [recoveryToken, email]);
 
-    passwordRecoveryCron.removeToken(recoveryToken, 600000);
+    passwordRecoveryCron.removeToken(recoveryToken, 300000);
 
     sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
 
@@ -379,35 +386,37 @@ const submitForgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { recoveryToken, newPassword, confirmNewPassword } = req.body || {};
+    const { recoveryToken, newPassword } = req.body || {};
+
     if (!recoveryToken) {
       return res.status(400).json({ message: "Recovery token is required" });
     }
 
-    if (!newPassword || !confirmNewPassword) {
-      return res.status(400).json({ message: "New password and confirm new password are required" });
+    // Check if recovery token is correct
+    const [recoveryData] = await db.query('SELECT * FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+
+    if (!recoveryData || recoveryData.length === 0) {
+      return res.status(400).json({ message: "Invalid recovery token. Please submit another password reset request." });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password is required" });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
-    if (newPassword !== confirmNewPassword) {
-      return res.status(400).json({ message: "Passwords do not match" });
-    }
-
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const [emails] = await db.query('SELECT email FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
+    const email = recoveryData[0].email;
 
-    if (!emails || emails.length === 0) {
-      return res.status(400).json({ message: "This session has expired. Please submit another password reset request." });
-    }
-
-    const email = emails[0].email;
-
+    // Update password in database
     await db.query('UPDATE user SET password = ? WHERE email = ?', [hashedPassword, email]);
 
+
+    // Remove recovery token from database
+    await db.execute('DELETE FROM RequestedRecovery WHERE recoveryToken = ?', [recoveryToken]);
 
     return res.status(200).json({ message: "Password reset successfully" });
 
