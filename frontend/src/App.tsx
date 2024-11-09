@@ -26,6 +26,8 @@ import AdminUserPage from './pages/admin/AdminUserPage';
 import { Navbar } from './components/floating-dock';
 import Loading from './components/Loading';
 import { useEffect } from 'react';
+import AdminFeedback from './pages/admin/AdminFeedback';
+import AdminBugReports from './pages/admin/AdminBugReports';
 
 
 export default function App() {
@@ -122,7 +124,10 @@ export default function App() {
           <Route path="/admin" element={ authAdmin ? <AdminDashboard /> : <Navigate to="/login" /> } />
           <Route path="/admin/users" element={ authAdmin ? <AdminUsers /> : <Navigate to="/login" /> } />
           <Route path="/admin/users/:userid" element={ authAdmin ? <AdminUserPage /> : <Navigate to="/login" /> } />
+          <Route path="/admin/feedback" element={ authAdmin ? <AdminFeedback /> : <Navigate to="/login" /> } />
+          <Route path="/admin/bugreports" element={ authAdmin ? <AdminBugReports /> : <Navigate to="/login" /> } />
 
+          {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Navbar />

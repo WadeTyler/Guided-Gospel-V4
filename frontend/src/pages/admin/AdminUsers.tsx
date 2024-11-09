@@ -119,7 +119,9 @@ const AdminUsers = () => {
 
             <div className="divide-y divide-gray-700">
               {users.map((user) => (
-                <div key={user.userid} className="grid grid-cols-8 text-gray-200 py-2 px-4 hover:bg-zinc-500 transition-all duration-200 cursor-pointer" onClick={() => {
+                <div key={user.userid} 
+                className={`grid grid-cols-8 text-gray-200 py-2 px-4 hover:bg-zinc-500 transition-all duration-200 cursor-pointer ${user.suspended ? 'text-red-500' : ''}`} 
+                onClick={() => {
                   navigate(`/admin/users/${user.userid}`);
                 }}>
                   <div className="truncate">{user.firstname}</div>

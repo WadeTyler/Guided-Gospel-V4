@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom';
 
 import '../../styles/admin-styles.css';
 
-import { IconLayoutDashboardFilled } from '@tabler/icons-react';
-import { IconUsersGroup } from '@tabler/icons-react';
+import { IconLayoutDashboardFilled, IconBatteryAutomotiveFilled, IconUsersGroup, IconBugFilled } from '@tabler/icons-react';
 
 const AdminSidebar = () => {
   return (
-    <div className='w-[15rem] h-screen bg-neutral-800 flex flex-col gap-8 px-2 py-2'>
+    <div className='max-w-[15rem] w-[15rem] h-screen bg-neutral-800 flex flex-col gap-8 px-2 py-2'>
 
-      <h4 className="text-primary text-2xl font-bold text-center">Guided Gospel</h4>
+      <h4 className="text-primary text-2xl font-bold">Guided Gospel</h4>
 
       <Link to="/admin" className="admin-sidebar-item">
         <IconLayoutDashboardFilled />
@@ -22,13 +21,13 @@ const AdminSidebar = () => {
           <IconUsersGroup />
           Users
         </Link>
-        <Link to="#" className="admin-sidebar-item">
-          <IconLayoutDashboardFilled />
-          Placeholder
+        <Link to="/admin/feedback" className="admin-sidebar-item">
+          <IconBatteryAutomotiveFilled />
+          Feedback
         </Link>
-        <Link to="#" className="admin-sidebar-item">
-          <IconLayoutDashboardFilled />
-          Placeholder
+        <Link to="/admin/bugreports" className="admin-sidebar-item">
+          <IconBugFilled />
+          Bug Reports
         </Link>
       </section>
     </div>
