@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
 import { formatTimestamp } from "../../lib/utils";
 
 type BugReport = {
@@ -21,6 +21,17 @@ const AdminBugReports = () => {
   const [bugReports, setBugReports] = useState<BugReport[]>([]);
 
   const [search, setSearch] = useState<string>('');
+
+  // Sorting
+  const sortByImpact = () => {
+    const sorted = [...bugReports].sort((a, b) => b.impact - a.impact);
+    setBugReports(sorted);
+  }
+
+  const sortByTimestamp = () => {
+    const sorted = [...bugReports].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    setBugReports(sorted);
+  }
 
   // retrieve bugReports from the database
   const getBugReports = async () => {
@@ -83,11 +94,11 @@ const AdminBugReports = () => {
           {/* Header */}
           <div className="">
             <div className="grid grid-cols-6 gap-2">
-              <div className="text-primary font-bold ">Timestamp</div>
+              <div className="text-primary font-bold flex gap-2">Timestamp <IconSortDescending className="hover:scale-110 dark:hover:text-white hover:text-darkaccent cursor-pointer" onClick={sortByTimestamp}/></div>
               <div className="text-primary font-bold">Report ID</div>
               <div className="text-primary font-bold">User ID</div>
               <div className="text-primary font-bold">Category</div>
-              <div className="text-primary font-bold">Impact</div>
+              <div className="text-primary font-bold flex gap-2">Impact <IconSortDescending className="hover:scale-110 dark:hover:text-white hover:text-darkaccent cursor-pointer" onClick={sortByImpact}/></div>
               <div className="text-primary font-bold">Issue</div>
             </div>
           </div>
