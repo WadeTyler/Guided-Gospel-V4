@@ -6,7 +6,7 @@ const { getTimestampInSQLFormat } = require('../lib/utils/sqlFormatting');
 // Get all sessions for a user
 const getSessions = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const query = 'SELECT * FROM session WHERE userid = ? ORDER BY lastmodified DESC';
     const [sessionsData] = await db.query(query, [userid]);
@@ -22,7 +22,7 @@ const getSessions = async (req, res) => {
 const createSession = async (req, res) => {
   try {
     
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const sessionid = uuidv4();
 
     const lastmodified = getTimestampInSQLFormat();
@@ -66,7 +66,7 @@ const deleteSession = async (req, res) => {
 // Delete all sessions
 const deleteAllSessions = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     // Delete all messages for the user
     await deleteAllUserMessages(userid);

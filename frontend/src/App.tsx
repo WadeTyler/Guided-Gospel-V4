@@ -5,7 +5,7 @@
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 // Pages
 import Home from './pages/Home';
@@ -51,7 +51,7 @@ export default function App() {
         return data;
       } catch (error) {
         if (error instanceof Error) {
-          throw new Error(error.message);
+          toast.error(error.message);
         } else {
           throw new Error(String(error));
         }

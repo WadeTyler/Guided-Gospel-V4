@@ -1,7 +1,7 @@
 const db = require('../db/db');
 
 const checkRates = async (req, res, next) => {
-  const userid = req.cookies.userid;
+  const userid = req.body.userid;
 
   const ratesQuery = 'SELECT rates FROM user WHERE userid = ?';
   const [rates] = await db.query(ratesQuery, [userid]);
@@ -19,7 +19,7 @@ const reduceRate = async (req, res) => {
     return;
   }
 
-  const userid = req.cookies.userid;
+  const userid = req.body.userid;
   const query = 'UPDATE user SET rates = rates - 1 WHERE userid = ?';
   await db.query(query, [userid]);
 }

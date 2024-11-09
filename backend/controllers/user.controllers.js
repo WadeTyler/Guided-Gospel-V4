@@ -2,7 +2,8 @@
 const db = require('../db/db.js');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
-const generateToken = require('../middleware/generateToken');
+const generateToken = require('../lib/jwt/generateToken.js');
+const generateAuthToken = require('../lib/jwt/generateAuthToken.js');
 const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 const passwordRecoveryCron = require('../lib/cronjobs/passwordRecovery');
 const signupRequestsCron = require('../lib/cronjobs/signupRequests');
@@ -43,10 +44,14 @@ const completeSignUp = async (req, res) => {
 
     await db.query(query, values);
 
+
+    // Generate AuthToken with userid
+    const authToken = generateAuthToken({ userid });
+
     // Store userid in a cookie (with HttpOnly flag to secure it)
-    res.cookie('userid', userid, { 
+    res.cookie('authToken', authToken, { 
       httpOnly: true, 
-      maxAge: 604800000, 
+      maxAge: 604800000, // 7 days
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict'
     });
@@ -161,10 +166,13 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
+    // Generate AuthToken with userid
+    const authToken = generateAuthToken({ userid: user.userid });
+
     // Store userid in a cookie (with HttpOnly flag to secure it)
-    res.cookie('userid', user.userid, { 
+    res.cookie('authToken', authToken, { 
       httpOnly: true, 
-      maxAge: 604800000, 
+      maxAge: 604800000, // 7 days
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict'
     });
@@ -182,7 +190,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   try {
     
-    res.clearCookie('userid', {
+    res.clearCookie('authToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict'
@@ -198,7 +206,7 @@ const logout = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const [userData] = await db.query('SELECT * FROM user WHERE userid = ?', [userid]);
     const user = userData[0];
@@ -294,10 +302,17 @@ const updateUser = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
+    console.log("Userid: ", userid);
     const query = 'SELECT * FROM user WHERE userid = ?';
     const [userData] = await db.query(query, [userid]);
+    console.log(userData);
+
+    if (!userData || userData.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     const user = userData[0];
 
     // Remove password
@@ -313,13 +328,13 @@ const getMe = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     await db.query('DELETE FROM message WHERE userid = ?;', [userid]);
     await db.query('DELETE FROM session WHERE userid = ?;', [userid]);
     await db.query('DELETE FROM user WHERE userid = ?;', [userid]);
 
-    res.clearCookie('userid', {
+    res.clearCookie('authToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict'

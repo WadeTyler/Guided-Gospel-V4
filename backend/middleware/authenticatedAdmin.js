@@ -1,28 +1,46 @@
 
 // Middleware to check if the user is an admin
 
-const db = require("../db/db");
+require("dotenv").config();
+const db = require('../db/db');
+const jwt = require('jsonwebtoken');
 
-const authenticatedAdmin = async (req, res, next) => {
+// Verify if the user is authenticated
+const authenticatedAdmin = (req, res, next) => {
   try {
 
-    const userid = req.cookies.userid;
-    if (!userid) {
-      return res.status(401).json({ error: "Unauthorized" });
-    } 
-
-    const [admins] = await db.query("SELECT administratorid FROM Administrators WHERE userid = ?", [userid]);
-
-    if (admins.length === 0 || !admins[0].administratorid) {
-      return res.status(401).json({ error: "Unauthorized" });
+    const authToken = req.cookies.authToken;
+    if (!authToken) {
+      return res.status(404).json({ error: "authToken not found" });
     }
 
-    next();
+    // Verify Token
+    const verifiedToken = jwt.verify(authToken, process.env.JWT_SECRET, function(err, decoded) {
+      if (err) {
+        res.clearCookie("authToken");
+        throw new Error(err);
+        return res.status(401).json({ message: "Invalid authToken. Please Login again." });
+      }
 
+      // extract userid from token
+      const userid = decoded.userid;
+
+      // Check if userid is in Administrators table
+      
+      const user = db.query("SELECT userid FROM Administrators WHERE userid = ?", [userid]);
+      
+      if (user.length === 0) {
+        // Not Found
+        res.clearCookie("authToken");
+        return res.status(404).json({ message: "Not Administrator" });
+      }
+
+      next();
+    });
+  
   } catch (error) {
-    console.error("Error in authenticatedAdmin middleware: ", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-    
+    console.log("Error in authenticatedAdmin: ", error);
+    return res.status(401).json({ message: "Not Administrator" });
   }
 }
 

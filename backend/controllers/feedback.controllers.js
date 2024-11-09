@@ -17,7 +17,7 @@ const submitFeedback = async (req, res) => {
     var query = '';
     var values = [feedbackid, feedback, timestamp];
 
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     if (!userid) {
       query = 'INSERT INTO feedback (feedbackid, text, timestamp) VALUES (?, ?, ?)';
     } else {
@@ -36,7 +36,7 @@ const submitFeedback = async (req, res) => {
 
 const submitBugReport = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const { category, impact, issue } = req.body;
     
     if (!category || !impact || !issue) {
