@@ -330,6 +330,9 @@ const deleteUser = async (req, res) => {
   try {
     const userid = req.body.userid;
 
+    const [userData] = await db.query('SELECT * FROM user WHERE userid = ?', [userid]);
+    const email = userData[0].email;
+
     await db.query('DELETE FROM message WHERE userid = ?;', [userid]);
     await db.query('DELETE FROM session WHERE userid = ?;', [userid]);
     await db.query('DELETE FROM user WHERE userid = ?;', [userid]);
@@ -339,6 +342,8 @@ const deleteUser = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict'
     });
+
+    await db.query('INSERT INTO DeletedEmails (email) VALUES (?)', [email]);
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {

@@ -17,6 +17,7 @@ const verseRoutes = require('./routes/verses.routes');
 const feedbackRoutes = require('./routes/feedback.routes');
 const bibleRoutes = require('./routes/bible/bible.routes');
 const adminRoutes = require('./routes/admin.routes');
+const resetDeletedEmails = require('./lib/cronjobs/resetDeletedEmails');
 
 require('dotenv').config();
 
@@ -51,7 +52,9 @@ if (process.env.NODE_ENV === "production") {
   })
 }
 
+// Reset Cron Jobs
 resetRates();
+resetDeletedEmails();
 
 const PORT = process.env.PORT || 8000;
 // Start Server
