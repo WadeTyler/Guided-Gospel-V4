@@ -25,7 +25,7 @@ const addMessage = async (req, res, next) => {
 
     if (!sessionid || !sender || !text) return res.status(400).json({ message: "Session id, sender and text are required" });
 
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const timestamp = getTimestampInSQLFormat();
     const messageid = uuidv4();

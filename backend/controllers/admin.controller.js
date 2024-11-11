@@ -4,7 +4,7 @@ const db = require("../db/db");
 // Returns the Admin's administrator information
 const getAdmin = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     if (!userid) {
       return res.status(404).json({ error: "Not Signed in" });

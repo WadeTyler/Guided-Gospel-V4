@@ -17,7 +17,7 @@ const submitFeedback = async (req, res) => {
     var query = '';
     var values = [feedbackid, feedback, timestamp];
 
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     if (!userid) {
       query = 'INSERT INTO feedback (feedbackid, text, timestamp) VALUES (?, ?, ?)';
     } else {
@@ -36,7 +36,7 @@ const submitFeedback = async (req, res) => {
 
 const submitBugReport = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const { category, impact, issue } = req.body;
     
     if (!category || !impact || !issue) {
@@ -58,7 +58,30 @@ const submitBugReport = async (req, res) => {
   }
 }
 
+const getFeedbacks = async (req, res) => {
+  try {
+    const [feedbacks] = await db.query('SELECT * FROM feedback ORDER BY timestamp DESC');
+    return res.status(200).json(feedbacks);
+  } catch (error) {
+    console.log("Error in getFeedbacks controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+    
+  }
+}
+
+const getAllBugReports = async (req, res) => {
+  try {
+    const [bugReports] = await db.query('SELECT * FROM BugReports ORDER BY timestamp DESC');
+    return res.status(200).json(bugReports);
+  } catch (error) {
+    console.log("Error in getAllBugReports controller", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
   submitFeedback,
-  submitBugReport
+  submitBugReport,
+  getFeedbacks,
+  getAllBugReports
 }
