@@ -5,11 +5,14 @@ import toast from "react-hot-toast";
 import Comment from "./Comment";
 import { useMutation } from "@tanstack/react-query";
 import Loading from "../Loading";
+import { useNavigate } from "react-router-dom";
 
 
 const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, handleLike: () => void, isLiked:Boolean; setViewingComments: React.Dispatch<React.SetStateAction<Boolean>>}) => {
   const [commentContent, setCommentContent] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
+
+  const navigate = useNavigate();
 
   const getComments = async () => {
     try {
@@ -81,9 +84,9 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
         <div className="original-post border-[1px] border-gray-300 p-4 rounded-2xl">
 
           <div className="flex gap-2 items-center">
-            <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10" />
+            <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)} />
             <section className="flex flex-col justify-center">
-              <p className="">{post.username}</p>
+              <p className="cursor-pointer hover:underline" onClick={() => navigate(`/together/users/${post.username}`)}>{post.username}</p>
               <p className="text-xs text-gray-500">{formatTimestampToDifference(post.timestamp)}</p>
             </section>
           </div>

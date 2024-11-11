@@ -7,6 +7,7 @@ import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/re
 import Comments from './Comments';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import Loading from '../Loading';
+import { useNavigate } from 'react-router-dom';
 
 
 const Post = ({post}: {post:Post}) => {
@@ -15,6 +16,8 @@ const Post = ({post}: {post:Post}) => {
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const [viewingComments, setViewingComments] = useState<Boolean>(false);
   const [deletingPost, setDeletingPost] = useState<Boolean>(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (likedPosts) {
@@ -60,9 +63,10 @@ const Post = ({post}: {post:Post}) => {
       }
 
       <div className="flex gap-2 items-center">
-        <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10" />
+        {/* Avatar */}
+        <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)} />
         <section className="flex flex-col justify-center">
-          <p className="">{post.username}</p>
+          <p className="hover:underline cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)}>{post.username}</p>
           <p className="text-xs text-gray-500">{formatTimestampToDifference(post.timestamp)}</p>
         </section>
       </div>
