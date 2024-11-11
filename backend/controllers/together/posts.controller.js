@@ -35,7 +35,7 @@ const getUserPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const { content } = req.body;
 
     if (!content) {
@@ -63,7 +63,7 @@ const createPost = async (req, res) => {
 
 const likeUnlikePost = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const { postid } = req.params;
     
     if (!postid) {
@@ -110,7 +110,7 @@ const likeUnlikePost = async (req, res) => {
 // Get all the likes of the user
 const getUserLikes = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const query = 'SELECT * FROM together_likes WHERE userid = ? ORDER BY postid ASC';
     const [likes] = await db.query(query, [userid]);
@@ -124,7 +124,7 @@ const getUserLikes = async (req, res) => {
 
 const addComment = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const postid = req.params.postid;
     const { content } = req.body;
 

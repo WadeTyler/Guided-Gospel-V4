@@ -3,7 +3,7 @@ const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 
 const followUnfollowUser = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
     const targetUsername = req.params.username;
     
     const getUserIDQuery = 'SELECT userid FROM user WHERE username = ?';
@@ -54,7 +54,7 @@ const followUnfollowUser = async (req, res) => {
 // Get the User's following list
 const getFollowing = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const query = 'SELECT followingid FROM together_follows WHERE followerid = ?';
     const [following] = await db.query(query, [userid]);
@@ -70,7 +70,7 @@ const getFollowing = async (req, res) => {
 // Get the User's Followers list
 const getFollowers = async (req, res) => {
   try {
-    const userid = req.cookies.userid;
+    const userid = req.body.userid;
 
     const query = 'SELECT followerid FROM together_follows WHERE followingid = ?';
     const [followers] = await db.query(query, [userid]);
