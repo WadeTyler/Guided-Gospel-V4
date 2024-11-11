@@ -130,10 +130,7 @@ const UserProfile = () => {
     if (followingList && targetUser) {
       setFollowingTarget(checkIfFollowingTarget(followingList, targetUser.userid));
     }
-
-    console.log(targetUser);
-
-    console.log(followingList);
+    
   }, [targetUser, followingList]);
   
 
