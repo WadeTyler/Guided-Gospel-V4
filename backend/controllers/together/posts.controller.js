@@ -61,6 +61,39 @@ const createPost = async (req, res) => {
   }
 }
 
+const deletePost = async (req, res) => {
+  try {
+    const postid = req.body.postid;
+    const userid = req.body.userid;
+
+    if (!postid) {
+      return res.status(400).json({ error: "Post ID is required" });
+    }
+
+    // Check if post exists
+    const [posts] = await db.query("SELECT * FROM together_posts WHERE postid = ?", [postid]);
+
+    if (posts.length === 0) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Check if user is the owner of the post
+    if (userid !== posts[0].userid) {
+      return res.status(403).json({ error: "You are not authorized to delete this post" });
+    }
+
+    // Delete Post
+    const deletePostQuery = 'DELETE FROM together_posts WHERE postid = ?';
+    await db.execute(deletePostQuery, [postid]);
+
+    return res.status(200).json({ message: "Post deleted successfully" });
+
+  } catch (error) {
+    console.log("Error in deletePost controller", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 const likeUnlikePost = async (req, res) => {
   try {
     const userid = req.body.userid;
@@ -168,6 +201,7 @@ const getComments = async (req, res) => {
 module.exports = {
   getAllPosts,
   createPost,
+  deletePost,
   likeUnlikePost,
   getUserLikes,
   addComment,

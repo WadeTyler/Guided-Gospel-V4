@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/", protectedRoute, postsController.getAllPosts);
 router.post("/", protectedRoute, postsController.createPost);
+router.delete("/delete", protectedRoute, postsController.deletePost);
 router.get("/likes", protectedRoute, postsController.getUserLikes);
 router.post("/:postid/like", protectedRoute, checkIfPostExists, postsController.likeUnlikePost);
 router.post("/:postid/addComment", protectedRoute, checkIfPostExists, postsController.addComment);
