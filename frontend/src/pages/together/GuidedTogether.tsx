@@ -78,19 +78,27 @@ const GuidedTogether = () => {
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
           <header className="flex justify-center items-center gap-16 fixed w-fit z-20">
             <button 
-            onClick={() => setType('for you')}
+            onClick={() => {
+              setType('for you');
+              const postsContainer = document.getElementById('home-posts-container');
+              postsContainer?.scrollIntoView();
+            }}
             className={`text-primary p-2 flex items-center justify-center ${type === 'for you' ? 'border-b-2 border-b-primary' : ''}`}>
               <p className="">For You</p>
             </button>
             <button 
-            onClick={() => setType('following')}
+            onClick={() => {
+              setType('following');
+              const postsContainer = document.getElementById('home-posts-container');
+              postsContainer?.scrollIntoView();
+            }}
             className={`text-primary p-2 flex items-center justify-center ${type === 'following' ? 'border-b-2 border-b-primary' : ''}`}>
               <p className="">Following</p>
             </button>
           </header>
 
           {/* Posts */}
-          <div className="flex flex-col w-full pt-14 gap-4">
+          <div className="flex flex-col w-full pt-14 gap-4" id="home-posts-container">
             {isLoadingPosts && <Loading size="md" />}
             {isError && <p>Something went wrong</p>}
             {posts && posts.map((post) => (
