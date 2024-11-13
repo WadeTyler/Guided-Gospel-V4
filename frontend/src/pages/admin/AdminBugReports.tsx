@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
-import { IconSearch, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
+import { IconSortDescending } from "@tabler/icons-react";
 import { formatTimestamp } from "../../lib/utils";
 
 type BugReport = {
@@ -19,8 +19,6 @@ const AdminBugReports = () => {
   
   // bugReport useState
   const [bugReports, setBugReports] = useState<BugReport[]>([]);
-
-  const [search, setSearch] = useState<string>('');
 
   // Sorting
   const sortByImpact = () => {
@@ -55,11 +53,6 @@ const AdminBugReports = () => {
     }
   }
 
-  // search for bugreports
-  const submitSearch = async () => {
-
-  }
-
   // useEffect to get bugReports
   useEffect(() => {
     getBugReports();
@@ -78,13 +71,7 @@ const AdminBugReports = () => {
         <header className="admin-panel-header">
             <h1 className="text-primary text-5xl">Bug Reports</h1>
             <div className="admin-panel-header-nav">
-              <form action="" className="flex form-input-bar" onSubmit={(e) => {
-                e.preventDefault();
-                submitSearch();
-              }}>
-                <input type="text" placeholder="This doesn't work right now... WIP" className="border-none w-full focus:ring-0 rounded-2xl bg-transparent" onChange={(e) => {setSearch(e.target.value)}} />
-                <button className="pr-2"><IconSearch /></button>
-              </form>
+              
             </div>
           </header>
 
