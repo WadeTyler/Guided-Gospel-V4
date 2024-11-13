@@ -1,9 +1,9 @@
 
 import { useState, useEffect, SetStateAction } from 'react';
-import { IconHeartFilled, IconMessageDots, IconX } from '@tabler/icons-react';
+import { IconHeartFilled, IconMessageDots } from '@tabler/icons-react';
 import { checkIfPostLikedByUser, formatTimestampToDifference } from "../../lib/utils"
 import toast from 'react-hot-toast';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Comments from './Comments';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import Loading from '../Loading';
