@@ -15,8 +15,7 @@ const protectedRoute = (req, res, next) => {
     const verifiedToken = jwt.verify(authToken, process.env.JWT_SECRET, function(err, decoded) {
       if (err) {
         res.clearCookie("authToken");
-        throw new Error(err);
-        return res.status(401).json({ message: "Invalid authToken. Please Login again." });
+        return res.status(401).json({ message: "Unauthorized. Please Login again." });
       }
 
       // extract userid from token
