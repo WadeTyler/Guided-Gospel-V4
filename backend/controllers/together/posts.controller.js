@@ -1,5 +1,6 @@
 
 const db = require("../../db/db");
+const generateToken = require("../../lib/jwt/generateToken");
 const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 
 const getAllPosts = async (req, res) => {
@@ -36,10 +37,16 @@ const getUserPosts = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const userid = req.body.userid;
+
+    // Check spam cookie
+    if (req.cookies.spamPost) {
+      return res.status(429).json({ message: `You are posting too frequently. Please wait before sending another post.` });
+    }
+
     const { content } = req.body;
 
     if (!content) {
-      return res.status(400).json({ error: "Content is required" });
+      return res.status(400).json({ message: "Content is required" });
     }
 
     const timestamp = getTimestampInSQLFormat();
@@ -51,6 +58,13 @@ const createPost = async (req, res) => {
     const selectPostQuery = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
     const [post] = await db.query(selectPostQuery, [postid]);
 
+    // Add Spam Cookie
+    res.cookie('spamPost', timestamp, { 
+      httpOnly: true, 
+      maxAge: 60 * 1000 * 3,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict'
+    });
 
     res.status(201).json(post[0]);
 
@@ -155,9 +169,16 @@ const getUserLikes = async (req, res) => {
   }
 }
 
+// Add a comment to a post
 const addComment = async (req, res) => {
   try {
     const userid = req.body.userid;
+
+    // Check spam token
+    if (req.cookies.spamComment) {
+      return res.status(429).json({ message: `You are commenting too frequently. Please wait before sending another comment.` });
+    }
+
     const postid = req.params.postid;
     const { content } = req.body;
 
@@ -173,6 +194,14 @@ const addComment = async (req, res) => {
     // Update post counter
     const updatePostQuery = 'UPDATE together_posts SET comments = comments + 1 WHERE postid = ?';
     await db.execute(updatePostQuery, [postid]);
+
+    // Add Spam Cookie
+    res.cookie('spamComment', timestamp, {
+      httpOnly: true,
+      maxAge: 60 * 1000 * 3, // 3 minutes
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict'
+    })
 
     res.status(201).json({ message: "Comment added successfully" });
   } catch (error) {
