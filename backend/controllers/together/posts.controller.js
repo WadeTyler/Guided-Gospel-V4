@@ -2,6 +2,7 @@
 const db = require("../../db/db");
 const generateToken = require("../../lib/jwt/generateToken");
 const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
+const { checkSpamInPosts, checkSpamInComments } = require("../../lib/utils/checkSpam");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -49,18 +50,26 @@ const getUserPosts = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const userid = req.body.userid;
-    const { content } = req.body;
+    var { content } = req.body;
+    
+    if (!content) {
+      return res.status(400).json({ message: "Content is required" });
+    }
 
-    // Get Lasts 3 posts of the user
-    const lastPostQuery = 'SELECT * from together_posts WHERE userid = ? ORDER BY timestamp DESC LIMIT 3';
+    // Get Lasts 8 posts of the user
+    const lastPostQuery = 'SELECT * from together_posts WHERE userid = ? ORDER BY timestamp DESC LIMIT 8';
     const [lastPosts] = await db.query(lastPostQuery, [userid]);
 
+
+    const timestamp = getTimestampInSQLFormat();
+
+    
     // Has previous posts
     if (lastPosts.length > 0) {
 
       // Check post cooldown
       const lastPostTime = new Date(lastPosts[0].timestamp);
-      const currentTime = new Date(getTimestampInSQLFormat());
+      const currentTime = new Date(timestamp);
       const diff = currentTime - lastPostTime;
 
       if (diff < 180000) {
@@ -75,20 +84,26 @@ const createPost = async (req, res) => {
         return res.status(429).json({ message: `Please wait ${timeRemaining} before posting again.` });
       }
 
-      // Check post content spam
+      // Check all last 8 posts for the same message.
+      let count = 0;
+      for (let i = 0; i < 8; i++) {
+        if (lastPosts[i].content === content) {
+          count++;
+        }
+      }
+
+      // If the user has sent the same message 3 times+ in the last 8 posts
+      if (count >= 3) {
+        await db.execute('INSERT INTO violations (content, violation_type, timestamp, userid) VALUES (?, ?, ?, ?)', [content, "spam", timestamp, userid]);
+      }
       
-
+      // Check last 2 posts for the same message.
+      if(checkSpamInPosts(lastPosts, content, lastPosts.length >= 2 ? 2 : lastPosts.length)) {
+        return res.status(429).json({ message: "Please do not spam the same message." });
+      }
+      
+      
     }
-
-    
-
-    
-
-    if (!content) {
-      return res.status(400).json({ message: "Content is required" });
-    }
-
-    const timestamp = getTimestampInSQLFormat();
 
     const query = 'INSERT INTO together_posts (userid, content, timestamp) VALUES (?, ?, ?)';
     const [result] = await db.execute(query, [userid, content, timestamp]);
@@ -204,6 +219,11 @@ const getUserLikes = async (req, res) => {
 const addComment = async (req, res) => {
   try {
     const userid = req.body.userid;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: "Content is required" });
+    }
 
     // Get Lasts 3 posts of the user
     const lastCommentsQuery = 'SELECT * from together_comments WHERE userid = ? ORDER BY timestamp DESC LIMIT 3';
@@ -226,17 +246,18 @@ const addComment = async (req, res) => {
         else {
           timeRemaining = `${secondsRemaining} seconds`;
         }
-        return res.status(429).json({ message: `Please wait ${timeRemaining} before posting again.` });
+        return res.status(429).json({ message: `Please wait ${timeRemaining} before commenting again.` });
+      }
+
+      // Check all last 3 comments for the same message.
+      if(checkSpamInComments(lastComments, content, lastComments.length >= 3 ? 3 : lastComments.length)) {
+        return res.status(429).json({ message: "Please do not spam the same message." });
       }
 
     }
 
     const postid = req.params.postid;
-    const { content } = req.body;
-
-    if (!content) {
-      return res.status(400).json({ error: "Content is required" });
-    }
+    
 
     const timestamp = getTimestampInSQLFormat();
 
