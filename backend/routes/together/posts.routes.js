@@ -5,7 +5,7 @@ const { checkIfPostExists } = require('../../lib/utils/postsUtil');
 const { checkUsernameExistsParam } = require('../../middleware/checkUsernameExists');
 const router = express.Router();
 
-router.get("/", protectedRoute, postsController.getAllPosts);
+router.get("/all/:type", protectedRoute, postsController.getAllPosts);
 router.post("/", protectedRoute, postsController.createPost);
 router.delete("/delete", protectedRoute, postsController.deletePost);
 router.get("/likes", protectedRoute, postsController.getUserLikes);

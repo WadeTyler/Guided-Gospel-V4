@@ -5,11 +5,23 @@ const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 
 const getAllPosts = async (req, res) => {
   try {
+    
+    const userid = req.body.userid;
+    const type = req.params.type;
+
+    // Get Following Posts
+    if (type === 'following') {
+      const followingQuery = 'SELECT together_posts.*, user.username FROM together_posts JOIN user on together_posts.userid = user.userid WHERE together_posts.userid IN (SELECT followingid FROM together_follows WHERE followerid = ?) ORDER BY timestamp DESC';
+      const [posts] = await db.query(followingQuery, [userid]);
+      return res.status(200).json(posts);
+    }
+
+    // Get All Posts
     const query = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid ORDER BY timestamp DESC';
-
     const [posts] = await db.query(query);
-
     res.status(200).json(posts);
+
+
   } catch (error) {
     console.error("Error in getAllPosts controller", error);
     res.status(500).json({ error: "Internal Server Error" });

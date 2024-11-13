@@ -16,14 +16,14 @@ const GuidedTogether = () => {
   const { data:likedPosts } = useQuery<Like[]>({ queryKey: ['likedPosts'] });
 
   // Can be either 'For You' or 'Following'
-  const [type, setType] = useState<string>("For You");
+  const [type, setType] = useState<string>("for you");
 
   // Retreive posts from the server
   const { data:posts, isLoading:isLoadingPosts, isError } = useQuery<Post>({
     queryKey: ['posts'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/together/posts', {
+        const response = await fetch(`/api/together/posts/all/${type}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const GuidedTogether = () => {
   });
 
  
-
+  // Invalidate queries when the authUser changes
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['posts'] });
     queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
@@ -54,11 +54,12 @@ const GuidedTogether = () => {
   useEffect(() => {
     // Refresh liked posts when the posts are changed
     queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
-  }, [posts])
+  }, [posts]);
 
+  // Invalidate posts when the type is changed
   useEffect(() => {
-    console.log(followingList);
-  }, [authUser, followingList])
+    queryClient.invalidateQueries({ queryKey: ['posts'] });
+  }, [type]);
 
   return (
     <div className="flex flex-col w-full min-h-screen bg-white dark:bg-darkbg relative">
@@ -77,13 +78,13 @@ const GuidedTogether = () => {
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
           <header className="flex justify-center items-center gap-16 fixed w-fit z-20">
             <button 
-            onClick={() => setType('For You')}
-            className={`text-primary p-2 flex items-center justify-center ${type === 'For You' ? 'border-b-2 border-b-primary' : ''}`}>
+            onClick={() => setType('for you')}
+            className={`text-primary p-2 flex items-center justify-center ${type === 'for you' ? 'border-b-2 border-b-primary' : ''}`}>
               <p className="">For You</p>
             </button>
             <button 
-            onClick={() => setType('Following')}
-            className={`text-primary p-2 flex items-center justify-center ${type === 'Following' ? 'border-b-2 border-b-primary' : ''}`}>
+            onClick={() => setType('following')}
+            className={`text-primary p-2 flex items-center justify-center ${type === 'following' ? 'border-b-2 border-b-primary' : ''}`}>
               <p className="">Following</p>
             </button>
           </header>
