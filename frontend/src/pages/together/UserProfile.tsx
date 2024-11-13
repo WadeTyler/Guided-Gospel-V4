@@ -185,6 +185,7 @@ const UserProfile = () => {
             {targetPosts?.map((post) => (
               <Post key={post.postid} post={post} />
             ))}
+            {targetPosts?.length === 0 && <p className="text-primary text-2xl">No Posts Yet</p>}
           </div>
         </div>}
         {!targetUser && 

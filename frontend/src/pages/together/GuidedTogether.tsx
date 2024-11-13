@@ -19,7 +19,7 @@ const GuidedTogether = () => {
   const [type, setType] = useState<string>("for you");
 
   // Retreive posts from the server
-  const { data:posts, isLoading:isLoadingPosts, isError } = useQuery<Post>({
+  const { data:posts, isLoading:isLoadingPosts, isError } = useQuery<Post[]>({
     queryKey: ['posts'],
     queryFn: async () => {
       try {
@@ -104,6 +104,7 @@ const GuidedTogether = () => {
             {posts && posts.map((post) => (
               <Post key={post.postid} post={post} />
             ))}
+            {posts && posts.length === 0 && <p>No Posts to Show...</p>}
           </div>
         </div>
 
