@@ -49,13 +49,40 @@ const getUserPosts = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const userid = req.body.userid;
+    const { content } = req.body;
 
-    // Check spam cookie
-    if (req.cookies.spamPost) {
-      return res.status(429).json({ message: `You are posting too frequently. Please wait before sending another post.` });
+    // Get Lasts 3 posts of the user
+    const lastPostQuery = 'SELECT * from together_posts WHERE userid = ? ORDER BY timestamp DESC LIMIT 3';
+    const [lastPosts] = await db.query(lastPostQuery, [userid]);
+
+    // Has previous posts
+    if (lastPosts.length > 0) {
+
+      // Check post cooldown
+      const lastPostTime = new Date(lastPosts[0].timestamp);
+      const currentTime = new Date(getTimestampInSQLFormat());
+      const diff = currentTime - lastPostTime;
+
+      if (diff < 180000) {
+        const secondsRemaining = Math.floor((180000 - diff) / 1000);
+        let timeRemaining = "";
+        if (secondsRemaining > 60) {
+          timeRemaining = `${Math.floor(secondsRemaining / 60) + 1} minutes`;
+        }
+        else {
+          timeRemaining = `${secondsRemaining} seconds`;
+        }
+        return res.status(429).json({ message: `Please wait ${timeRemaining} before posting again.` });
+      }
+
+      // Check post content spam
+      
+
     }
 
-    const { content } = req.body;
+    
+
+    
 
     if (!content) {
       return res.status(400).json({ message: "Content is required" });
@@ -69,14 +96,6 @@ const createPost = async (req, res) => {
     const postid = result.insertId
     const selectPostQuery = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
     const [post] = await db.query(selectPostQuery, [postid]);
-
-    // Add Spam Cookie
-    res.cookie('spamPost', timestamp, { 
-      httpOnly: true, 
-      maxAge: 60 * 1000 * 3,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict'
-    });
 
     res.status(201).json(post[0]);
 
@@ -186,9 +205,30 @@ const addComment = async (req, res) => {
   try {
     const userid = req.body.userid;
 
-    // Check spam token
-    if (req.cookies.spamComment) {
-      return res.status(429).json({ message: `You are commenting too frequently. Please wait before sending another comment.` });
+    // Get Lasts 3 posts of the user
+    const lastCommentsQuery = 'SELECT * from together_comments WHERE userid = ? ORDER BY timestamp DESC LIMIT 3';
+    const [lastComments] = await db.query(lastCommentsQuery, [userid]);
+
+    // Has previous posts
+    if (lastComments.length > 0) {
+
+      // Check post cooldown
+      const lastCommentTime = new Date(lastComments[0].timestamp);
+      const currentTime = new Date(getTimestampInSQLFormat());
+      const diff = currentTime - lastCommentTime;
+
+      if (diff < 180000) {
+        const secondsRemaining = Math.floor((180000 - diff) / 1000);
+        let timeRemaining = "";
+        if (secondsRemaining > 60) {
+          timeRemaining = `${Math.floor(secondsRemaining / 60) + 1} minutes`;
+        }
+        else {
+          timeRemaining = `${secondsRemaining} seconds`;
+        }
+        return res.status(429).json({ message: `Please wait ${timeRemaining} before posting again.` });
+      }
+
     }
 
     const postid = req.params.postid;
@@ -206,14 +246,6 @@ const addComment = async (req, res) => {
     // Update post counter
     const updatePostQuery = 'UPDATE together_posts SET comments = comments + 1 WHERE postid = ?';
     await db.execute(updatePostQuery, [postid]);
-
-    // Add Spam Cookie
-    res.cookie('spamComment', timestamp, {
-      httpOnly: true,
-      maxAge: 60 * 1000 * 3, // 3 minutes
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict'
-    })
 
     res.status(201).json({ message: "Comment added successfully" });
   } catch (error) {
