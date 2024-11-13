@@ -20,6 +20,7 @@ declare global{
   }
 
   interface Post {
+    suspended: number;
     map(arg0: (post: Post) => import("react/jsx-runtime").JSX.Element): import("react").ReactNode;
     postid: number;
     userid: string;
@@ -43,6 +44,7 @@ declare global{
     userid: string;
     timestamp: string;
     content: string;
+    suspended: number;
   }
 
   interface Following {

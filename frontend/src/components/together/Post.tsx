@@ -50,6 +50,11 @@ const Post = ({post}: {post:Post}) => {
       toast.error((error as Error).message || "Something went wrong");
     }
   }
+  
+  // If user is suspended, do not display it
+  if (post.suspended === 1) {
+    return null;
+  }
 
   return (
     <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 dark:text-darktext p-4 rounded-2xl relative'>

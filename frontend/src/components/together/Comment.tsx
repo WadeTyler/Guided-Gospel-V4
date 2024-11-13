@@ -6,6 +6,11 @@ const Comment = ({comment}: {comment:Comment}) => {
 
   const navigate = useNavigate();
 
+  // If the user is supsended do not display the comment
+  if (comment.suspended === 1) {
+    return null;
+  }
+
   return (
     <div className="original-post border-[1px] border-gray-300 p-4 rounded-2xl w-full">
 

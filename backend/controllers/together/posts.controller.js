@@ -12,13 +12,13 @@ const getAllPosts = async (req, res) => {
 
     // Get Following Posts
     if (type === 'following') {
-      const followingQuery = 'SELECT together_posts.*, user.username FROM together_posts JOIN user on together_posts.userid = user.userid WHERE together_posts.userid IN (SELECT followingid FROM together_follows WHERE followerid = ?) ORDER BY timestamp DESC';
+      const followingQuery = 'SELECT together_posts.*, user.username, user.suspended FROM together_posts JOIN user on together_posts.userid = user.userid WHERE together_posts.userid IN (SELECT followingid FROM together_follows WHERE followerid = ?) ORDER BY timestamp DESC';
       const [posts] = await db.query(followingQuery, [userid]);
       return res.status(200).json(posts);
     }
 
     // Get All Posts
-    const query = 'SELECT together_posts.*, user.username FROM together_posts JOIN user ON together_posts.userid = user.userid ORDER BY timestamp DESC';
+    const query = 'SELECT together_posts.*, user.username, user.suspended FROM together_posts JOIN user ON together_posts.userid = user.userid ORDER BY timestamp DESC';
     const [posts] = await db.query(query);
     res.status(200).json(posts);
 
@@ -288,7 +288,7 @@ const getComments = async (req, res) => {
   try {
     const postid = req.params.postid;
 
-    const query = 'SELECT together_comments.*, user.username FROM together_comments JOIN user ON together_comments.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
+    const query = 'SELECT together_comments.*, user.username, user.suspended FROM together_comments JOIN user ON together_comments.userid = user.userid WHERE postid = ? ORDER BY timestamp DESC';
 
     const [comments] = await db.query(query, [postid]);
 
