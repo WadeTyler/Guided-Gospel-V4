@@ -90,6 +90,7 @@ const Posting = ({setPosting}: {setPosting: React.Dispatch<SetStateAction<boolea
 
   const [content, setContent] = useState<string>('');
   
+  
   // create Post
   const { mutate:createPost, isPending:sendingPost } = useMutation({
 
@@ -126,6 +127,9 @@ const Posting = ({setPosting}: {setPosting: React.Dispatch<SetStateAction<boolea
 
   // submit create Post
   const handleSubmitPost = () => {
+    if (content.length > 300) {
+      return toast.error("Content too Long. Please keep it under 300 characters");
+    }
     createPost({text: content});
   }
 
@@ -141,8 +145,11 @@ const Posting = ({setPosting}: {setPosting: React.Dispatch<SetStateAction<boolea
             e.preventDefault();
             setContent(e.target.value);
           }} />
-          {!sendingPost && <button className="flex gap-2 items-center hover:text-primary transition-all duration-300 ease-in-out " onClick={handleSubmitPost}><IconMessageFilled /> Send Post</button>}
-          {sendingPost && <Loading size="md" cn="text-primary" />}
+          <div className="flex justify-between w-full">
+            <p className={`${content.length > 300 ? 'text-red-500' : ''}`}>{content.length} / 300</p>
+            {!sendingPost && <button className="flex gap-2 items-center hover:text-primary transition-all duration-300 ease-in-out " onClick={handleSubmitPost}><IconMessageFilled /> Send Post</button>}
+            {sendingPost && <Loading size="md" cn="text-primary" />}
+          </div>
       </div>
     </div>
   )

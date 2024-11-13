@@ -65,6 +65,14 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
     }
   })
 
+  const submitAddComment = () => {
+    if (commentContent.length > 300) {
+      return toast.error("Content too Long. Please keep it under 300 characters");
+    }
+
+    addComment(commentContent);
+  }
+
   useEffect(() => {
     getComments();
   }, [post])
@@ -109,8 +117,12 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
             e.preventDefault();
             setCommentContent(e.target.value);
           }} />
-          {!sendingComment && <button className="flex gap-2 items-center justify-center hover:text-primary transition-all duration-300 ease-in-out" onClick={() => addComment(commentContent)}><IconMessageDots /> Send Comment</button>}
+          <div className="flex w-full justify-between">
+            <p className={`${commentContent.length > 300 ? 'text-red-500' : ''}`}>{commentContent.length} / 300</p>
+            {!sendingComment && <button className="flex gap-2 items-center justify-center hover:text-primary transition-all duration-300 ease-in-out" onClick={() => submitAddComment()}><IconMessageDots /> Send Comment</button>}
           {sendingComment && <Loading size="md" cn="text-primary" />}
+          </div>
+          
         </div>
 
         {/* All Comments */}
