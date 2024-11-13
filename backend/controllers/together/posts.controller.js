@@ -56,6 +56,10 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "Content is required" });
     }
 
+    if (content.length > 300) {
+      return res.status(400).json({ message: "Content is too long" });
+    }
+
     // Get Lasts 8 posts of the user
     const lastPostQuery = 'SELECT * from together_posts WHERE userid = ? ORDER BY timestamp DESC LIMIT 8';
     const [lastPosts] = await db.query(lastPostQuery, [userid]);
@@ -223,6 +227,10 @@ const addComment = async (req, res) => {
 
     if (!content) {
       return res.status(400).json({ error: "Content is required" });
+    }
+
+    if (content.length > 300) {
+      return res.status(400).json({ message: "Content is too long" });
     }
 
     // Get Lasts 3 posts of the user
