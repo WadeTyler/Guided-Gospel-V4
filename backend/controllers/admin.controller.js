@@ -28,7 +28,7 @@ const getAdmin = async (req, res) => {
 // Return all users in the database
 const getUsers = async (req, res) => {
   try {
-    const query = 'SELECT userid, firstname, lastname, email, age, denomination, rates, defaultrates, createdat, lastactive, suspended FROM user ORDER BY lastname ASC';
+    const query = 'SELECT username, userid, firstname, lastname, email, age, denomination, rates, defaultrates, createdat, lastactive, suspended FROM user ORDER BY lastname ASC';
     const [users] = await db.query(query);
 
     return res.status(200).json(users);

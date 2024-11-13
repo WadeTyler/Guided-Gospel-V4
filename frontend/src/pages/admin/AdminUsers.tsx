@@ -108,6 +108,7 @@ const AdminUsers = () => {
         <div className="overflow-x-auto overflow-y-scroll">
           <div className="bg-neutral-800 dark:bg-darkaccent rounded-lg shadow-lg">
             <div className="grid grid-cols-8 text-white bg-zinc-600 py-3 px-4 rounded-t-lg">
+              <div className="text-left text-lg font-semibold">Username</div>
               <div className="text-left text-lg font-semibold">First Name</div>
               <div className="text-left text-lg font-semibold">Last Name</div>
               <div className="text-left text-lg font-semibold">Email</div>
@@ -124,6 +125,7 @@ const AdminUsers = () => {
                 onClick={() => {
                   navigate(`/admin/users/${user.userid}`);
                 }}>
+                  <div className="truncate">{user.username}</div>
                   <div className="truncate">{user.firstname}</div>
                   <div className="truncate">{user.lastname}</div>
                   <div className="truncate">{user.email}</div>
