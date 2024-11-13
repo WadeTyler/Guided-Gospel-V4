@@ -31,15 +31,8 @@ const protectedRoute = (req, res, next) => {
         return res.status(404).json({ message: "User does not exist" });
       }
 
-      // Found
 
-      // Check if suspended
-      if (user[0].suspended === 1) {
-        res.clearCookie("authToken");
-        return res.status(403).json({ message: "Your account has been suspended. Please contact support." });
-      }
-
-      // Add userid to req.body
+      // Found - Add userid to req.body
       req.body.userid = userid;
       next();
     });
