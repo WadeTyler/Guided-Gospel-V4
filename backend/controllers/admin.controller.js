@@ -65,13 +65,14 @@ const getUserData = async (req, res) => {
       return res.status(400).json({ messagee: "No userid provided"});
     }
 
-    const query = `SELECT userid, firstname, lastname, email, age, denomination, rates, defaultrates, createdat, lastactive, suspended FROM user WHERE userid = ?`;
-
+    const query = `SELECT * FROM user WHERE userid = ?`;
     const [userData] = await db.query(query, [userid]);
 
     if (userData.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    userData[0].password = "";
 
     return res.status(200).json(userData[0]);
 

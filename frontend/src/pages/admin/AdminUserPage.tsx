@@ -97,6 +97,9 @@ const AdminUserPage = () => {
             <h2 className="text-xl">User Information</h2>
             <div className="flex flex-col gap-1">
               <p><strong>UserID:</strong> {user.userid}</p>
+              <p><strong>Username:</strong> {user.username}</p>
+              <p><strong>First Name:</strong> {user.firstname}</p>
+              <p><strong>Last Name:</strong> {user.lastname}</p>
               <p><strong>Email:</strong> {user.email}</p>
               <p><strong>Age:</strong> {user.age || "N/A"}</p>
               <p><strong>Denomination:</strong> {user.denomination || "N/A"}</p>
