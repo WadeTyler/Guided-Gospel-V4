@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconX, IconDeviceFloppy, IconBackspaceFilled } from '@tabler/icons-react'
+import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
