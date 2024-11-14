@@ -17,6 +17,7 @@ declare global{
     bio: string;
     followers: number;
     following: number;
+    avatar: string;
   }
 
   interface Post {

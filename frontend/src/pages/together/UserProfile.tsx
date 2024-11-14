@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { IconUserPlus, IconMessages, IconFriendsOff } from '@tabler/icons-react'
+import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconX, IconDeviceFloppy, IconBackspaceFilled } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
 import Sidebar from '../../components/together/Sidebar';
 import Comment from '../../components/together/Comment';
+import Loading from '../../components/Loading';
 
 
 const UserProfile = () => {
@@ -194,7 +195,50 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
     
   }, [targetUser, followingList]);
 
-  
+  // editing self
+  const [editing, setEditing] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<File>();
+
+  const { mutate:changeAvatar, isPending:saving } = useMutation({
+    mutationFn: async () => {
+      try {
+
+        const form = new FormData();
+        avatar && form.append('avatar', avatar);
+
+        const response = await fetch('/api/user/changeavatar', {
+          method: "POST",
+          body: form
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error (data.message || "Something went wrong");
+        }
+        
+        console.log(data);
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: async () => {
+      setEditing(false);
+      setAvatar(undefined);
+      queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      toast.success("Profile updated successfully");
+    },
+    onError: async (error: Error) => {
+      toast.error(error.message || "Something went wrong");
+    }
+  })
+
+  const submitChanges = () => {
+    if (avatar) {
+      changeAvatar();
+    }
+  }
+
 
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
@@ -212,7 +256,29 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
           {/* User Profile */}
           <div className="w-full min-h-32 border-gray-300 border-[1px] flex flex-col justify-center p-8 dark:text-darktext">
             <div className="flex gap-4 w-full">
-              <img src="/images/default-avatar.jpg" alt="User Avatar" className="h-16 w-16 rounded-full" />
+              <div className="w-16 h-14 rounded-full relative">
+                <img src={authUser?.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${authUser.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full w-full h-full" />
+                {isSelf && editing && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="avatar"
+                    className='hidden'
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setAvatar(file);
+                        toast.success("Avatar Changed. Save Changes to see your new Avatar!");
+                      }
+                    }}
+                  />
+                )}
+                {isSelf && editing && !saving &&
+                  <label htmlFor="avatar"><IconEdit className='bg-primary w-6 h-6 p-1 rounded-full absolute bottom-0 right-0 hover:scale-110 cursor-pointer' /></label>
+                }
+
+              </div>
+              
               <section className="flex flex-col w-full">
                 <div className="flex justify-between w-full">
                   <section className="flex flex-col">
@@ -220,13 +286,39 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
                   <section className="action-btns flex items-center justify-center gap-8 text-primary">
-                    <button className="flex gap-2">
-                      {!isSelf && <span className='flex gap-2'><IconMessages /> Message</span>}
-                    </button>
-                    <button onClick={() => followUser()}>
-                      {!followingTarget && !isSelf && <span className='flex gap-2'> <IconUserPlus /> Follow</span>}
-                      {followingTarget && !isSelf && <span className='flex gap-2'> <IconFriendsOff /> Unfollow</span>}   
-                    </button>
+                    {isSelf && saving && <Loading cn="text-primary" size="md" />}
+                    {isSelf && !saving &&
+                      <div className="flex gap-8">
+                        {editing && 
+                          <button onClick={() => {
+                            submitChanges();
+                          }} className='flex gap-2'>
+                            <IconDeviceFloppy /> Save Changes
+                          </button>
+                        }
+                        <button onClick={() => {
+                          setEditing(!editing);
+                        }}
+                        className="flex gap-2">
+                          {!editing ? 
+                          <span className="flex gap-2"><IconEdit /> Edit Profile</span>  
+                          : 
+                          <span className="flex gap-2"><IconBackspaceFilled />Cancel Changes</span> }
+                        </button>
+                        
+                      </div>
+                    }
+                    {!isSelf && 
+                      <button className="flex gap-2">
+                        <span className='flex gap-2'><IconMessages /> Message</span>
+                      </button>
+                    }
+                    {!isSelf && 
+                      <button onClick={() => followUser()}>
+                        {!followingTarget && <span className='flex gap-2'> <IconUserPlus /> Follow</span>}
+                        {followingTarget && <span className='flex gap-2'> <IconFriendsOff /> Unfollow</span>}   
+                      </button>
+                    }
                   </section>
                 </div>
                 <section className="flex gap-2">

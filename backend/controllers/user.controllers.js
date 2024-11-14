@@ -12,6 +12,7 @@ const sendEmail = require('../lib/email/sendEmail.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 const checkEmailFormat = require('../lib/utils/checkEmailFormat');
 const isUsernameTaken = require('../lib/username/isUsernameTaken');
+const cloudinary = require('cloudinary').v2;
 
 const defaultRates = 50;
 
@@ -500,13 +501,47 @@ const isValidRecoveryToken = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const username = req.params.username;
-    const [userData] = await db.query('SELECT userid, username, followers, following, bio, createdat FROM user WHERE username = ?', [username]);
+    const [userData] = await db.query('SELECT userid, username, followers, following, bio, avatar, createdat FROM user WHERE username = ?', [username]);
 
     res.status(200).json(userData[0]);
   } catch (error) {
     console.log("Error in getUserProfile controller", error);
     return res.status(500).json({ message: "Internal server error" });
     
+  }
+}
+
+// Update Avatar
+const changeAvatar = async (req, res) => {
+  try {
+    
+    const userid = req.body.userid;
+
+    // upload avatar
+    const result = await cloudinary.uploader.upload_stream(
+      { resource_type: 'image' },
+      async (error, result) => {
+        if (error) throw error;
+
+        // Get and delete current avatar
+        const [currentAvatar] = await db.query("SELECT avatar FROM user WHERE userid = ?", [userid]);
+        console.log(currentAvatar);
+        if (currentAvatar.length > 0) {
+          await cloudinary.uploader.destroy(currentAvatar[0].avatar).then(result => console.log(result));
+        }
+        
+        // Store result.public_id in db
+        const publicID = result.public_id;
+        await db.query("UPDATE user SET avatar = ? WHERE userid = ?", [publicID, userid]);
+
+        return res.status(200).json({ message: "Profile updated successfully", avatar: result.public_id });
+      }
+    ).end(req.file.buffer);
+
+    
+  } catch (error) {
+    console.log("Error in changeAvatar controller", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -521,5 +556,6 @@ module.exports = {
   submitForgotPassword,
   resetPassword,
   isValidRecoveryToken,
-  getUserProfile
+  getUserProfile,
+  changeAvatar
 }
