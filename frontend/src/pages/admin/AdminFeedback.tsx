@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
-import { IconSearch } from "@tabler/icons-react";
 import { formatTimestamp } from "../../lib/utils";
 
 type Feedback = {
@@ -18,7 +17,7 @@ const AdminFeedback = () => {
   // Feedback useState
   const [feedback, setFeedback] = useState<Feedback[]>([]);
 
-  const [search, setSearch] = useState<string>('');
+
 
   // retrieve feedbacks from the database
   const getFeedback = async () => {
@@ -42,10 +41,6 @@ const AdminFeedback = () => {
     }
   }
 
-  // search for feedbacks
-  const submitSearch = async () => {
-
-  }
 
   // useEffect to get feedbacks
   useEffect(() => {
@@ -65,13 +60,7 @@ const AdminFeedback = () => {
         <header className="admin-panel-header">
             <h1 className="text-primary text-5xl">Feedback</h1>
             <div className="admin-panel-header-nav">
-              <form action="" className="flex form-input-bar" onSubmit={(e) => {
-                e.preventDefault();
-                submitSearch();
-              }}>
-                <input type="text" placeholder="This doesn't work right now... WIP" className="border-none w-full focus:ring-0 rounded-2xl bg-transparent" onChange={(e) => {setSearch(e.target.value)}} />
-                <button className="pr-2"><IconSearch /></button>
-              </form>
+
             </div>
           </header>
 

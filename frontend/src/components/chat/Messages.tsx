@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { formatTimestamp } from '../../lib/utils'
 import Loading from '../Loading';
 import { motion } from 'framer-motion';
@@ -17,9 +17,19 @@ const Messages = ({messages }: {
 
 }) => {
 
+  useEffect(() => {
+    const messagesContainer = document.getElementById('messages-container');
+    if (messagesContainer) {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        // behavior: 'smooth'
+      });
+    }
+  }, [messages]);
+
   return (
 
-    <div className="flex flex-col w-full h-full lg:pl-48 pt-16 lg:pb-16 mb-36 relative overflow-auto">
+    <div id="messages-container" className="flex flex-col w-full h-full lg:pl-48 pt-16 lg:pb-16 mb-36 relative overflow-auto">
       
       {messages.map((message, index) => (
           <motion.div 
