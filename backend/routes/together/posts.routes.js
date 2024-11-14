@@ -14,5 +14,7 @@ router.post("/:postid/like", protectedRoute, checkSuspended, checkIfPostExists, 
 router.post("/:postid/addComment", protectedRoute, checkSuspended, checkIfPostExists, postsController.addComment);
 router.get("/:postid/comments", protectedRoute, checkIfPostExists, postsController.getComments);
 router.get("/users/:username", protectedRoute, checkUsernameExistsParam, postsController.getUserPosts);
+router.get("/users/comments/:username", protectedRoute, checkUsernameExistsParam, postsController.getUserComments);
+router.get("/users/likes/:username", protectedRoute, checkUsernameExistsParam, postsController.getLikedPosts);
 
 module.exports = router;

@@ -7,12 +7,15 @@ import Post from '../../components/together/Post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
 import Sidebar from '../../components/together/Sidebar';
+import Comment from '../../components/together/Comment';
 
 
 const UserProfile = () => {
 
   const queryClient = useQueryClient();
   const username = useParams<{username:string}>().username;
+
+  const [type, setType] = useState<string>('posts');
 
   const [followingTarget, setFollowingTarget] = useState<boolean>(false);
   const [isSelf, setIsSelf] = useState<boolean>(false);
@@ -66,6 +69,55 @@ const UserProfile = () => {
     }
   });
 
+const { data:targetComments } = useQuery<Comment[]>({
+  queryKey: ['targetComments'],
+  queryFn: async () => {
+    try {
+      const response = await fetch(`/api/together/posts/users/comments/${username}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      return data;
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    }
+  }
+})
+
+const { data:targetLikedPosts } = useQuery<Post[]>({
+  queryKey: ['targetLikedPosts'],
+  queryFn: async () => {
+    try {
+      const response = await fetch(`/api/together/posts/users/likes/${username}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      console.log(data);
+    
+      return data;
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    }
+  }
+})
+
+
   const { mutate:followUser } = useMutation({
     mutationFn: async () => {
       try {
@@ -114,7 +166,16 @@ const UserProfile = () => {
   useEffect(() => {
     
     queryClient.invalidateQueries({ queryKey: ['targetUser'] });
-    queryClient.invalidateQueries({ queryKey: ['targetPosts'] });
+    if (type === 'posts') {
+      queryClient.invalidateQueries({ queryKey: ['targetPosts'] });
+    }
+    if (type === 'comments') {
+      queryClient.invalidateQueries({ queryKey: ['targetComments'] });
+    }
+
+    if (type === 'likes') {
+      queryClient.invalidateQueries({ queryKey: ['targetLikedPosts'] });
+    }
 
     // Check if is self
     if (authUser && username === authUser?.username) {
@@ -123,7 +184,7 @@ const UserProfile = () => {
       setIsSelf(false);
     }
 
-  }, [username]);
+  }, [username, type]);
 
   // Check if the user is following the target user
   useEffect(() => {
@@ -132,6 +193,7 @@ const UserProfile = () => {
     }
     
   }, [targetUser, followingList]);
+
   
 
   return (
@@ -181,11 +243,37 @@ const UserProfile = () => {
 
           {/* User Posts */}
           <div className="flex flex-col gap-4 mt-4">
-            <p className="text-primary text-2xl">User's Posts</p>
-            {targetPosts?.map((post) => (
-              <Post key={post.postid} post={post} />
-            ))}
-            {targetPosts?.length === 0 && <p className="text-primary text-2xl">No Posts Yet</p>}
+            <div className="w-full flex items-center justify-center gap-8 text-primary text-2xl">
+              <p 
+              onClick={() => setType('posts')}
+              className={`${type === "posts" ? 'border-b-2 border-b-primary' : 'hover:scale-110 text-darkbg dark:text-white'} pb-2 cursor-pointer duration-300`}>
+                Posts
+              </p>
+              <p 
+              onClick={() => setType('comments')}
+              className={`${type === "comments" ? 'border-b-2 border-b-primary' : 'hover:scale-110 text-darkbg dark:text-white'} pb-2 cursor-pointer duration-300`}>
+                Comments
+              </p>
+              <p
+              onClick={() => setType('likes')}
+              className={`${type === "likes" ? 'border-b-2 border-b-primary' : 'hover:scale-110 text-darkbg dark:text-white'} pb-2 cursor-pointer duration-300`}>
+                Likes
+              </p>
+            </div>
+            <div id="user-post-container" className="flex flex-col gap-4">
+              {type === "posts" && targetPosts?.map((post) => (
+                <Post key={post.postid} post={post} />
+              ))}
+              {type === "posts" && targetPosts?.length === 0 && <p className="text-primary text-2xl">No Posts Yet</p>}
+              {type === "comments" && targetComments?.map((comment) => (
+                <Comment key={comment.commentid} comment={comment} />
+              ))}
+              {type === "comments" && targetComments?.length === 0 && <p className="text-primary text-2xl">No Comments Yet</p>}
+              {type === "likes" && targetLikedPosts?.map((post) => (
+                <Post key={post.postid} post={post} />
+              ))}
+              {type === "likes" && targetLikedPosts?.length === 0 && <p className="text-primary text-2xl">No Liked Posts Yet</p>}
+            </div>
           </div>
         </div>}
         {!targetUser && 
