@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react';
-import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled } from '@tabler/icons-react'
+import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled, IconHammer } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
@@ -21,8 +21,12 @@ const UserProfile = () => {
   const [followingTarget, setFollowingTarget] = useState<boolean>(false);
   const [isSelf, setIsSelf] = useState<boolean>(false);
 
+  // authAdmin
+  const { data:authAdmin } = useQuery({ queryKey: ['authAdmin'] });
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const { data:followingList } = useQuery<Following[]>({ queryKey: ['followingList'] });
+
+  
 
   const { data:targetUser } = useQuery<User>({
     queryKey: ['targetUser'],
@@ -70,53 +74,53 @@ const UserProfile = () => {
     }
   });
 
-const { data:targetComments } = useQuery<Comment[]>({
-  queryKey: ['targetComments'],
-  queryFn: async () => {
-    try {
-      const response = await fetch(`/api/together/posts/users/comments/${username}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+  const { data:targetComments } = useQuery<Comment[]>({
+    queryKey: ['targetComments'],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/together/posts/users/comments/${username}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
         }
-      });
-      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
       }
-
-      return data;
-    } catch (error) {
-      toast.error((error as Error).message || "Something went wrong");
     }
-  }
-})
+  })
 
-const { data:targetLikedPosts } = useQuery<Post[]>({
-  queryKey: ['targetLikedPosts'],
-  queryFn: async () => {
-    try {
-      const response = await fetch(`/api/together/posts/users/likes/${username}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+  const { data:targetLikedPosts } = useQuery<Post[]>({
+    queryKey: ['targetLikedPosts'],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/together/posts/users/likes/${username}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
         }
-      });
-      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+        console.log(data);
+      
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
       }
-
-      console.log(data);
-    
-      return data;
-    } catch (error) {
-      toast.error((error as Error).message || "Something went wrong");
     }
-  }
-})
+  })
 
 
   const { mutate:followUser } = useMutation({
@@ -324,7 +328,11 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
               <section className="flex flex-col w-full">
                 <div className="flex justify-between w-full">
                   <section className="flex flex-col">
-                    <p className="">{targetUser?.username}</p>
+                    {/* Username and Admin Hammer */}
+                    <p className="flex gap-2">
+                      {targetUser?.username} 
+                      {authAdmin ? <Link to={`/admin/users/${targetUser.userid}`}> <IconHammer className='text-primary' /></Link> : '' }
+                    </p>
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
                   <section className="action-btns flex items-center justify-center gap-8 text-primary">
