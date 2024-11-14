@@ -299,7 +299,7 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
           <div className="w-full min-h-32 border-gray-300 border-[1px] flex flex-col justify-center p-8 dark:text-darktext">
             <div className="flex gap-4 w-full">
               <div className="w-16 h-14 rounded-full relative">
-                <img src={authUser?.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${authUser.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full w-16 h-14" />
+                <img src={targetUser?.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${targetUser.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full w-16 h-14" />
                 {isSelf && editing && (
                   <input
                     type="file"
