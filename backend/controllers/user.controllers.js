@@ -555,6 +555,28 @@ const changeAvatar = async (req, res) => {
   }
 };
 
+// Update user's bio...
+const updateTogetherProfile = async (req, res) => {
+  try {
+    const { userid, bio } = req.body;
+
+    // Update bio
+    if (bio) {
+      if (bio.length > 300) {
+        return res.status(400).json({ message: "Bio is too long. 300 characters max." });
+      }
+    
+      await db.query("UPDATE user SET bio = ? WHERE userid = ?", [bio, userid]);
+    }
+
+    return res.status(200).json({ message: "User profile updated successfully" });
+
+  } catch (error) {
+    console.log("Error in updateTogetherProfile controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 
 module.exports = {
   completeSignUp,
@@ -568,5 +590,6 @@ module.exports = {
   resetPassword,
   isValidRecoveryToken,
   getUserProfile,
-  changeAvatar
+  changeAvatar,
+  updateTogetherProfile
 }

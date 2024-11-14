@@ -198,8 +198,9 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
   // editing self
   const [editing, setEditing] = useState<boolean>(false);
   const [avatar, setAvatar] = useState<File>();
+  const [bio, setBio] = useState<string>(authUser?.bio || '');
 
-  const { mutate:changeAvatar, isPending:saving } = useMutation({
+  const { mutate:changeAvatar, isPending:savingAvatar } = useMutation({
     mutationFn: async () => {
       try {
 
@@ -226,16 +227,57 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
       setEditing(false);
       setAvatar(undefined);
       queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      queryClient.invalidateQueries({ queryKey: ['targetUser'] });
       toast.success("Profile updated successfully");
     },
     onError: async (error: Error) => {
       toast.error(error.message || "Something went wrong");
     }
-  })
+  });
+
+  const { mutate:updateUserProfile, isPending:saving } = useMutation({
+    mutationFn: async () => {
+      try {
+        if (bio.length > 300) {
+          throw new Error("Bio is too long. 300 characters max.");
+        }
+
+        const response = await fetch('/api/user/updatetogetherprofile', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ bio })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: async () => {
+      setEditing(false);
+      queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      queryClient.invalidateQueries({ queryKey: ['targetUser'] });
+      toast.success("Profile updated successfully");
+    },
+    onError: async (error: Error) => {
+      toast.error((error as Error).message || "Something went wrong")
+    }
+  }) 
 
   const submitChanges = () => {
     if (avatar) {
       changeAvatar();
+    }
+
+    if (bio) {
+      updateUserProfile();
     }
   }
 
@@ -273,7 +315,7 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
                     }}
                   />
                 )}
-                {isSelf && editing && !saving &&
+                {isSelf && editing && !savingAvatar && !saving &&
                   <label htmlFor="avatar"><IconEdit className='bg-primary w-6 h-6 p-1 rounded-full absolute bottom-0 right-0 hover:scale-110 cursor-pointer' /></label>
                 }
 
@@ -286,8 +328,8 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
                   <section className="action-btns flex items-center justify-center gap-8 text-primary">
-                    {isSelf && saving && <Loading cn="text-primary" size="md" />}
-                    {isSelf && !saving &&
+                    {isSelf && saving && !savingAvatar && <Loading cn="text-primary" size="md" />}
+                    {isSelf && !saving && !savingAvatar && 
                       <div className="flex gap-8">
                         {editing && 
                           <button onClick={() => {
@@ -325,9 +367,19 @@ const { data:targetLikedPosts } = useQuery<Post[]>({
                   <p className="text-xs">{targetUser?.followers} Followers</p>
                   <p className="text-xs">{targetUser?.following} Following</p>
                 </section>
-                <p className={`${targetUser?.bio ? 'text-sm' : 'text-xs text-gray-500'}`}>
-                  {targetUser?.bio || "This user has not set a bio yet"}
-                </p>
+                {!editing && 
+                  <p className={`${targetUser?.bio ? 'text-sm' : 'text-xs text-gray-500'}`}>
+                    {targetUser?.bio || "This user has not set a bio yet"}
+                  </p>
+                }
+                {editing && 
+                  <div className="flex flex-col gap-2 mt-2">
+                    <textarea name="bio" id="bio" className='text-sm text-gray-500 resize-none form-input-bar' defaultValue={targetUser?.bio} onChange={(e) => {
+                    setBio(e.target.value);
+                    }} />
+                    <p className="text-xs"><span className={`${bio.length > 300 ? 'text-red-500' : 'text-primary'}`}>{bio.length}</span>/300</p>
+                  </div>
+                }
               </section>
               
             </div>
