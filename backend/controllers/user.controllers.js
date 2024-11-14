@@ -511,39 +511,50 @@ const getUserProfile = async (req, res) => {
   }
 }
 
-// Update Avatar
 const changeAvatar = async (req, res) => {
   try {
-    
     const userid = req.body.userid;
 
-    // upload avatar
-    const result = await cloudinary.uploader.upload_stream(
-      { resource_type: 'image' },
-      async (error, result) => {
-        if (error) throw error;
+    // Ensure req.file.buffer exists
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: "No file provided" });
+    }
 
-        // Get and delete current avatar
-        const [currentAvatar] = await db.query("SELECT avatar FROM user WHERE userid = ?", [userid]);
-        console.log(currentAvatar);
-        if (currentAvatar.length > 0) {
-          await cloudinary.uploader.destroy(currentAvatar[0].avatar).then(result => console.log(result));
-        }
-        
-        // Store result.public_id in db
-        const publicID = result.public_id;
-        await db.query("UPDATE user SET avatar = ? WHERE userid = ?", [publicID, userid]);
+    // Upload avatar using a Promise wrapper
+    const uploadImage = () =>
+      new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: 'image' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
 
-        return res.status(200).json({ message: "Profile updated successfully", avatar: result.public_id });
-      }
-    ).end(req.file.buffer);
+    // Upload image
+    const result = await uploadImage();
 
+    // Get and delete the current avatar
+    const [currentAvatar] = await db.query("SELECT avatar FROM user WHERE userid = ?", [userid]);
+    if (currentAvatar.length > 0 && currentAvatar[0].avatar) {
+      await cloudinary.uploader.destroy(currentAvatar[0].avatar);
+    }
+
+    // Store result.public_id in the database
+    const publicID = result.public_id;
+    await db.query("UPDATE user SET avatar = ? WHERE userid = ?", [publicID, userid]);
+
+    // Respond with success
+    return res.status(200).json({ message: "Profile updated successfully", avatar: result.public_id });
     
   } catch (error) {
-    console.log("Error in changeAvatar controller", error);
+    console.error("Error in changeAvatar controller:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+
 
 module.exports = {
   completeSignUp,

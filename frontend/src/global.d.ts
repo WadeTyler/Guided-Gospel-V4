@@ -30,6 +30,7 @@ declare global{
     content: string;
     likes: number;
     comments: number;
+    avatar: string;
   }
 
   interface Like {
@@ -46,6 +47,7 @@ declare global{
     timestamp: string;
     content: string;
     suspended: number;
+    avatar: string;
   }
 
   interface Following {

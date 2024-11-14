@@ -15,7 +15,7 @@ const Comment = ({comment}: {comment:Comment}) => {
     <div className="original-post border-[1px] border-gray-300 p-4 rounded-2xl w-full h-fit dark:text-white">
 
           <div className="flex gap-2 items-center">
-            <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${comment.username}`)} />
+            <img src={comment.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${comment.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${comment.username}`)} />
             <section className="flex flex-col justify-center">
               <p className="cursor-pointer hover:underline" onClick={() => navigate(`/together/users/${comment.username}`)} >{comment.username}</p>
               <p className="text-xs text-gray-500">{formatTimestampToDifference(comment.timestamp)}</p>

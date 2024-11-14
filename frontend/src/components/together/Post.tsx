@@ -69,7 +69,7 @@ const Post = ({post}: {post:Post}) => {
 
       <div className="flex gap-2 items-center">
         {/* Avatar */}
-        <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)} />
+        <img src={post.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${post.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)} />
         <section className="flex flex-col justify-center">
           <p className="hover:underline cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)}>{post.username}</p>
           <p className="text-xs text-gray-500">{formatTimestampToDifference(post.timestamp)}</p>
