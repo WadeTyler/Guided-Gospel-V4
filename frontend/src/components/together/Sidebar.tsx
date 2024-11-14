@@ -62,7 +62,7 @@ const Sidebar = () => {
       {/* User Profile Section */}
       {authUser && 
         <section className="flex gap-4 text-white items-center justify-center absolute bottom-5">
-          <img src="/images/testimonials/David.png" alt="User Profile Image" className="w-12 h-12" />
+          <img src={authUser?.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${authUser.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full w-14 h-14" />
           <div className="flex flex-col">
             <p className="font-bold">{authUser.username}</p>
             <Link to={`/together/users/${authUser?.username}`} className="text-xs text-gray-200 hover:underline">View Profile</Link>
