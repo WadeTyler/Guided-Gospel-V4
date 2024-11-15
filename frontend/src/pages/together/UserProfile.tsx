@@ -360,7 +360,7 @@ const UserProfile = () => {
                 toast.success("Banner Changed. Save Changes to see your new Banner.");
               }
             }} />}
-            {isSelf && editing && !savingAvatar && !saving &&
+            {isSelf && editing && !savingAvatar && !savingBanner && !saving &&
               <label htmlFor="banner"><IconEdit className='bg-primary w-6 h-6 p-1 rounded-full absolute bottom-2 right-2 hover:scale-110 cursor-pointer' /></label>
             }
           </div>
@@ -385,7 +385,7 @@ const UserProfile = () => {
                     }}
                   />
                 )}
-                {isSelf && editing && !savingAvatar && !saving &&
+                {isSelf && editing && !savingAvatar && !savingBanner && !saving &&
                   <label htmlFor="avatar"><IconEdit className='bg-primary w-6 h-6 p-1 rounded-full absolute bottom-0 right-0 hover:scale-110 cursor-pointer' /></label>
                 }
 
@@ -402,8 +402,8 @@ const UserProfile = () => {
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
                   <section className="action-btns flex items-center justify-center gap-8 text-primary">
-                    {isSelf && saving && !savingAvatar && <Loading cn="text-primary" size="md" />}
-                    {isSelf && !saving && !savingAvatar && 
+                    {isSelf && saving && !savingAvatar && !savingBanner && <Loading cn="text-primary" size="md" />}
+                    {isSelf && !saving && !savingAvatar && !savingBanner && 
                       <div className="flex gap-8">
                         {editing && 
                           <button onClick={() => {
