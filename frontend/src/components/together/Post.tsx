@@ -57,7 +57,7 @@ const Post = ({post}: {post:Post}) => {
   }
 
   return (
-    <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 dark:text-darktext p-4 rounded-2xl relative'>
+    <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 hover:border-primary duration-300 shadow-lg dark:text-darktext p-4 rounded-2xl relative'>
 
       {/* Delete Button */}
       {authUser?.userid === post.userid &&

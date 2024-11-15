@@ -89,7 +89,7 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
           </button>
         </div>
         {/* Original Post */}
-        <div className="original-post border-[1px] border-gray-300 p-4 rounded-2xl">
+        <div className="original-post border-[1px] border-gray-300 hover:border-primary duration-300 shadow-md p-4 rounded-2xl">
 
           <div className="flex gap-2 items-center">
             <img src="/images/default-avatar.jpg" alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" onClick={() => navigate(`/together/users/${post.username}`)} />
