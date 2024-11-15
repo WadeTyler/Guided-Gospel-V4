@@ -18,6 +18,7 @@ declare global{
     followers: number;
     following: number;
     avatar: string;
+    banner: string;
   }
 
   interface Post {

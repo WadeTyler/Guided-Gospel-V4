@@ -203,7 +203,9 @@ const UserProfile = () => {
   const [editing, setEditing] = useState<boolean>(false);
   const [avatar, setAvatar] = useState<File>();
   const [bio, setBio] = useState<string>(authUser?.bio || '');
+  const [banner, setBanner] = useState<File>();
 
+  // Change user's avatar
   const { mutate:changeAvatar, isPending:savingAvatar } = useMutation({
     mutationFn: async () => {
       try {
@@ -239,6 +241,43 @@ const UserProfile = () => {
     }
   });
 
+  // Change user's profile banner
+  const { mutate:changeBanner, isPending:savingBanner } = useMutation({
+    mutationFn: async () => {
+      try {
+
+        const form = new FormData();
+        banner && form.append('banner', banner);
+
+        const response = await fetch('/api/user/changebanner', {
+          method: "POST",
+          body: form
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error (data.message || "Something went wrong");
+        }
+        
+        console.log(data);
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: async () => {
+      setEditing(false);
+      setBanner(undefined);
+      queryClient.invalidateQueries({ queryKey: ['authUser'] });
+      queryClient.invalidateQueries({ queryKey: ['targetUser'] });
+      toast.success("Profile updated successfully");
+    },
+    onError: async (error: Error) => {
+      toast.error(error.message || "Something went wrong");
+    }
+  });
+
+  // Update user profile... currently only updates bio
   const { mutate:updateUserProfile, isPending:saving } = useMutation({
     mutationFn: async () => {
       try {
@@ -273,22 +312,31 @@ const UserProfile = () => {
     onError: async (error: Error) => {
       toast.error((error as Error).message || "Something went wrong")
     }
-  }) 
+  });
 
+
+  
+  // Submit change user profile
   const submitChanges = () => {
+    // Check if changing avatar
     if (avatar) {
       changeAvatar();
     }
+    // Check if changing banner
+    if (banner) {
+      changeBanner();
+    }
+    // check else
     if (bio !== authUser?.bio) {
       updateUserProfile();
     } 
+    // If no changes just stop editing
     else {
       setEditing(false);
     }
-
-
   }
 
+  
 
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
@@ -299,12 +347,26 @@ const UserProfile = () => {
         
         {targetUser && <div className="">
           {/* Banner Image */}
-          <div className="w-full h-32 bg-zinc-500 flex items-center justify-start">
-
+          <div className="w-full h-32 flex items-center justify-start relative dark:text-darktext">
+            {/* Banner */}
+            {targetUser?.banner && <img src={`https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${targetUser.banner}`} alt="User Profile Banner" className="w-full h-full object-cover" />}
+            {!targetUser?.banner && 
+              <div className="w-full h-full bg-zinc-500"></div>
+            }
+            {isSelf && editing && <input type="file" accept="image/*" id="banner" className='hidden' onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setBanner(file);
+                toast.success("Banner Changed. Save Changes to see your new Banner.");
+              }
+            }} />}
+            {isSelf && editing && !savingAvatar && !saving &&
+              <label htmlFor="banner"><IconEdit className='bg-primary w-6 h-6 p-1 rounded-full absolute bottom-2 right-2 hover:scale-110 cursor-pointer' /></label>
+            }
           </div>
 
           {/* User Profile */}
-          <div className="w-full min-h-32 border-gray-300 border-[1px] flex flex-col justify-center p-8 dark:text-darktext">
+          <div className="w-full min-h-32 border-gray-300 border-[1px] flex flex-col justify-center p-8 dark:text-darktext rounded-b-xl">
             <div className="flex gap-4 w-full">
               <div className="w-16 h-14 rounded-full relative">
                 <img src={targetUser?.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${targetUser.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full w-16 h-14" />
@@ -335,7 +397,7 @@ const UserProfile = () => {
                     {/* Username and Admin Hammer */}
                     <p className="flex gap-2">
                       {targetUser?.username} 
-                      {authAdmin ? <Link to={`/admin/users/${targetUser.userid}`}> <IconHammer className='text-primary' /></Link> : '' }
+                      {authAdmin ? <Link to={`/admin/users/${targetUser.userid}`} target="_blank"> <IconHammer className='text-primary' /></Link> : '' }
                     </p>
                     <p className="text-gray-500 text-xs">{formatTimestampToDifference(targetUser?.createdat || '')}</p>
                   </section>
@@ -399,7 +461,7 @@ const UserProfile = () => {
 
           {/* User Posts */}
           <div className="flex flex-col gap-4 mt-4">
-            <div className="w-full flex items-center justify-center gap-8 text-primary text-2xl">
+            <div className="w-full flex items-center justify-center gap-8 text-primary text-lg">
               <p 
               onClick={() => setType('posts')}
               className={`${type === "posts" ? 'border-b-2 border-b-primary' : 'hover:scale-110 text-darkbg dark:text-white'} pb-2 cursor-pointer duration-300`}>

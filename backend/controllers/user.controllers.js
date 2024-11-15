@@ -501,7 +501,7 @@ const isValidRecoveryToken = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const username = req.params.username;
-    const [userData] = await db.query('SELECT userid, username, followers, following, bio, avatar, createdat FROM user WHERE username = ?', [username]);
+    const [userData] = await db.query('SELECT userid, username, followers, following, bio, avatar, banner, createdat FROM user WHERE username = ?', [username]);
 
     res.status(200).json(userData[0]);
   } catch (error) {
@@ -555,19 +555,64 @@ const changeAvatar = async (req, res) => {
   }
 };
 
+const changeBanner = async (req, res) => {
+  try {
+    const userid = req.body.userid;
+
+    // Ensure req.file.buffer exists
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ message: "No file provided" });
+    }
+
+    // Upload banner using a Promise wrapper
+    const uploadImage = () =>
+    new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { resource_type: 'image' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+
+    // Upload image
+    const result = await uploadImage();
+
+    // Get and delete the current banner
+    const [currentBanner] = await db.query("SELECT banner FROM user WHERE userid = ?", [userid]);
+    if (currentBanner.length > 0 && currentBanner[0].banner) {
+      await cloudinary.uploader.destroy(currentBanner[0].banner);
+    }
+
+    // Store result.public_id in the database
+    const publicID = result.public_id;
+    await db.query("UPDATE user SET banner = ? WHERE userid = ?", [publicID, userid]);
+
+    // Respond with success
+    return res.status(200).json({ message: "Profile updated successfully", banner: result.public_id });
+    
+  } catch (error) {
+    console.error("Error in changeBanner controller:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
 // Update user's bio...
 const updateTogetherProfile = async (req, res) => {
   try {
     const { userid, bio } = req.body;
 
     // Update bio
-    if (bio) {
-      if (bio.length > 300) {
-        return res.status(400).json({ message: "Bio is too long. 300 characters max." });
-      }
-    
-      await db.query("UPDATE user SET bio = ? WHERE userid = ?", [bio, userid]);
+    if (bio.length > 300) {
+      return res.status(400).json({ message: "Bio is too long. 300 characters max." });
     }
+    
+    await db.query("UPDATE user SET bio = ? WHERE userid = ?", [bio, userid]);
+
 
     return res.status(200).json({ message: "User profile updated successfully" });
 
@@ -591,5 +636,6 @@ module.exports = {
   isValidRecoveryToken,
   getUserProfile,
   changeAvatar,
+  changeBanner,
   updateTogetherProfile
 }

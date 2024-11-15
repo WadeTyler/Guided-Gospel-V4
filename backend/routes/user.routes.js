@@ -31,6 +31,7 @@ router.get("/validrecoverytoken/:recoveryToken", userController.isValidRecoveryT
 router.delete("/", protectedRoute, checkSuspended, userController.deleteUser);
 router.get("/:username", protectedRoute, checkUsernameExistsParam, userController.getUserProfile);
 router.post("/changeavatar", upload.single('avatar'), protectedRoute, userController.changeAvatar);
+router.post("/changebanner", upload.single('banner'), protectedRoute, userController.changeBanner);
 router.post("/updatetogetherprofile", protectedRoute, userController.updateTogetherProfile);
 
 module.exports = router;
