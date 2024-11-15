@@ -54,5 +54,14 @@ declare global{
   interface Following {
     followingid: string;
   }
+
+  interface Report {
+    violationid: number;
+    content: string;
+    timestamp: string;
+    violatorid: string;
+    reporterid: string;
+    postid: number;
+  }
 }
 

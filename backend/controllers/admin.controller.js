@@ -130,7 +130,7 @@ const resetRates = async (req, res) => {
   try {
     const userid = req.params.userid;
     if (!userid) {
-      return res.status(400).json({ error: "Missing required fields" });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
     const query = `UPDATE user SET rates = defaultrates WHERE userid = ?`;
@@ -140,8 +140,24 @@ const resetRates = async (req, res) => {
 
   } catch (error) {
     console.log("Error in resetRates controller: ", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ message: "Internal Server Error" });
     
+  }
+}
+
+// Get all post reports
+
+const getAllPostReports = async (req, res) => {
+  try {
+    const query = "SELECT * from violations WHERE violation_type = ?";
+    const values = ['report_post'];
+
+    const [reports] = await db.query(query, values);
+
+    return res.status(200).json(reports);
+  } catch (error) {
+    console.log("Error in getAllPostReports Controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -153,5 +169,6 @@ module.exports = {
   getUserData,
   suspendAndUnsuspendUser,
   setDefaultRates,
-  resetRates
+  resetRates,
+  getAllPostReports
 }

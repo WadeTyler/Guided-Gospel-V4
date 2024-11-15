@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import '../../styles/admin-styles.css';
 
-import { IconLayoutDashboardFilled, IconBatteryAutomotiveFilled, IconUsersGroup, IconBugFilled } from '@tabler/icons-react';
+import { IconLayoutDashboardFilled, IconBatteryAutomotiveFilled, IconUsersGroup, IconBugFilled, IconFlag } from '@tabler/icons-react';
 
 const AdminSidebar = () => {
   return (
@@ -28,6 +28,10 @@ const AdminSidebar = () => {
         <Link to="/admin/bugreports" className="admin-sidebar-item">
           <IconBugFilled />
           Bug Reports
+        </Link>
+        <Link to="/admin/postreports" className="admin-sidebar-item">
+          <IconFlag />
+          Post Reports
         </Link>
       </section>
     </div>

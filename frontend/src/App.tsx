@@ -30,6 +30,7 @@ import Loading from './components/Loading';
 import { useEffect } from 'react';
 import AdminFeedback from './pages/admin/AdminFeedback';
 import AdminBugReports from './pages/admin/AdminBugReports';
+import AdminPostReports from './pages/admin/AdminPostReports';
 
 
 export default function App() {
@@ -176,6 +177,7 @@ export default function App() {
           <Route path="/admin/users/:userid" element={ authAdmin ? <AdminUserPage /> : <Navigate to="/login" /> } />
           <Route path="/admin/feedback" element={ authAdmin ? <AdminFeedback /> : <Navigate to="/login" /> } />
           <Route path="/admin/bugreports" element={ authAdmin ? <AdminBugReports /> : <Navigate to="/login" /> } />
+          <Route path="/admin/postreports" element={ authAdmin ? <AdminPostReports /> : <Navigate to="/login" /> } />
 
           {/* Guided Together */}
           <Route path="/together" element={ authUser ? <GuidedTogether /> : <Navigate to="/login" /> } />
