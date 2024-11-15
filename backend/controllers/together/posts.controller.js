@@ -328,6 +328,48 @@ const getComments = async (req, res) => {
 }
 
 
+// Report a user's posts - Needs: content (why reporting), reporter's userid, violator's userid. 
+const reportPost = async (req, res) => {
+  try {
+
+    const content = req.body.content;
+    const reporterid = req.body.userid;
+    const violation_type = "report_post";
+    const timestamp = getTimestampInSQLFormat();
+    const postid = req.body.postid;
+
+    // Check for fields
+    if (!postid) {
+      return res.status(400).json({ message: "postid is required." });
+    }
+
+    if (!content) {
+      return res.status(400).json({ message: "content is required." });
+    }
+
+    // Check if user already reported this post
+    const checkQuery = 'SELECT * FROM violations WHERE reporterid = ? AND postid = ?';
+    const [reports] = await db.query(checkQuery, [reporterid, postid]);
+    if (reports.length > 0) {
+      return res.status(409).json({ message: "You have already reported this post." });
+    }
+
+    // Add report to database
+    const query = `INSERT INTO violations (content, violation_type, timestamp, violatorid, reporterid, postid) VALUES (
+      ?, ?, ?, (SELECT userid FROM together_posts WHERE postid = ?), ?, ?)`;
+    const values = [content, violation_type, timestamp, postid, reporterid, postid];
+
+    await db.query(query, values);
+
+    return res.status(200).json({ message: "Report successfully made. Thank You." });
+
+  } catch (error) {
+    console.log("Error in reportPost controller: ", error);
+    return res.status(500).json({ message: "Interal Server Error" });
+  }
+}
+
+
 module.exports = {
   getAllPosts,
   createPost,
@@ -338,5 +380,6 @@ module.exports = {
   getComments,
   getUserPosts,
   getUserComments,
-  getLikedPosts
+  getLikedPosts,
+  reportPost
 }

@@ -1,6 +1,6 @@
 
 import { useState, useEffect, SetStateAction } from 'react';
-import { IconHeartFilled, IconMessageDots } from '@tabler/icons-react';
+import { IconHeartFilled, IconMessageDots, IconFlag, IconX } from '@tabler/icons-react';
 import { checkIfPostLikedByUser, formatTimestampToDifference } from "../../lib/utils"
 import toast from 'react-hot-toast';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +16,7 @@ const Post = ({post}: {post:Post}) => {
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const [viewingComments, setViewingComments] = useState<Boolean>(false);
   const [deletingPost, setDeletingPost] = useState<Boolean>(false);
+  const [reportingPost, setReportingPost] = useState<Boolean>(false);
 
   const navigate = useNavigate();
 
@@ -90,9 +91,17 @@ const Post = ({post}: {post:Post}) => {
           <IconMessageDots onClick={() => {setViewingComments(true)}} className={`cursor-pointer hover:scale-90 transition-all duration-300 ease-in-out hover:text-zinc-800 dark:hover:text-zinc-600`}/>
           <p className="">{post.comments}</p>
         </section>
+
+        {(authUser?.userid !== post.userid) && 
+          <section onClick={() => setReportingPost(true)}
+          className="flex gap-2 items-center justify-center text-xs text-zinc-500 dark:text-zinc-300 hover:text-red-500 cursor-pointer hover:scale-90 duration-300">
+            <IconFlag />
+          </section>
+        }
       </div>
 
       {viewingComments && <Comments post={post} handleLike={handleLike} isLiked={isLiked} setViewingComments={setViewingComments} />}
+      {reportingPost && <ReportingPost post={post} setReportingPost={setReportingPost} />}
     </div>
   )
 }
@@ -148,6 +157,62 @@ const DeletingPost = ({post, setDeletingPost}: {post:Post; setDeletingPost:React
       </div>
     </div>
   )
+}
+
+const ReportingPost = ({post, setReportingPost}: {post:Post, setReportingPost: React.Dispatch<SetStateAction<Boolean>>;}) => {
+  const [content, setContent] = useState<String>('');
+
+  const {mutate:submitReport, isPending} = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await fetch('/api/together/posts/report', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ content, postid: post.postid }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        return data;
+
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Report Submitted. Thank You.");
+      setReportingPost(false);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Something went wrong");
+    }
+  })
+
+  return (
+    <div className="w-full min-h-screen fixed bg-[rgba(0,0,0,.8)] flex items-center justify-center top-0 left-0 z-50">
+
+      <div className="bg-white rounded-xl w-96 relative flex flex-col items-center pt-8 p-8 gap-4">
+        <IconX className='absolute top-2 right-2 hover:text-red-500 cursor-pointer' onClick={() => setReportingPost(false)}/>
+          <h4 className="text-primary text-3xl w-full text-end">Report Post</h4>
+          <textarea onChange={(e) => {
+            setContent(e.target.value);
+          }}
+          disabled={isPending}
+          className='form-input-bar resize-none h-32' placeholder='Why are you reporting this post?' />
+          <div className="flex gap-4 items-center justify-center">
+            {!isPending && <button onClick={() => submitReport()} className="submit-btn">Submit Report</button>}
+          </div>
+      </div>
+
+    </div>
+  )
+
 }
 
 export default Post
