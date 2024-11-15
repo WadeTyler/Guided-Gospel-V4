@@ -279,10 +279,14 @@ const UserProfile = () => {
     if (avatar) {
       changeAvatar();
     }
-
-    if (bio) {
+    if (bio !== authUser?.bio) {
       updateUserProfile();
+    } 
+    else {
+      setEditing(false);
     }
+
+
   }
 
 
