@@ -46,7 +46,7 @@ const Sidebar = () => {
           <IconMessages />
           <p>Messages</p>
         </Link>
-        <Link to="/together" className="flex gap-4 hover:text-white">
+        <Link to="/together/notifications" className="flex gap-4 hover:text-white">
           <IconBellFilled />
           <p>Notifications</p>
         </Link>

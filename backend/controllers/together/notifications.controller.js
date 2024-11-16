@@ -30,7 +30,7 @@ const getUserNotifications = async (req, res) => {
     const receiverid = req.body.userid;
 
     // Get data from database
-    const [notifications] = await db.query('SELECT * FROM notifications WHERE receiverid = ?', [receiverid]);
+    const [notifications] = await db.query('SELECT notifications.*, user.username AS sender_username FROM notifications JOIN user ON notifications.senderid = user.userid WHERE receiverid = ? ORDER BY timestamp DESC', [receiverid]);
     return res.status(200).json(notifications);
   } catch (error) {
     console.log("Error in getUserNotifications controller: ", error);

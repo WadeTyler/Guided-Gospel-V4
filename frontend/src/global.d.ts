@@ -65,3 +65,12 @@ declare global{
   }
 }
 
+interface NotificationType {
+  notificationid: number;
+  receiverid: string;
+  senderid: string;
+  type: string;
+  seen: number;
+  sender_username: string;
+
+}

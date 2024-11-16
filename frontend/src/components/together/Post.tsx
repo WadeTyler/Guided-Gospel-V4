@@ -44,9 +44,22 @@ const Post = ({post}: {post:Post}) => {
         post.likes -= 1;
       } else {
         post.likes += 1;
+        
+        // Send like notification
+        const notificationResponse = await fetch('/api/together/notifications/create', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ type: "like", receiverid: post.userid })
+        });
+        const notificationData = await notificationResponse.json();
+  
+        if (!notificationResponse.ok) throw new Error(notificationData.message);
       }
 
       setIsLiked(!isLiked);
+
     } catch (error) {
       toast.error((error as Error).message || "Something went wrong");
     }

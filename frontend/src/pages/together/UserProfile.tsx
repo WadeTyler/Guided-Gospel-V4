@@ -138,6 +138,21 @@ const UserProfile = () => {
           throw new Error(data.message || "Something went wrong");
         }
 
+        // Send follow notification
+        if (!followingTarget) {
+          const notificationResponse = await fetch('/api/together/notifications/create', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ type: "follow", receiverid: targetUser?.userid })
+          });
+          const notificationData = await notificationResponse.json();
+    
+          if (!notificationResponse.ok) throw new Error(notificationData.message);
+        }
+        
+
         return data;
       } catch (error) {
         throw new Error((error as Error).message || "Something went wrong");

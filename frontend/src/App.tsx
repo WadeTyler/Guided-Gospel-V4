@@ -23,6 +23,7 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminUserPage from './pages/admin/AdminUserPage';
 import GuidedTogether from './pages/together/GuidedTogether';
 import UserProfile from './pages/together/UserProfile';
+import Notifications from './pages/together/Notifications';
 
 // Components
 import { Navbar } from './components/floating-dock';
@@ -178,11 +179,11 @@ export default function App() {
           <Route path="/admin/feedback" element={ authAdmin ? <AdminFeedback /> : <Navigate to="/login" /> } />
           <Route path="/admin/bugreports" element={ authAdmin ? <AdminBugReports /> : <Navigate to="/login" /> } />
           <Route path="/admin/postreports" element={ authAdmin ? <AdminPostReports /> : <Navigate to="/login" /> } />
-
           {/* Guided Together */}
           <Route path="/together" element={ authUser ? <GuidedTogether /> : <Navigate to="/login" /> } />
           <Route path="/together/users/:username" element={authUser ? <UserProfile /> : <Navigate to="/login" /> } />
-
+          <Route path="/together/notifications" element={authUser ? <Notifications /> : <Navigate to="/login" />} />
+          
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
