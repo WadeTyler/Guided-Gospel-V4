@@ -149,7 +149,7 @@ const resetRates = async (req, res) => {
 
 const getAllPostReports = async (req, res) => {
   try {
-    const query = "SELECT * from violations WHERE violation_type = ?";
+    const query = "SELECT * from violations WHERE violation_type = ? ORDER BY timestamp DESC";
     const values = ['report_post'];
 
     const [reports] = await db.query(query, values);
