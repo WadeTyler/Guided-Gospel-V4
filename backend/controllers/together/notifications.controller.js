@@ -9,7 +9,7 @@ const createNotification = async (req, res) => {
     if (!type || !senderid) {
       return res.status(400).json({ message: "Type and Senderid are required" });
     }
-    console.log(type);
+
     // Check valid type 
     if (type !== "follow" && type !== "like") {
       return res.status(400).json({ message: "Invalid Type." });
@@ -25,6 +25,20 @@ const createNotification = async (req, res) => {
   }
 }
 
+const getUserNotifications = async (req, res) => {
+  try {
+    const receiverid = req.body.userid;
+
+    // Get data from database
+    const [notifications] = await db.query('SELECT * FROM notifications WHERE receiverid = ?', [receiverid]);
+    return res.status(200).json(notifications);
+  } catch (error) {
+    console.log("Error in getUserNotifications controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
-  createNotification
+  createNotification,
+  getUserNotifications,
 }

@@ -5,5 +5,6 @@ const protectedRoute = require("../../middleware/protectedRoute");
 
 
 router.post("/create", protectedRoute, notificatonController.createNotification);
+router.get('/all', protectedRoute, notificatonController.getUserNotifications);
 
 module.exports = router;
