@@ -11,7 +11,7 @@ const Notifications = () => {
   const queryClient = useQueryClient();
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
 
-  const { data:notifications, isPending } = useQuery<NotificationType[]>({
+  const { data:notifications, isPending:isLoadingNotifications } = useQuery<NotificationType[]>({
     queryKey: ['notifications'],
     queryFn: async () => {
       try {
@@ -33,7 +33,7 @@ const Notifications = () => {
   });
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['notificatons'] });
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
   },[]);
 
   //  clear all notifiations
@@ -78,7 +78,7 @@ const Notifications = () => {
           </div>
 
           <div className="flex flex-col gap-4 pb-24">
-            {notifications && notifications.map((notification) => (
+            {notifications && !isLoadingNotifications && notifications.map((notification) => (
               <div className="">
                 {notification.type === "follow" && 
                   <p className="flex">{formatTimestampToDifference(notification.timestamp)} - <IconUserPlus /> - <Link to={`/together/users/${notification.sender_username}`} className='hover:text-primary cursor-pointer hover:underline'>{notification.sender_username} has followed you!</Link> </p>
@@ -88,6 +88,7 @@ const Notifications = () => {
                 }
               </div>
             ))}
+            {isLoadingNotifications && <Loading size="lg" cn='text-primary' />}
           </div>
 
       </div>
