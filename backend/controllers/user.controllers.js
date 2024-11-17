@@ -24,7 +24,6 @@ const completeSignUp = async (req, res) => {
     }
 
     if (!username || !firstname || !lastname || !email || !password) {
-      console.log(username, firstname, lastname, email, password);
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -334,10 +333,8 @@ const getMe = async (req, res) => {
   try {
     const userid = req.body.userid;
 
-    console.log("Userid: ", userid);
     const query = 'SELECT * FROM user WHERE userid = ?';
     const [userData] = await db.query(query, [userid]);
-    console.log(userData);
 
     if (!userData || userData.length === 0) {
       return res.status(404).json({ message: "User not found" });
