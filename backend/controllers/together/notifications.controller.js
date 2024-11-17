@@ -14,8 +14,27 @@ const createNotification = async (req, res) => {
     if (type !== "follow" && type !== "like") {
       return res.status(400).json({ message: "Invalid Type." });
     }
+
+    const timestamp = getTimestampInSQLFormat();
+
+    // Check if notification already exists
+    const checkQuery = 'SELECT * FROM notifications WHERE receiverid = ? AND type = ? ORDER BY timestamp DESC LIMIT 1';
+    const [checks] = await db.query(checkQuery, [receiverid, type]);
+    if (checks.length > 0) {
+      // Check timestamp on notificaton. If less than 3 hours, return. 
+      const lastTimestamp = new Date(checks[0].timestamp);
+      const currentTimestamp = new Date(timestamp);
+      const threeHoursMs = (1000 * 60 * 60 * 3);      
+      const difference = currentTimestamp - lastTimestamp;
+
+      if (difference < threeHoursMs) { 
+        console.log("Here");
+        return res.status(200).json({ message: "Notification already exists." });
+      }
+
+    }
   
-    const values = [receiverid, getTimestampInSQLFormat(), type, 0, senderid];
+    const values = [receiverid, timestamp, type, 0, senderid];
     await db.query("INSERT INTO notifications (receiverid, timestamp, type, seen, senderid) VALUES(?, ?, ?, ?, ?)", values);
 
     return res.status(200).json({ message: "Notification added successfully" });
@@ -38,7 +57,22 @@ const getUserNotifications = async (req, res) => {
   }
 }
 
+const deleteAllNotifications = async (req, res) => {
+  try {
+    const userid = req.body.userid;
+
+    const query = 'DELETE FROM notifications WHERE receiverid = ?';
+    await db.query(query, [userid]);
+
+    return res.status(200).json({ message: "All notifications deleted successfully" });
+  } catch (error) {
+    console.log("Error in deleteAllNotifications controller, ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   createNotification,
   getUserNotifications,
+  deleteAllNotifications
 }

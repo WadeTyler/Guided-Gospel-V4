@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react'
 import Sidebar from '../../components/together/Sidebar'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast';
 import { formatTimestamp, formatTimestampToDifference } from '../../lib/utils';
-import { IconFriendsOff, IconHeartFilled, IconUserPlus } from '@tabler/icons-react';
+import { IconFriendsOff, IconHeartFilled, IconTrash, IconUserPlus } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
+import Loading from '../../components/Loading';
 
 const Notifications = () => {
   const queryClient = useQueryClient();
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
 
   const { data:notifications, isPending } = useQuery<NotificationType[]>({
-    queryKey: ['notificatons'],
+    queryKey: ['notifications'],
     queryFn: async () => {
       try {
         const response = await fetch("/api/together/notifications/all", {
@@ -35,12 +36,46 @@ const Notifications = () => {
     queryClient.invalidateQueries({ queryKey: ['notificatons'] });
   },[]);
 
+  //  clear all notifiations
+  const { mutate:clearNotifications, isPending:clearingNotifications } = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await fetch('/api/together/notifications/all', {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+        if (!response.ok) { 
+          throw new Error(data.message);
+        }
+
+        return data;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    },
+    onSuccess: () => {
+      toast.success("Notificatons Cleared");
+      queryClient.invalidateQueries({ queryKey: ['notifications']} );
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Something went wrong" );
+    }
+  })
+
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
       <Sidebar />
 
-      <div className="w-[40rem] mt-24 flex flex-col gap-8 dark:text-darktext">
+      <div className="w-[40rem] mt-24 flex flex-col gap-4 dark:text-darktext">
           <h4 className="text-primary text-3xl pb-4 border-b-primary border-b-2">{authUser?.username}'s Notifications</h4>
+          <div className="flex gap-4 w-full justify-end">
+            {!clearingNotifications && <button onClick={() => clearNotifications()} className="text-red-500 flex gap-2"><IconTrash />  Clear Notifications</button>}
+            {clearingNotifications && <Loading size="md" cn="text-primary" />}
+          </div>
 
           <div className="flex flex-col gap-4 pb-24">
             {notifications && notifications.map((notification) => (
