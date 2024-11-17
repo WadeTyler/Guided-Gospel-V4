@@ -7,6 +7,7 @@ const path = require('path');
 
 // Cron Jobs
 const resetRates = require('./lib/cronjobs/resetRates');
+const resetDeletedEmails = require('./lib/cronjobs/resetDeletedEmails');
 
 // Routes
 const userRoutes = require('./routes/user.routes');
@@ -20,7 +21,8 @@ const adminRoutes = require('./routes/admin.routes');
 const postsRoutes = require('./routes/together/posts.routes');
 const followsRoutes = require('./routes/together/follows.routes');
 const notificationsRoutes = require('./routes/together/notifications.routes');
-const resetDeletedEmails = require('./lib/cronjobs/resetDeletedEmails');
+const togetherMessagesRoutes = require('./routes/together/messages.routes');
+
 
 require('dotenv').config();
 
@@ -43,6 +45,8 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/together/posts", postsRoutes);
 app.use("/api/together/follows", followsRoutes);
 app.use("/api/together/notifications", notificationsRoutes);
+app.use("/api/together/messages", togetherMessagesRoutes);
+
 const staticPath = path.join(__dirname, "../frontend/dist");
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(staticPath));
