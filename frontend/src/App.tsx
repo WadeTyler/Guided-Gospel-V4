@@ -6,7 +6,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 // Pages
 import Home from './pages/Home';
@@ -30,10 +30,17 @@ import Messages from './pages/together/Messages';
 // Components
 import { Navbar } from './components/floating-dock';
 import Loading from './components/Loading';
-import { useEffect } from 'react';
+import { createContext, useEffect } from 'react';
 import AdminFeedback from './pages/admin/AdminFeedback';
 import AdminBugReports from './pages/admin/AdminBugReports';
 import AdminPostReports from './pages/admin/AdminPostReports';
+
+// Connect to Web Socket
+const URL = 'http://localhost:8000'
+export const socket: Socket = io(URL, { autoConnect: false });
+
+export const SocketContext = createContext(socket);
+
 
 
 export default function App() {
@@ -83,7 +90,6 @@ export default function App() {
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data);
         return data;
       } catch (error) {
         if (error instanceof Error) {
@@ -144,11 +150,8 @@ export default function App() {
     }
   });
   
-  // Connect to Web Socket
-  const URL = 'http://localhost:8000';
-  const socket = io(URL, {
-    autoConnect: false
-  });
+
+
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['authAdmin'] });
@@ -158,7 +161,7 @@ export default function App() {
       socket.emit('register', authUser.userid);
       console.log(socket.connected);
     } else {
-      socket.emit('logout');
+      socket.disconnect();
     }
     console.log("Auth User: ", authUser);
   }, [authUser]);
@@ -174,6 +177,7 @@ export default function App() {
 
   return (
     <div className="">
+      <SocketContext.Provider value={socket} >
         <Toaster />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -204,8 +208,9 @@ export default function App() {
 
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-        <Navbar />
+          </Routes>
+          <Navbar />
+        </SocketContext.Provider>
     </div>
   )
 }

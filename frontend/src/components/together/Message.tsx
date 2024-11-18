@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { formatTimestampToDifference } from '../../lib/utils';
 
 
 /*
@@ -25,9 +26,15 @@ const Message = ({message}: {message: TogetherMessage}) => {
     <div className={`flex gap-4 relative group-parent ${!isSelf ? 'self-start translate-x-16 lg:ml-10 flex-row-reverse' : 'self-end -translate-x-16 lg:mr-10'}`} >
 
       <div className="flex flex-col">
-        <Link to={`/together/users/${message.username}`} className={`text-neutral-800 dark:text-darktext w-full hover:underline hover:text-primary ${isSelf ? 'text-end' : 'text-start'}`}>
-          {message.username}
-        </Link>
+        <p  className={`text-neutral-800 dark:text-darktext w-full ${isSelf ? 'text-end' : 'text-start'}`}>
+          <div className="">
+            {isSelf ? 
+              <span className=''><span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span> - <Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link></span>
+              :
+              <span className=''><Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link> - <span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span></span>
+            }
+          </div>
+        </p>
         <p className={`max-w-[40rem] w-fit p-3 text-gray-200 rounded-2xl ${!isSelf ? 'bg-neutral-800 dark:bg-darkaccent' : 'bg-zinc-500 dark:bg-neutral-600 self-end'}`}>
           {message.text}
         </p>

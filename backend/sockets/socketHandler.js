@@ -1,14 +1,15 @@
 
 const { Server } = require("socket.io");
+const db = require('../db/db');
+const { getTimestampInSQLFormat } = require("../lib/utils/sqlFormatting");
+
 
 const connectedUsers = new Map();
 
-const setupSocket = (io) => {
+const setupSocket = async (io) => {
   console.log("Setting up socket");
 
   io.on("connection", (socket) => {
-
-    console.log(socket.connected);
 
     // Listen for user registration
     socket.on('register', (userid) => {
@@ -27,6 +28,34 @@ const setupSocket = (io) => {
 
       console.log("Connected Users after Disconnect: ", Array.from(connectedUsers.values()));
     });
+
+    socket.on("join-room", (room, cb) => {
+      const userid = connectedUsers.get(socket.id);
+      socket.join(room);
+      cb(`User joinedJoined Room: ${room}`);
+      
+    })
+    
+    socket.on("private-message", async (room, userid, sessionid, text) => {
+      
+      if (sessionid === "") {
+        return;
+      }
+      else {
+        // Add message
+        const timestamp = getTimestampInSQLFormat();
+        // Retrieve message
+        await db.query("INSERT INTO together_messages (sessionid, userid, timestamp, text) VALUES(?, ?, ?, ?)", [sessionid, userid, timestamp, text]);
+
+        const [messages] = await db.query(`
+          SELECT together_messages.*, user.username, user.avatar FROM together_messages JOIN user ON together_messages.userid = user.userid WHERE together_messages.sessionid = ? ORDER BY timestamp DESC LIMIT 1`, [sessionid]);
+
+        const message = messages[0];
+
+        console.log("Receiving Message: ", message);
+        io.to(room).emit("receive-message", message);
+      }
+    })
 
     
   });

@@ -100,8 +100,8 @@ const getSessionMessages = async (req, res) => {
 
     if (!sessionid) return res.status(400).json({ message: "sessionid is required" });
     
-    
-    const [messages] = await db.query(`SELECT together_messages.*, user.username, user.avatar FROM together_messages JOIN user ON together_messages.userid = user.userid WHERE together_messages.sessionid = ?`, [sessionid]);
+
+    const [messages] = await db.query(`SELECT together_messages.*, user.username, user.avatar FROM together_messages JOIN user ON together_messages.userid = user.userid WHERE together_messages.sessionid = ? ORDER BY timestamp ASC`, [sessionid]);
 
     return res.status(200).json(messages);
   } catch (error) {
