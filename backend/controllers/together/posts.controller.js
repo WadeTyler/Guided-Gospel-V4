@@ -65,7 +65,7 @@ const createPost = async (req, res) => {
   try {
     const userid = req.body.userid;
     var { content } = req.body;
-    
+
     if (!content) {
       return res.status(400).json({ message: "Content is required" });
     }
@@ -102,19 +102,6 @@ const createPost = async (req, res) => {
         return res.status(429).json({ message: `Please wait ${timeRemaining} before posting again.` });
       }
 
-      // Check all last 8 posts for the same message.
-      let count = 0;
-      for (let i = 0; i < 8; i++) {
-        if (lastPosts[i].content === content) {
-          count++;
-        }
-      }
-
-      // If the user has sent the same message 3 times+ in the last 8 posts
-      if (count >= 3) {
-        await db.execute('INSERT INTO violations (content, violation_type, timestamp, userid) VALUES (?, ?, ?, ?)', [content, "spam", timestamp, userid]);
-      }
-      
       // Check last 2 posts for the same message.
       if(checkSpamInPosts(lastPosts, content, lastPosts.length >= 2 ? 2 : lastPosts.length)) {
         return res.status(429).json({ message: "Please do not spam the same message." });
