@@ -6,6 +6,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
+import { io } from 'socket.io-client';
 
 // Pages
 import Home from './pages/Home';
@@ -114,7 +115,7 @@ export default function App() {
 
         return data;
       } catch (error) {
-        toast.error((error as Error).message || "Something went wrong");
+        console.log("Error fetching liked posts", error);
       }
     }
   });
@@ -137,14 +138,29 @@ export default function App() {
 
         return data;
       } catch (error) {
-        toast.error((error as Error).message || "Something went wrong");
+        console.log("Error fetching followingList", error)
         
       }
     }
   });
+  
+  // Connect to Web Socket
+  const URL = 'http://localhost:8000';
+  const socket = io(URL, {
+    autoConnect: false
+  });
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['authAdmin'] });
+
+    if (authUser) {
+      if (!socket.connected) socket.connect();
+      socket.emit('register', authUser.userid);
+      console.log(socket.connected);
+    } else {
+      socket.emit('logout');
+    }
+    console.log("Auth User: ", authUser);
   }, [authUser]);
 
   if (isLoading || loadingAdmin) {

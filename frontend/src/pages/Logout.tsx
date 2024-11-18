@@ -28,9 +28,11 @@ const Logout = () => {
     },
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['authUser']});
+      queryClient.invalidateQueries({ queryKey: ['authAdmin']});
     },
     onError: () => {
       queryClient.invalidateQueries({ queryKey: ['authUser']});
+      queryClient.invalidateQueries({ queryKey: ['authAdmin']});
     }
   });
 

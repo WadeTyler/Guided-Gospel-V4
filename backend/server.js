@@ -1,9 +1,21 @@
 // server.js
 
 const express = require('express');
+const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
+
+const {setupSocket} = require('./sockets/socketHandler');
 
 // Cron Jobs
 const resetRates = require('./lib/cronjobs/resetRates');
@@ -27,7 +39,6 @@ const togetherMessagesRoutes = require('./routes/together/messages.routes');
 require('dotenv').config();
 
 // middleware
-const app = express();
 app.use(cors({credentials: true}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -65,8 +76,15 @@ if (process.env.NODE_ENV === "production") {
 resetRates();
 resetDeletedEmails();
 
+
+
+
+
+// Socket.io connect
+setupSocket(io);
+
 const PORT = process.env.PORT || 8000;
 // Start Server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
