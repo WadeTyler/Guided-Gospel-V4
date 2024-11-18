@@ -71,7 +71,11 @@ const Messages = () => {
     socket.on("receive-message", async (message) => {
       console.log(message);
       setMessages(prev => [...prev, message]);
-    })
+    });
+
+    return () => {
+      socket.off("receive-message");
+    }
   }, [])
 
   // Send new Message
