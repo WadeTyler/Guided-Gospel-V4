@@ -205,6 +205,7 @@ export default function App() {
           <Route path="/together/users/:username" element={authUser ? <UserProfile /> : <Navigate to="/login" /> } />
           <Route path="/together/notifications" element={authUser ? <Notifications /> : <Navigate to="/login" />} />
           <Route path="/together/messages" element={authUser ? <Messages /> : <Navigate to="/login" /> } />
+          <Route path="/together/messages/:sessionid" element={authUser ? <Messages /> : <Navigate to="/login" /> } />
 
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" />} />

@@ -6,8 +6,11 @@ import Loading from "../../components/Loading";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Message from "../../components/together/Message";
 import { socket } from '../../App';
+import { useParams } from "react-router-dom";
 
 const Messages = () => {
+
+  const sessionParam = useParams<string>().sessionid;
 
   const queryClient = useQueryClient();
   const {data: authUser} = useQuery<User>({ queryKey: ['authUser'] });
@@ -16,7 +19,7 @@ const Messages = () => {
   const sendingMessage = false;
   const refetchingMessages = false;
 
-  const [currentSession, setCurrentSession] = useState<string>('');
+  const [currentSession, setCurrentSession] = useState<string>(sessionParam || '');
 
   const [messages, setMessages] = useState<TogetherMessage[]>([]);
 
