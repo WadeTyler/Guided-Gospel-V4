@@ -96,7 +96,6 @@ const Messages = () => {
   }
 
   useEffect(() => {
-    setMessages([]);
     queryClient.invalidateQueries({ queryKey: ['together_messages']} );
   }, [currentSession]);
 

@@ -33,13 +33,14 @@ const createMessageSession = async (req, res) => {
     const user1 = req.body.userid;  // current user
     const user2 = req.body.user2;   // target user
 
+
     if (user1 === user2) return res.status(400).json({ message: "You cannot create a session with yourself." });
 
     // Check if session already exists
     const [existingSessions] = await db.query("SELECT * FROM together_sessions WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)", [user1, user2, user2, user1]);
 
     if (existingSessions.length > 0) {
-      return res.status(400).json({ message: "A session between these two users already exists." });
+      return res.status(200).json(existingSessions[0]);
     }
 
     // Generate sessionid
@@ -68,6 +69,10 @@ const getUserSessions = async (req, res) => {
     const query = `SELECT * FROM together_sessions WHERE user1 = ? OR user2 = ?`;
 
     const [sessions] = await db.query(query, [userid, userid]);
+
+    if (sessions.length === 0) {
+      return res.status(200).json([]);
+    }
 
     // Add both user's username and avatar;
     for (const session of sessions) {

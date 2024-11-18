@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled, IconHammer } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/utils';
@@ -14,6 +14,7 @@ import Loading from '../../components/Loading';
 const UserProfile = () => {
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const username = useParams<{username:string}>().username;
 
   const [type, setType] = useState<string>('posts');
@@ -25,8 +26,6 @@ const UserProfile = () => {
   const { data:authAdmin } = useQuery({ queryKey: ['authAdmin'] });
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const { data:followingList } = useQuery<Following[]>({ queryKey: ['followingList'] });
-
-  
 
   const { data:targetUser } = useQuery<User>({
     queryKey: ['targetUser'],
@@ -181,6 +180,27 @@ const UserProfile = () => {
       toast.error((error as Error).message || "Something went wrong");
     }
   });
+
+  const messageUser = async () => {
+    try {
+      const response = await fetch('/api/together/messages/sessions/create', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user2: targetUser?.userid })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      
+      navigate(`/together/messages/${data.sessionid}`)
+      
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    }
+  }
 
   // Invalidate the query when the username changes
   useEffect(() => {
@@ -440,7 +460,7 @@ const UserProfile = () => {
                       </div>
                     }
                     {!isSelf && 
-                      <button className="flex gap-2">
+                      <button onClick={() => messageUser()} className="flex gap-2">
                         <span className='flex gap-2'><IconMessages /> Message</span>
                       </button>
                     }
