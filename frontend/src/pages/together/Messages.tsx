@@ -2,6 +2,7 @@ import MessagesSidebar from "../../components/together/MessagesSidebar"
 import Sidebar from "../../components/together/Sidebar"
 
 
+
 const Messages = () => {
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>

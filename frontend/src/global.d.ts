@@ -74,3 +74,13 @@ interface NotificationType {
   sender_username: string;
 
 }
+
+interface TogetherMessage {
+  messageid: number;
+  sessionid: string;
+  userid: string;
+  username: string;
+  avatar: string;
+  timestamp: string;
+  text: string;
+}
