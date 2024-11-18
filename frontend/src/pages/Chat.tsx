@@ -239,6 +239,11 @@ const Chat = () => {
       toast.error('Please wait for the previous message to send');
       return;
     }
+
+    if (inputMessage.length > 300) {
+      toast.error("Your message is too long. (MAX characters: 300)");
+      return;
+    }
     sendMessage(inputMessage);
   }
 
@@ -332,6 +337,10 @@ const Chat = () => {
             handleSubmit();
           }}
           className="absolute bottom-20 sm:bottom-24 flex items-center justify-center bg-neutral-800 dark:bg-darktext w-11/12 sm:w-[40rem] rounded-xl px-4 sm:px-0 hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out">
+
+            <div className="absolute -bottom-6 right-0 flex text-primary">
+              <p className={`${inputMessage.length > 300 ? 'text-red-500' : 'text-primary'}`}>{inputMessage.length}</p>/300
+            </div>
           <input
             type="text"
             name="inputMessage"

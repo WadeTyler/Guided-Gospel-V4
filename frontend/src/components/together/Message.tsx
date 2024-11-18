@@ -34,7 +34,7 @@ const Message = ({message}: {message: TogetherMessage}) => {
             }
           </div>
         </p>
-        <p className={`max-w-[40rem] w-fit p-3 text-gray-200 rounded-2xl ${!isSelf ? 'bg-neutral-800 dark:bg-darkaccent' : 'bg-zinc-500 dark:bg-neutral-600 self-end'}`}>
+        <p className={`max-w-[40rem] w-fit p-3 break-words text-gray-200 rounded-2xl text-wrap ${!isSelf ? 'bg-neutral-800 dark:bg-darkaccent' : 'bg-zinc-500 dark:bg-neutral-600 self-end'}`}>
           {message.text}
         </p>
       </div>

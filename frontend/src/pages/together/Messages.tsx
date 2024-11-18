@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Message from "../../components/together/Message";
 import { socket } from '../../App';
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Messages = () => {
 
@@ -84,11 +85,14 @@ const Messages = () => {
   // Send new Message
   const sendMessage = () => {
     try {
-      if (inputMessage) {
+      if (inputMessage && inputMessage.length <= 300) {
         console.log("Sending message");
         socket.emit("private-message", currentSession, authUser?.userid, currentSession, inputMessage);
 
         setInputMessage('');
+      }
+      else if (inputMessage.length > 300) {
+        return toast.error("Your message is too long. (MAX Length of 300 characters)");
       }
     } catch (error) {
       console.log("Error sending message: ", error);
@@ -123,6 +127,11 @@ const Messages = () => {
               sendMessage();
             }}
             className="absolute bottom-20 sm:bottom-24 flex items-center justify-center bg-neutral-800 dark:bg-darktext w-11/12 sm:w-[40rem] rounded-xl px-4 sm:px-0 hover:shadow-md hover:shadow-black focus-within:shadow-md focus-within:shadow-black transition-all duration-300 ease-in-out">
+
+            <div className="absolute -bottom-6 right-0 flex text-primary">
+              <p className={`${inputMessage.length > 300 ? 'text-red-500' : 'text-primary'}`}>{inputMessage.length}</p>/300
+            </div>
+
             <input
               type="text"
               name="inputMessage"

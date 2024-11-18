@@ -40,7 +40,7 @@ const Messages = ({messages }: {
             <p className={`text-neutral-800 dark:text-darktext w-full ${message.sender === 'ai' ? 'text-start pl-3': 'text-end pr-3'}`}>
               {message.sender === 'ai' ? 'Guided:' : 'You:'}
             </p>
-            <p className={`max-w-[40rem] w-fit p-3 text-gray-200 rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800 dark:bg-darkaccent' : 'bg-zinc-500 dark:bg-neutral-600 self-end'}`}>
+            <p className={`max-w-[40rem] w-fit p-3 text-gray-200 break-words rounded-2xl ${message.sender === 'ai' ? 'bg-neutral-800 dark:bg-darkaccent' : 'bg-zinc-500 dark:bg-neutral-600 self-end'}`}>
               {/* Split the message into parts using '<br/><br/>' which is added by the AI */}
               { message.text === '...' ? <Loading size='sm' cn='text-primary' /> : 
                 message.text.split('<br/><br/>').map((paragraph, index) => (
