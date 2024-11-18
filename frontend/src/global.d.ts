@@ -1,6 +1,6 @@
 export {};
 
-declare global{
+declare global {
   interface User  {
     userid: string;
     username: string;
@@ -63,24 +63,27 @@ declare global{
     reporterid: string;
     postid: number;
   }
+
+  interface NotificationType {
+    notificationid: number;
+    receiverid: string;
+    senderid: string;
+    type: string;
+    seen: number;
+    sender_username: string;
+  
+  }
+  
+  interface TogetherMessage {
+    messageid: number;
+    sessionid: string;
+    userid: string;
+    username: string;
+    avatar: string;
+    timestamp: string;
+    text: string;
+  }
+
+
 }
 
-interface NotificationType {
-  notificationid: number;
-  receiverid: string;
-  senderid: string;
-  type: string;
-  seen: number;
-  sender_username: string;
-
-}
-
-interface TogetherMessage {
-  messageid: number;
-  sessionid: string;
-  userid: string;
-  username: string;
-  avatar: string;
-  timestamp: string;
-  text: string;
-}

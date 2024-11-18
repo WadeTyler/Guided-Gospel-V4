@@ -94,9 +94,24 @@ const getUserSessions = async (req, res) => {
   }
 }
 
+const getSessionMessages = async (req, res) => {
+  try {
+    const sessionid = req.params.sessionid;
 
+    if (!sessionid) return res.status(400).json({ message: "sessionid is required" });
+    
+    
+    const [messages] = await db.query(`SELECT together_messages.*, user.username, user.avatar FROM together_messages JOIN user ON together_messages.userid = user.userid WHERE together_messages.sessionid = ?`, [sessionid]);
+
+    return res.status(200).json(messages);
+  } catch (error) {
+    console.log("Error in getSessionMessages controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 module.exports = {
   createMessageSession,  
   getUserSessions,
+  getSessionMessages
 }

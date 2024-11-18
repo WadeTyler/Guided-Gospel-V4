@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 
 
@@ -17,9 +17,9 @@ type MessageSession = {
   lastMessage: string;
 }
 
-const MessagesSidebar = () => {
-
-  const [currentSession, setCurrentSession] = useState<String>('');
+const MessagesSidebar = ({currentSession, setCurrentSession}: 
+  {currentSession: string; setCurrentSession: React.Dispatch<SetStateAction<string>>; }
+) => {
 
 
   const queryClient = useQueryClient();
@@ -95,6 +95,7 @@ const MessagesSidebar = () => {
           </div>
 
         ))}
+        {!messageSessions && !loadingSessions && <p>You have no messages</p>}
       </div>
 
     </div>
