@@ -108,8 +108,6 @@ const Messages = () => {
 
         </div>
         
-
-
         {/* Input Form */}
         {currentSession && 
           <form
