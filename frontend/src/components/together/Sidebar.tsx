@@ -86,10 +86,6 @@ const Sidebar = () => {
               </div>
             }
         </Link>
-        <Link to="/together" className="flex gap-4 hover:text-white">
-          <IconUsersGroup />
-          <p>Groups</p>
-        </Link>
       </section>
 
 
