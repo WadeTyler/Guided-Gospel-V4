@@ -10,6 +10,9 @@ const createNotification = async (req, res) => {
       return res.status(400).json({ message: "Type and Senderid are required" });
     }
 
+    if (receiverid === senderid)
+      return res.status(400).json({ message: "You cannot send a notification to yourself" });
+
     // Check valid type 
     if (type !== "follow" && type !== "like") {
       return res.status(400).json({ message: "Invalid Type." });
@@ -29,7 +32,7 @@ const createNotification = async (req, res) => {
 
       if (difference < threeHoursMs) { 
         console.log("Here");
-        return res.status(200).json({ message: "Notification already exists." });
+        return res.status(200).json({ message: "Notification already sent." });
       }
 
     }
@@ -37,7 +40,7 @@ const createNotification = async (req, res) => {
     const values = [receiverid, timestamp, type, 0, senderid];
     await db.query("INSERT INTO notifications (receiverid, timestamp, type, seen, senderid) VALUES(?, ?, ?, ?, ?)", values);
 
-    return res.status(200).json({ message: "Notification added successfully" });
+    return res.status(200).json({ message: "Notification sent successfully" });
   } catch (error) {
     console.log("Error in createNotificaton controller: ", error);
     return res.status(500).json({ message: "Internal Server Error" });

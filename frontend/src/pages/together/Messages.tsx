@@ -114,8 +114,33 @@ const Messages = () => {
     }
   }, [messages]);
 
+  const markMessagesRead = async () => {
+    try {
+      const response = await fetch(`/api/together/messages/all/${currentSession}/read`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message);
+
+      console.log(data.message); 
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    } catch (error) { 
+      console.log((error as Error).message || "Error marking messages read", error);
+    }
+  }
+
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['together_messages']} );
+
+    // Mark all messages in the session as read
+    if (currentSession) {
+      markMessagesRead();
+    }
   }, [currentSession]);
 
   return (

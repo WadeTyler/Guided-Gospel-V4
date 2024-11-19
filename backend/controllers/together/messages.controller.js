@@ -118,8 +118,34 @@ const getSessionMessages = async (req, res) => {
   }
 }
 
+const markMessagesRead = async (req, res) => {
+  try {
+    const sessionid = req.params.sessionid;
+    const userid = req.body.userid;
+
+    const query = 'UPDATE together_messages SET seen = 1 WHERE sessionid = ?';
+    await db.query(query, [sessionid]);
+
+    const [users] = await db.query("SELECT user1, user2 FROM together_sessions WHERE sessionid = ?", [sessionid]);
+
+    // Determine sender from the session
+    const user1 = users[0].user1;
+    const user2 = users[0].user2;
+    const targetUser = user1 === userid ? user2 : user1;
+
+    const notification_query = "UPDATE notifications SET seen = 1 WHERE senderid = ? AND type = 'message'";
+    await db.query(notification_query, [targetUser]);
+
+    return res.status(200).json({ message: "Messages Marked Read" });
+  } catch (error) {
+    console.log("Error in markMessagesRead", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   createMessageSession,  
   getUserSessions,
-  getSessionMessages
+  getSessionMessages,
+  markMessagesRead
 }

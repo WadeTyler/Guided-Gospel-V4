@@ -147,8 +147,7 @@ const UserProfile = () => {
             body: JSON.stringify({ type: "follow", receiverid: targetUser?.userid })
           });
           const notificationData = await notificationResponse.json();
-    
-          if (!notificationResponse.ok) throw new Error(notificationData.message);
+          console.log(notificationData.message);
         }
         
 

@@ -97,6 +97,7 @@ declare global {
     avatar: string;
     timestamp: string;
     text: string;
+    seen: number;
   }
 
 }

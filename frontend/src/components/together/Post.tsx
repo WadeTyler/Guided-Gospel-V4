@@ -54,8 +54,7 @@ const Post = ({post}: {post:Post}) => {
           body: JSON.stringify({ type: "like", receiverid: post.userid })
         });
         const notificationData = await notificationResponse.json();
-  
-        if (!notificationResponse.ok) throw new Error(notificationData.message);
+        console.log(notificationData.message);
       }
 
       setIsLiked(!isLiked);

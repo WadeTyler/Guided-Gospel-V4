@@ -28,9 +28,11 @@ const Message = ({message}: {message: TogetherMessage}) => {
         <p  className={`text-neutral-800 dark:text-darktext w-full ${isSelf ? 'text-end' : 'text-start'}`}>
           <div className="">
             {isSelf ? 
-              <span className=''><span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span> - <Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link></span>
+              <span className='flex gap-2 items-center'><span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span> - <Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link></span>
               :
-              <span className=''><Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link> - <span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span></span>
+              <span className='flex gap-2 items-center'><Link to={`/together/users/${message.username}`} className='hover:underline hover:text-primary'>{message.username}</Link> - <span className='text-gray-400 italic'>{formatTimestampToDifference(message.timestamp)}</span>
+                {message.seen === 0 && <p className="w-2 h-2 bg-primary rounded-full"></p>}
+              </span>
             }
           </div>
         </p>
