@@ -23,7 +23,6 @@ const Messages = () => {
   const [currentSession, setCurrentSession] = useState<string>(sessionParam || '');
 
   const [messages, setMessages] = useState<TogetherMessage[]>([]);
-  const {data:messageSessions} = useQuery<MessageSession[]>({ queryKey: ['messageSessions'] });
 
   const { data:messagesData, isPending:loadingMessages } = useQuery<TogetherMessage[]>({
     queryKey: ['together_messages'],
