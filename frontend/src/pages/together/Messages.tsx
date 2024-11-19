@@ -75,13 +75,19 @@ const Messages = () => {
     socket.on("receive-message", async (message) => {
       console.log(message);
       setMessages(prev => [...prev, message]);
+      setInputMessage('');
 
       // Refresh sessions
       queryClient.invalidateQueries({ queryKey: ['messageSessions']});
     });
 
+    socket.on("message-denied", (output:string) => {
+      toast.error(output);
+    });
+
     return () => {
       socket.off("receive-message");
+      socket.off("message-denied");
     }
   }, [])
 
@@ -91,8 +97,6 @@ const Messages = () => {
       if (inputMessage && inputMessage.length <= 300) {
         console.log("Sending message");
         socket.emit("private-message", currentSession, authUser?.userid, currentSession, inputMessage);
-
-        setInputMessage('');
       }
       else if (inputMessage.length > 300) {
         return toast.error("Your message is too long. (MAX Length of 300 characters)");
