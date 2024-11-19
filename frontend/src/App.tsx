@@ -151,6 +151,26 @@ export default function App() {
   });
   
 
+  const { data:notifications } = useQuery<NotificationType[]>({
+    queryKey: ['notifications'],
+    queryFn: async () => {
+      try {
+        const response = await fetch("/api/together/notifications/all", {
+          method: "GET",
+          headers: {
+            "Content-Type": "applicaton/json",
+          },
+        });
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.message);
+        console.log(data);
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
+      }
+    }
+  });
 
 
   useEffect(() => {

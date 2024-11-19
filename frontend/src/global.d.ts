@@ -71,6 +71,7 @@ declare global {
     type: string;
     seen: number;
     sender_username: string;
+    timestamp: string;
   
   }
   

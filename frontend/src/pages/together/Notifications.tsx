@@ -10,27 +10,8 @@ import Loading from '../../components/Loading';
 const Notifications = () => {
   const queryClient = useQueryClient();
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
+  const { data:notifications, isPending:isLoadingNotifications } = useQuery<NotificationType[]>({ queryKey: ['notifications'] });
 
-  const { data:notifications, isPending:isLoadingNotifications } = useQuery<NotificationType[]>({
-    queryKey: ['notifications'],
-    queryFn: async () => {
-      try {
-        const response = await fetch("/api/together/notifications/all", {
-          method: "GET",
-          headers: {
-            "Content-Type": "applicaton/json",
-          },
-        });
-        const data = await response.json();
-
-        if (!response.ok) throw new Error(data.message);
-        console.log(data);
-        return data;
-      } catch (error) {
-        toast.error((error as Error).message || "Something went wrong");
-      }
-    }
-  });
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['notifications'] });
@@ -79,7 +60,8 @@ const Notifications = () => {
 
           <div className="flex flex-col gap-4 pb-24">
             {notifications && !isLoadingNotifications && notifications.map((notification) => (
-              <div className="">
+              <div className="flex gap-2 items-center">
+                {!notification.seen && <div className='w-3 h-3 bg-primary rounded-full'/>}
                 {notification.type === "follow" && 
                   <p className="flex">{formatTimestampToDifference(notification.timestamp)} - <IconUserPlus /> - <Link to={`/together/users/${notification.sender_username}`} className='hover:text-primary cursor-pointer hover:underline'>{notification.sender_username} has followed you!</Link> </p>
                 }

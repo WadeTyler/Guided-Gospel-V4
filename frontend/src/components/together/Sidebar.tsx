@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 const Sidebar = () => {
 
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
-
+  const { data:notifications } = useQuery<NotificationType[]>({ queryKey: ['notifications'] });
   // Creating new Post
   const [posting, setPosting] = useState(false);
 
@@ -46,9 +46,15 @@ const Sidebar = () => {
           <IconMessages />
           <p>Messages</p>
         </Link>
-        <Link to="/together/notifications" className="flex gap-4 hover:text-white">
+        <Link to="/together/notifications" className="flex items-center gap-4 hover:text-white">
           <IconBellFilled />
           <p>Notifications</p>
+
+          {notifications && notifications?.length > 0 && 
+              <div className="bg-red-500 w-3 h-3 rounded-full bottom-0 right-0 flex items-center justify-center p-2">
+                <p className="text-xs text-white">{notifications.length}</p>
+              </div>
+            }
         </Link>
         <Link to="/together" className="flex gap-4 hover:text-white">
           <IconUsersGroup />
