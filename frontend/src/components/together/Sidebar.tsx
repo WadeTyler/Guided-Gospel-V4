@@ -16,6 +16,17 @@ const Sidebar = () => {
 
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const { data:notifications } = useQuery<NotificationType[]>({ queryKey: ['notifications'] });
+
+  // Unseen notifications
+  const unseenNotifications = () => {
+    let counter = 0;
+    notifications?.forEach((notification) => {
+      if (notification.seen === 0) counter++;
+    });
+    return counter;
+  }
+
+
   // Creating new Post
   const [posting, setPosting] = useState(false);
 
@@ -50,9 +61,9 @@ const Sidebar = () => {
           <IconBellFilled />
           <p>Notifications</p>
 
-          {notifications && notifications?.length > 0 && 
+          {notifications && unseenNotifications() > 0 && 
               <div className="bg-red-500 w-3 h-3 rounded-full bottom-0 right-0 flex items-center justify-center p-2">
-                <p className="text-xs text-white">{notifications.length}</p>
+                <p className="text-xs text-white">{unseenNotifications()}</p>
               </div>
             }
         </Link>

@@ -71,8 +71,23 @@ const deleteAllNotifications = async (req, res) => {
   }
 }
 
+const markAllNotificationsRead = async (req, res) => {
+  try {
+    const userid = req.body.userid;
+
+    const query = 'UPDATE notifications SET seen = 1 WHERE receiverid = ?';
+    await db.query(query, [userid]);
+
+    return res.status(200).json({ message: "All notifications marked as read." });
+  } catch (error) {
+    console.log("Error in markAllNotificationsRead controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   createNotification,
   getUserNotifications,
-  deleteAllNotifications
+  deleteAllNotifications,
+  markAllNotificationsRead
 }
