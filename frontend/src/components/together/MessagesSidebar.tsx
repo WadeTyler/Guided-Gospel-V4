@@ -3,20 +3,6 @@ import { SetStateAction, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 
 
-type MessageSession = {
-  sessionid: string; // jwt
-  user1: string; // userid
-  user2: string; // userid
-  lastModified: string; // timestamp
-
-  // extra when fetched
-  user1_username: string;
-  user1_avatar: string;
-  user2_username: string;
-  user2_avatar: string;
-  lastMessage: string;
-}
-
 const MessagesSidebar = ({currentSession, setCurrentSession}: 
   {currentSession: string; setCurrentSession: React.Dispatch<SetStateAction<string>>; }
 ) => {
@@ -53,7 +39,7 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
             "Content-Type": "application/json",
           },
         });
-
+        
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.message);
@@ -98,7 +84,7 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
                 <div className="flex flex-col gap-1 overflow-hidden">
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user2_username}</p>
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic group-hover:text-primary duration-300`}>
-                    Lorem ipsum...
+                    {session.lastMessage}
                   </p>
                 </div>
               </section>
@@ -119,7 +105,7 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
                 <div className="flex flex-col gap-1 w-full overflow-hidden">
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user1_username}</p>
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic duration-300 group-hover:text-primary`}>
-                    Lorem ipsum...f f dsa f sadf sad f
+                    {session.lastMessage}
                   </p>
                 </div>
               </section>

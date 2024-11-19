@@ -66,7 +66,10 @@ const getUserSessions = async (req, res) => {
   try {
     const userid = req.body.userid;
 
-    const query = `SELECT * FROM together_sessions WHERE user1 = ? OR user2 = ?`;
+    const query = `SELECT together_sessions.*, together_messages.text AS lastMessage FROM together_sessions 
+    JOIN together_messages ON together_sessions.sessionid = together_messages.sessionid
+    AND together_messages.timestamp = (SELECT MAX(timestamp) FROM together_messages WHERE together_messages.sessionid = together_sessions.sessionid)
+    WHERE together_sessions.user1 = ? OR together_sessions.user2 = ? ORDER BY timestamp DESC`;
 
     const [sessions] = await db.query(query, [userid, userid]);
 

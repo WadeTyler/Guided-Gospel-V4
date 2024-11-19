@@ -74,6 +74,20 @@ declare global {
     timestamp: string;
   
   }
+
+  interface MessageSession {
+    sessionid: string; // jwt
+    user1: string; // userid
+    user2: string; // userid
+    lastModified: string; // timestamp
+  
+    // extra when fetched
+    user1_username: string;
+    user1_avatar: string;
+    user2_username: string;
+    user2_avatar: string;
+    lastMessage: string;
+  }
   
   interface TogetherMessage {
     messageid: number;
@@ -84,7 +98,6 @@ declare global {
     timestamp: string;
     text: string;
   }
-
 
 }
 
