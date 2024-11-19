@@ -23,6 +23,7 @@ const Messages = () => {
   const [currentSession, setCurrentSession] = useState<string>(sessionParam || '');
 
   const [messages, setMessages] = useState<TogetherMessage[]>([]);
+  const {data:messageSessions} = useQuery<MessageSession[]>({ queryKey: ['messageSessions'] });
 
   const { data:messagesData, isPending:loadingMessages } = useQuery<TogetherMessage[]>({
     queryKey: ['together_messages'],
@@ -56,8 +57,6 @@ const Messages = () => {
     }
   }, [messagesData]);
 
-
-
   // Handle session change
   useEffect(() => {
     const outputJoin = (content: string) => {
@@ -71,10 +70,14 @@ const Messages = () => {
   }, [currentSession]);
 
 
+  // Receiving messages
   useEffect(() => {
     socket.on("receive-message", async (message) => {
       console.log(message);
       setMessages(prev => [...prev, message]);
+
+      // Refresh sessions
+      queryClient.invalidateQueries({ queryKey: ['messageSessions']});
     });
 
     return () => {
@@ -98,6 +101,18 @@ const Messages = () => {
       console.log("Error sending message: ", error);
     }
   }
+  
+
+  // Scroll to bottom everytime a new message is added
+  useEffect(() => {
+    const messagesContainer = document.getElementById('private-messages-container');
+    if (messagesContainer) {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        // behavior: 'smooth'
+      });
+    }
+  }, [messages]);
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['together_messages']} );
@@ -110,9 +125,9 @@ const Messages = () => {
       <div className="w-full items-center mt-24 flex flex-col gap-4 dark:text-darktext">
 
 
-        <div className="flex flex-col w-full h-full lg:px-48 pt-16 lg:pb-16 mb-36 relative overflow-scroll gap-4">
+        <div id="private-messages-container" className="flex flex-col w-full h-full lg:px-48 pt-16 lg:pb-16 mb-36 relative overflow-scroll gap-4">
           {currentSession && !loadingMessages && messages?.map((message) => (
-            <Message message={message} key={message.messageid} />
+            <Message message={message} key={message.messageid}/>
           ))}
           {loadingMessages && <Loading cn="text-primary" size="md" />}
 
