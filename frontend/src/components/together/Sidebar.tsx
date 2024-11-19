@@ -8,12 +8,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Icons
 import { IconBellFilled, IconMessages, IconLogin, IconFriends, IconUsersGroup, IconMessageFilled, IconX } from "@tabler/icons-react";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Loading from "../Loading";
 import toast from "react-hot-toast";
 
 const Sidebar = () => {
 
+  const queryClient = useQueryClient();
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
   const { data:notifications } = useQuery<NotificationType[]>({ queryKey: ['notifications'] });
 
@@ -25,6 +26,19 @@ const Sidebar = () => {
     });
     return counter;
   }
+
+  // Unseen messages
+  const unseenMessages = () => {
+    let counter = 0;
+    notifications?.forEach((notification) => {
+      if (notification.seen === 0 && notification.type === "message") counter++;
+    });
+    return counter;
+  }
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
+  }, [authUser])
 
 
   // Creating new Post
@@ -56,6 +70,11 @@ const Sidebar = () => {
         <Link to="/together/messages" className="flex gap-4 hover:text-white">
           <IconMessages />
           <p>Messages</p>
+          {notifications && unseenMessages() > 0 && 
+            <div className="bg-red-500 w-3 h-3 rounded-full bottom-0 right-0 flex items-center justify-center p-2">
+              <p className="text-xs text-white">{unseenNotifications()}</p>
+            </div>
+          }
         </Link>
         <Link to="/together/notifications" className="flex items-center gap-4 hover:text-white">
           <IconBellFilled />

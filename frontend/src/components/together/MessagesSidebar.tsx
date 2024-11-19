@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { SetStateAction, useEffect } from 'react'
+import { SetStateAction, useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 
 
@@ -20,6 +20,23 @@ type MessageSession = {
 const MessagesSidebar = ({currentSession, setCurrentSession}: 
   {currentSession: string; setCurrentSession: React.Dispatch<SetStateAction<string>>; }
 ) => {
+
+  // Handle message notifications
+  const { data:notifications } = useQuery<NotificationType[]>({ queryKey: ['notifications'] });
+  const [unseenMessages, setUnseenMessages] = useState<Map<string, number>>(new Map());
+
+  useEffect(() => {
+    const newUnseenMessages = new Map<string, number>();
+
+    notifications?.forEach((notification) => {
+      if (notification.type === "message" && notification.seen === 0) {
+        const currentCount = newUnseenMessages.get(notification.senderid) || 0;
+        newUnseenMessages.set(notification.senderid, currentCount + 1);
+      }
+    });
+    setUnseenMessages(newUnseenMessages);
+    console.log(newUnseenMessages);
+  }, [notifications]);
 
 
   const queryClient = useQueryClient();
@@ -50,7 +67,7 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['messageSessions']});
-  }, []);
+  }, [authUser]);
 
   return (
     <div className='fixed flex flex-col p-4 bg-neutral-800 dark:bg-darkaccent w-48 min-h-screen right-0 top-0 gap-8 z-50 shadow-[rgba(0,0,0)_0px_2px_8px]'>
@@ -68,7 +85,15 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
             {session.user1 === authUser?.userid && 
               <section className="flex gap-2">
 
-                <img src={session.user2_avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${session.user2_avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" />
+                <div className="relative flex items-center justify-center rounded-full w-10 h-10 shrink-0">
+                  <img src={session.user2_avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${session.user2_avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full cursor-pointer h-10 w-10 object-cover" />
+
+                  {unseenMessages.get(session.user2) && 
+                    <div className="absolute bottom-0 right-0 w-4 h-4 p-2 bg-primary rounded-full flex items-center justify-center">
+                      <p className="text-white">{unseenMessages.get(session.user2)}</p>
+                    </div>
+                  }
+                </div>
 
                 <div className="flex flex-col gap-1 overflow-hidden">
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user2_username}</p>
@@ -81,8 +106,15 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
             {/* If we are user2 show user 1 */}
             {session.user2 === authUser?.userid && 
               <section className="flex gap-2">
+                <div className="relative flex items-center justify-center rounded-full w-10 h-10 shrink-0">
+                  <img src={session.user1_avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${session.user1_avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full cursor-pointer h-10 w-10 object-cover" />
 
-                <img src={session.user1_avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${session.user1_avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full h-10 w-10 cursor-pointer" />
+                  {unseenMessages.get(session.user1) && 
+                    <div className="absolute bottom-0 right-0 w-4 h-4 p-2 bg-primary rounded-full flex items-center justify-center">
+                      <p className="text-white">{unseenMessages.get(session.user1)}</p>
+                    </div>
+                  }
+                </div>
 
                 <div className="flex flex-col gap-1 w-full overflow-hidden">
                   <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user1_username}</p>

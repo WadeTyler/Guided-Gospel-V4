@@ -175,8 +175,10 @@ export default function App() {
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['authAdmin'] });
-
+    
     if (authUser) {
+      
+      // handle socket
       if (!socket.connected) socket.connect();
       socket.emit('register', authUser.userid);
       console.log(socket.connected);

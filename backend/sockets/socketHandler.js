@@ -44,9 +44,17 @@ const setupSocket = async (io) => {
       else {
         // Add message
         const timestamp = getTimestampInSQLFormat();
-        // Retrieve message
         await db.query("INSERT INTO together_messages (sessionid, userid, timestamp, text) VALUES(?, ?, ?, ?)", [sessionid, userid, timestamp, text]);
 
+        // Add notification
+        const [targetUsers] = await db.query("SELECT user1, user2 FROM together_sessions WHERE sessionid = ?", [sessionid]);
+        var targetUser;        
+        if (targetUsers[0].user1 === userid) targetUser = targetUsers[0].user2;
+        else targetUser = targetUsers[0].user1;
+
+        await db.query("INSERT INTO notifications (receiverid, timestamp, type, seen, senderid) VALUES(?, ?, ?, ?, ?)", [targetUser, timestamp, "message", 0, userid]);
+
+        // Retrieve message
         const [messages] = await db.query(`
           SELECT together_messages.*, user.username, user.avatar FROM together_messages JOIN user ON together_messages.userid = user.userid WHERE together_messages.sessionid = ? ORDER BY timestamp DESC LIMIT 1`, [sessionid]);
 

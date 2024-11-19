@@ -3,7 +3,7 @@ import Sidebar from '../../components/together/Sidebar'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast';
 import { formatTimestampToDifference } from '../../lib/utils';
-import { IconFileCheck, IconHeartFilled, IconTrash, IconUserPlus } from '@tabler/icons-react';
+import { IconFileCheck, IconHeartFilled, IconMessages, IconTrash, IconUserPlus } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading';
 
@@ -101,6 +101,10 @@ const Notifications = () => {
               <div className="flex gap-2 items-center">
                 {!notification.seen && <div className='w-3 h-3 bg-primary rounded-full'/>}
                 <p className="text-gray-400 italic">{formatTimestampToDifference(notification.timestamp)} - </p>
+                {notification.type === "message" && 
+                  <p className="flex"><IconMessages /> - <Link to={`/together/users/${notification.sender_username}`} className='hover:text-primary cursor-pointer hover:underline'>{notification.sender_username} has sent you a message.</Link> </p>
+                }
+                
                 {notification.type === "follow" && 
                   <p className="flex"><IconUserPlus /> - <Link to={`/together/users/${notification.sender_username}`} className='hover:text-primary cursor-pointer hover:underline'>{notification.sender_username} has followed you!</Link> </p>
                 }
