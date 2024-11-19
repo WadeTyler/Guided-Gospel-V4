@@ -5,7 +5,6 @@ import toast from "react-hot-toast"
 import Loading from "../../components/Loading";
 import Post from "../../components/together/Post";
 import { useEffect, useState } from "react";
-import BackgroundPattern from "../../components/BackgroundPattern";
 
 const GuidedTogether = () => {
 
@@ -13,8 +12,6 @@ const GuidedTogether = () => {
 
   // AuthUser
   const { data:authUser } = useQuery<User>({ queryKey: ['authUser'] });
-  const { data:followingList } = useQuery<Following[]>({ queryKey: ['followingList'] });
-  const { data:likedPosts } = useQuery<Like[]>({ queryKey: ['likedPosts'] });
 
   // Can be either 'For You' or 'Following'
   const [type, setType] = useState<string>("for you");

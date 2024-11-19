@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatTimestamp } from '../../lib/utils'
 import AdminSidebar from '../../components/admin/AdminSidebar'
 

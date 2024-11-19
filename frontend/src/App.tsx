@@ -62,7 +62,7 @@ export default function App() {
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data);
+        
         return data;
       } catch (error) {
         if (error instanceof Error) {
@@ -92,11 +92,7 @@ export default function App() {
         }
         return data;
       } catch (error) {
-        if (error instanceof Error) {
-          throw new Error(error.message);
-        } else {
-          throw new Error(String(error));
-        }
+        console.log((error as Error).message || "Something went wrong");
       }
     },
     retry: false
@@ -164,20 +160,27 @@ export default function App() {
         const data = await response.json();
 
         if (!response.ok) throw new Error(data.message);
-        console.log(data);
+
         return data;
       } catch (error) {
-        toast.error((error as Error).message || "Something went wrong");
+        console.log("Error fetching notifications", error);
       }
     }
   });
 
 
   useEffect(() => {
+    // Invalidate
     queryClient.invalidateQueries({ queryKey: ['authAdmin'] });
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    queryClient.invalidateQueries({ queryKey: ['followingList'] });
+    queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
+    
+    if (notifications) console.log("Notifications Retreived");
+    if (followingList) console.log("Following List Retreived");
+    if (likedPosts) console.log("Liked Posts Retreived");
     
     if (authUser) {
-      
       // handle socket
       if (!socket.connected) socket.connect();
       socket.emit('register', authUser.userid);
