@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 import Loading from "../../components/Loading";
 import Post from "../../components/together/Post";
 import { useEffect, useState } from "react";
+import BackgroundPattern from "../../components/BackgroundPattern";
 
 const GuidedTogether = () => {
 
@@ -71,9 +72,7 @@ const GuidedTogether = () => {
       */}
 
       <div className="flex justify-center items-center relative w-full h-full pb-24">
-        <div className="w-[10rem]"></div>
-
-
+        
         {/* Posts section */}
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
           <header className="flex justify-center items-center gap-16 fixed w-fit z-20">
@@ -110,7 +109,6 @@ const GuidedTogether = () => {
 
 
 
-        <div className="w-[10rem]"></div>
       </div>
 
     </div>

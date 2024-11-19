@@ -8,6 +8,7 @@ import Message from "../../components/together/Message";
 import { socket } from '../../App';
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import BackgroundPattern from "../../components/BackgroundPattern";
 
 const Messages = () => {
 
@@ -118,7 +119,9 @@ const Messages = () => {
   }, [currentSession]);
 
   return (
-    <div className='flex justify-center bg-white dark:bg-darkbg h-screen'>
+    <div className='flex justify-center bg-white dark:bg-darkbg h-screen w-full group'>
+
+      <BackgroundPattern cn="" />
       <Sidebar />
 
       <div className="w-full items-center mt-24 flex flex-col gap-4 dark:text-darktext">

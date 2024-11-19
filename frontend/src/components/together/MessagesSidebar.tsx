@@ -66,7 +66,7 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
           onClick={() => {
             setCurrentSession(session.sessionid);
           }}
-          className="flex gap-2 w-full overflow-hidden group hover:translate-x-2 cursor-pointer duration-300" key={session.sessionid}>
+          className="flex gap-2 w-full overflow-hidden group-parent hover:translate-x-2 cursor-pointer duration-300" key={session.sessionid}>
             {/* If we are user 1, show user 2 */}
             {session.user1 === authUser?.userid && 
               <section className="flex gap-2">
@@ -82,8 +82,8 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
                 </div>
 
                 <div className="flex flex-col gap-1 overflow-hidden">
-                  <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user2_username}</p>
-                  <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic group-hover:text-primary duration-300`}>
+                  <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-parent-hover:text-primary`}>{session.user2_username}</p>
+                  <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic group-parent-hover:text-primary duration-300`}>
                     {session.lastMessage}
                   </p>
                 </div>
@@ -103,8 +103,8 @@ const MessagesSidebar = ({currentSession, setCurrentSession}:
                 </div>
 
                 <div className="flex flex-col gap-1 w-full overflow-hidden">
-                  <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-hover:text-primary`}>{session.user1_username}</p>
-                  <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic duration-300 group-hover:text-primary`}>
+                  <p className={`${currentSession === session.sessionid ? 'text-primary' : ''} duration-300 group-parent-hover:text-primary`}>{session.user1_username}</p>
+                  <p className={`${currentSession === session.sessionid ? 'text-primary' : 'text-gray-400'} text-xs whitespace-nowrap italic duration-300 group-parent-hover:text-primary`}>
                     {session.lastMessage}
                   </p>
                 </div>
