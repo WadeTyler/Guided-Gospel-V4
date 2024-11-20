@@ -2,6 +2,7 @@
 const { Server } = require("socket.io");
 const db = require('../db/db');
 const { getTimestampInSQLFormat } = require("../lib/utils/sqlFormatting");
+const { checkPrivateMessageSpamViolations } = require("../lib/violations/checkViolations");
 
 
 const connectedUsers = new Map();
@@ -46,11 +47,13 @@ const setupSocket = async (io) => {
       }
 
       const [user] = await db.query("SELECT * FROM user WHERE userid = ?", [userid]);
+
       if (user[0].suspended) {
          const output = "Your account is suspended and you are prohibited from sending messages. If you believe this is an issue please contact support.";
          io.to(socket.id).emit("message-denied", output);
          return;
       }
+
 
       // Determine the target user
       const [targetUsers] = await db.query("SELECT user1, user2 FROM together_sessions WHERE sessionid = ?", [sessionid]);
@@ -66,13 +69,15 @@ const setupSocket = async (io) => {
       if (lastMessages.length >= 4) {
         const difference = new Date() - new Date(lastMessages[lastMessages.length - 1].timestamp);
         const secondsRemaining = Math.floor((120000 - difference) / 1000)
-        const output = `You are sending messages too fast. Please wait ${secondsRemaining} seconds.`;
+        const output = `You are sending messages too fast. Please wait ${secondsRemaining} seconds. Please do not attempt to spam.`;
 
         // Deny user's message
         io.to(socket.id).emit("message-denied", output);
 
         // Add violation to user
         await db.query("INSERT INTO violations (content, violation_type, timestamp, violatorid, reporterid) VALUES(?, ?, ?, ?, ?)", [text, "attempted_pm_spam", timestamp, userid, targetUser]);
+        // Check violations 
+        await checkPrivateMessageSpamViolations(userid);
 
         // Early return
         return;
