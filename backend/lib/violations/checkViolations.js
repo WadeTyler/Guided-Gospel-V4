@@ -147,6 +147,57 @@ const checkFlaggedWordsViolations = async (userid) => {
    }
 }
 
+// userid should be the violatorid
+const checkReportedPostsViolations = async (userid) => {
+  try {
+    // Select reportedPost violations today
+    const [violations] = await db.query('SELECT * FROM violations WHERE violatorid = ? AND violation_type = ? AND timestamp > UTC_TIMESTAMP() - INTERVAL 1 DAY ORDER BY timestamp DESC', [userid, 'report_post']);
+
+    const violationsCount = violations.length;
+    let totalWeight = 0;
+
+    // Apply weight based on amount of reports
+    if (violationsCount > 0) {
+      if (violationsCount > 100) totalWeight += 4;
+      else if (violationsCount > 75) totalWeight += 5;
+      else if (violationsCount > 50) totalWeight += 4;
+      else if (violationsCount > 25) totalWeight += 3;
+      else if (violationsCount > 10) totalWeight += 2;
+      else totalWeight += 1;
+    }
+
+    // Check if the post has flagged words
+
+    const [post] = await db.query("SELECT * FROM together_posts WHERE postid = ?", [violations.postid]);
+    if (post.length > 0) {
+      // Contains flagged words, useless since we check beforehand, but still add for safety net
+      if (containsFlagWords(post[0].content)) {
+        totalWeight += 2;
+      }
+    } else {
+      // Post not found, sketchy...
+      totalWeight += 1;
+    }
+
+    // Update todays flag or create a new one
+    if (totalWeight > 0) {
+      const [todaysFlags] = await db.query("SELECT * FROM flags WHERE userid = ? AND timestamp > UTC_TIMESTAMP() - INTERVAL 1 DAY ORDER BY TIMESTAMP DESC", [userid]);
+      if (todaysFlags.length > 0) {
+        // Update todays flag
+        await db.query("UPDATE flags SET weight = weight + ?, timestamp = UTC_TIMESTAMP() WHERE flagid = ?", [totalWeight, todaysFlags[0].flagid]);
+      } else {
+        // Insert new flag
+        await db.query("INSERT INTO flags (userid, weight, timestamp) VALUES(?, ?, UTC_TIMESTAMP())", [userid, totalWeight]);
+      }
+    }
+
+    evaluateFlagscore(userid);
+    
+  } catch (error) {
+    console.log("Error in checkReportedPosts: ", error);
+  }
+}
+
 // List of flagWords
 const flagWords = [
   // URLs and Domain Keywords
@@ -201,5 +252,6 @@ module.exports = {
   containsFlagWords,
   checkPrivateMessageSpamViolations,
   checkFlaggedWordsViolations,
-  evaluateFlagscore
+  evaluateFlagscore,
+  checkReportedPostsViolations
 }

@@ -3,7 +3,7 @@ const db = require("../../db/db");
 const generateToken = require("../../lib/jwt/generateToken");
 const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 const { checkSpamInPosts, checkSpamInComments } = require("../../lib/utils/checkSpam");
-const { containsFlagWords, checkFlaggedWordsViolations, evaluateFlagscore } = require("../../lib/violations/checkViolations");
+const { containsFlagWords, checkFlaggedWordsViolations, evaluateFlagscore, checkReportedPostsViolations } = require("../../lib/violations/checkViolations");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -366,12 +366,17 @@ const reportPost = async (req, res) => {
       return res.status(409).json({ message: "You have already reported this post." });
     }
 
+    // Get violatorid
+    const [violator] = await db.query("SELECT userid FROM together_posts WHERE postid = ?", [postid]); 
+    const violatorid = violator[0].userid;
+
     // Add report to database
     const query = `INSERT INTO violations (content, violation_type, timestamp, violatorid, reporterid, postid) VALUES (
-      ?, ?, ?, (SELECT userid FROM together_posts WHERE postid = ?), ?, ?)`;
-    const values = [content, violation_type, timestamp, postid, reporterid, postid];
+      ?, ?, ?, ?, ?, ?)`;
+    const values = [content, violation_type, timestamp, violatorid, reporterid, postid];
 
     await db.query(query, values);
+    checkReportedPostsViolations(violatorid);
 
     return res.status(200).json({ message: "Report successfully made. Thank You." });
 
