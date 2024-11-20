@@ -1,9 +1,6 @@
 
 
-// Start by pmaking a plot graph
-
-import { useEffect, useState } from "react";
-
+// Start by making a plot graph
 export type Plot = {
   value: number;
   timestamp: string;
@@ -45,7 +42,6 @@ const LineChart = ( {plots}: {plots: Plot[]; }) => {
       const y = getDistanceFromTop(plot.value);
       points += `${x},${y} `;
     });
-
     // Flat end point at the far right, same height as the last plot
     const lastX = getDistanceFromLeft(plots.length - 1);
     const lastY = getDistanceFromTop(plots[plots.length - 1].value);
