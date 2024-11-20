@@ -227,7 +227,29 @@ const getDashboardData = async (req, res) => {
     const numberMessages = privateMessages.length;
     
     // Number of guided messages in the past week (Not including deleted ones)
-    const [guidedMessagesThisWeek] = await db.query("SELECT messageid, timestamp FROM message WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK AND sender = 'ai'");
+    const [guidedMessagesThisWeekData] = await db.query("SELECT messageid, timestamp FROM message WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK AND sender = 'ai' ORDER BY timestamp DESC");
+
+    // Array of Plot[] Type holds a timestamp and value
+    const guidedMessagesThisWeek = Array.from({ length: 7 }, (_, i) => {
+      const date = new Date();
+      date.setUTCDate(date.getUTCDate() - (6 - i)); // Start from 7 days ago
+      return {
+        value: 0,
+        timestamp: date.toISOString().split("T")[0], // Only date part (YYYY-MM-DD)
+      };
+    });
+
+    // Loop through each selected message
+    guidedMessagesThisWeekData.forEach(({ timestamp }) => {
+      const messageDate = new Date(timestamp).toISOString().split("T")[0];
+      
+      // Compare the message's timestamp to each day
+      guidedMessagesThisWeek.forEach((day) => {
+        if (day.timestamp === messageDate) {
+          day.value += 1;
+        }
+      });
+    });
 
     return res.status(200).json({ totalUsers, usersThisWeek, flagsThisWeek, violationsThisWeek, numberPosts, numberMessages, guidedMessagesThisWeek });
 

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
-import LineChart from "../../components/util/graphs/LineChart";
+import LineChart, { Plot } from "../../components/util/graphs/LineChart";
 
 type DashboardData = {
   totalUsers: [
@@ -32,12 +32,7 @@ type DashboardData = {
   ],
   numberPosts: number;
   numberMessages: number;
-  guidedMessagesThisWeek: [
-    {
-      messageid: number;
-      timestamp: string;
-    }
-  ]
+  guidedMessagesThisWeek: Plot[];
 }
 
 
@@ -133,7 +128,7 @@ const AdminDashboard = () => {
             <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
               <p className="text-primary text-2xl">Guided Messages</p>
               <div className="w-full max-h-[200px] h-[200px] p-2">
-                <LineChart plots={guidedMessagesPlots} />
+                <LineChart plots={dashboardData.guidedMessagesThisWeek} />
               </div>
             </div>
 
