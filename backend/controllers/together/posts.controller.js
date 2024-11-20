@@ -3,6 +3,7 @@ const db = require("../../db/db");
 const generateToken = require("../../lib/jwt/generateToken");
 const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 const { checkSpamInPosts, checkSpamInComments } = require("../../lib/utils/checkSpam");
+const { containsFlagWords, checkFlaggedWordsViolations, evaluateFlagscore } = require("../../lib/violations/checkViolations");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ const getAllPosts = async (req, res) => {
 
   } catch (error) {
     console.error("Error in getAllPosts controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
     
   }
 }
@@ -42,7 +43,7 @@ const getUserPosts = async (req, res) => {
 
   } catch (error) {
     console.error("Error in getUsersPosts controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
     
   }
 }
@@ -57,7 +58,7 @@ const getUserComments = async (req, res) => {
     return res.status(200).json(comments);
   } catch (error) {
     console.error("Error in getUsersComments controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -65,6 +66,12 @@ const createPost = async (req, res) => {
   try {
     const userid = req.body.userid;
     var { content } = req.body;
+
+    const [suspended] = await db.query("SELECT suspended FROM user WHERE userid = ?", [userid]);
+    if (suspended[0].suspended) {
+      evaluateFlagscore(userid);
+      return res.status(403).json({ message: "Your account is suspended. If you believe this is a mistake, please contact support." });
+    } 
 
     if (!content) {
       return res.status(400).json({ message: "Content is required" });
@@ -74,14 +81,20 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "Content is too long" });
     }
 
+    const timestamp = getTimestampInSQLFormat();
+
+    // Check for flagwords
+    if (containsFlagWords(content)) {
+      await db.query("INSERT INTO violations (content, violation_type, timestamp, violatorid) VALUES(?, ?, ?, ?)", [content, 'flagged_word', timestamp, userid]);
+      checkFlaggedWordsViolations(userid);
+      return res.status(400).json({ message: "Your post contains flagged words. Please revise your post." });
+    }
+
     // Get Lasts 8 posts of the user
     const lastPostQuery = 'SELECT * from together_posts WHERE userid = ? ORDER BY timestamp DESC LIMIT 8';
     const [lastPosts] = await db.query(lastPostQuery, [userid]);
 
 
-    const timestamp = getTimestampInSQLFormat();
-
-    
     // Has previous posts
     if (lastPosts.length > 0) {
 
@@ -106,8 +119,6 @@ const createPost = async (req, res) => {
       if(checkSpamInPosts(lastPosts, content, lastPosts.length >= 2 ? 2 : lastPosts.length)) {
         return res.status(429).json({ message: "Please do not spam the same message." });
       }
-      
-      
     }
 
     const query = 'INSERT INTO together_posts (userid, content, timestamp) VALUES (?, ?, ?)';
@@ -121,7 +132,7 @@ const createPost = async (req, res) => {
 
   } catch (error) {
     console.error("Error in createPost controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
     
   }
 }
@@ -132,19 +143,19 @@ const deletePost = async (req, res) => {
     const userid = req.body.userid;
 
     if (!postid) {
-      return res.status(400).json({ error: "Post ID is required" });
+      return res.status(400).json({ message: "Post ID is required" });
     }
 
     // Check if post exists
     const [posts] = await db.query("SELECT * FROM together_posts WHERE postid = ?", [postid]);
 
     if (posts.length === 0) {
-      return res.status(404).json({ error: "Post not found" });
+      return res.status(404).json({ message: "Post not found" });
     }
 
     // Check if user is the owner of the post
     if (userid !== posts[0].userid) {
-      return res.status(403).json({ error: "You are not authorized to delete this post" });
+      return res.status(403).json({ message: "You are not authorized to delete this post" });
     }
 
     // Delete Post
@@ -165,13 +176,13 @@ const likeUnlikePost = async (req, res) => {
     const { postid } = req.params;
     
     if (!postid) {
-      return res.status(400).json({ error: "Post ID is required" });
+      return res.status(400).json({ message: "Post ID is required" });
     }
 
     const postQuery = 'SELECT * FROM together_posts WHERE postid = ?';
     const [posts] = await db.query(postQuery, [postid]);
     if (posts.length === 0) {
-      return res.status(404).json({ error: "Post not found" });
+      return res.status(404).json({ message: "Post not found" });
     }
 
     const selectLikeQuery = 'SELECT * FROM together_likes WHERE userid = ? AND postid = ?';
@@ -201,7 +212,7 @@ const likeUnlikePost = async (req, res) => {
     return res.status(200).json({ message: "Post Liked" });
   } catch (error) {
     console.error("Error in likePost controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -216,7 +227,7 @@ const getUserLikes = async (req, res) => {
     return res.status(200).json(likes);
   } catch (error) {
     console.error("Error in getUserLikes controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
 
@@ -229,7 +240,7 @@ const getLikedPosts = async (req, res) => {
     return res.status(200).json(posts);
   } catch (error) {
     console.error("Error in getLikedPosts controller", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
     
   }
 }
@@ -240,12 +251,29 @@ const addComment = async (req, res) => {
     const userid = req.body.userid;
     const { content } = req.body;
 
+    // Check if suspended
+    const [suspended] = await db.query("SELECT suspended FROM user WHERE userid = ?", [userid]);
+    if (suspended[0].suspended) {
+      evaluateFlagscore(userid);
+      return res.status(403).json({ message: "Your account is suspended. If you believe this is a mistake, please contact support." });
+    } 
+
+
     if (!content) {
-      return res.status(400).json({ error: "Content is required" });
+      return res.status(400).json({ message: "Content is required" });
     }
 
     if (content.length > 300) {
       return res.status(400).json({ message: "Content is too long" });
+    }
+
+    const timestamp = getTimestampInSQLFormat();
+    
+    // Check for flagged words
+    if (containsFlagWords(content)) {
+      await db.query("INSERT INTO violations (content, violation_type, timestamp, violatorid) VALUES(?, ?, ?, ?)", [content, 'flagged_word', timestamp, userid]);
+      await checkFlaggedWordsViolations(userid);
+      return res.status(400).json({ message: "Your comment contains flagged words. Please revise your comment." });
     }
 
     // Get Lasts 3 posts of the user
@@ -281,9 +309,6 @@ const addComment = async (req, res) => {
 
     const postid = req.params.postid;
     
-
-    const timestamp = getTimestampInSQLFormat();
-
     const commentQuery = 'INSERT INTO together_comments (postid, userid, content, timestamp) VALUES (?, ?, ?, ?)';
     await db.execute(commentQuery, [postid, userid, content, timestamp]);
 

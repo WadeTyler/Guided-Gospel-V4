@@ -4,7 +4,6 @@ const db = require("../../db/db");
 
 
 // Users are suspended based on flagscore. Flagscore is a value of violations in weight.
-
 const evaluateFlagscore = async (userid) => {
   try {
     const [user] = await db.query("SELECT * FROM user WHERE userid = ?", [userid]);
@@ -92,6 +91,62 @@ const checkPrivateMessageSpamViolations = async (userid) => {
   }
 }
 
+// Check for amount of flagged_word violations the has obtained
+const checkFlaggedWordsViolations = async (userid) => {
+   try {
+    // Select flagged_word violations today
+    const [violations] = await db.query("SELECT * FROM violations WHERE violatorid = ? AND violation_type = ? AND timestamp > UTC_TIMESTAMP() - INTERVAL 1 DAY ORDER BY TIMESTAMP DESC", [userid, 'flagged_word']);
+    const violationsCount = violations.length;
+    let totalWeight = 0;
+    console.log(violationsCount);
+    if (violationsCount > 0) {
+      // Apply weight based on violation count
+      if (violationsCount > 100) {
+        totalWeight += 4;
+      }
+      else if (violationsCount > 85) {
+        totalWeight += 3;
+      }
+      else if (violationsCount > 70) {
+        totalWeight += 1.6;
+      }
+      else if (violationsCount > 55) {
+        totalWeight += 1.3;
+      }
+      else if (violationsCount > 40) {
+        totalWeight += 1;
+      }
+      else if (violationsCount > 25) {
+        totalWeight += .5;
+      }
+      else if (violationsCount > 10) {
+        totalWeight += .1;
+      }
+      else {
+        totalWeight += .005;
+      }
+    }
+
+    // Update todays flag or create a new one
+    if (totalWeight > 0) {
+      const [todaysFlags] = await db.query("SELECT * FROM flags WHERE userid = ? AND timestamp > UTC_TIMESTAMP() - INTERVAL 1 DAY ORDER BY TIMESTAMP DESC", [userid]);
+      if (todaysFlags.length > 0) {
+        // Update todays flag
+        await db.query("UPDATE flags SET weight = weight + ?, timestamp = UTC_TIMESTAMP() WHERE flagid = ?", [totalWeight, todaysFlags[0].flagid]);
+      } else {
+        // Insert new flag
+        await db.query("INSERT INTO flags (userid, weight, timestamp) VALUES(?, ?, UTC_TIMESTAMP())", [userid, totalWeight]);
+      }
+    }
+    
+    // Evaluate total flagscore
+    evaluateFlagscore(userid);
+
+   } catch (error) {
+    console.log("Error in checkFlaggedWordsViolations: ", error);
+   }
+}
+
 // List of flagWords
 const flagWords = [
   // URLs and Domain Keywords
@@ -110,8 +165,8 @@ const flagWords = [
   'fraud', 'scam', 'trap', 'trick', 'hack', 'leak', 'password',
 
   // Adult Content
-  'porn', 'xxx', 'sex', 'adult', 'dating', 'escort', 'viagra', 'cialis', 
-  'nude', 'explicit', 'hot', 'webcam', 'camgirl', 'sugar daddy', 'onlyfans',
+  'porn', 'xxx', 'sex', 'dating', 'escort', 'viagra', 'cialis', 
+  'nude', 'explicit', 'webcam', 'camgirl', 'sugar daddy', 'onlyfans',
 
   // Gambling and Betting
   'casino', 'bet', 'gamble', 'poker', 'slots', 'blackjack', 'roulette', 
@@ -119,11 +174,11 @@ const flagWords = [
 
   // Promotions and Marketing
   'cheap', 'discount', 'offer', 'deal', 'promo', 'sale', 'coupon', 
-  'advertisement', 'ad', 'ads', 'marketing', 'seo', 'viral', 'followers', 
-  'likes', 'subscribers', 'views', 'share', 'referral', 'promotion',
+  'advertisement', 'ad', 'ads', 'marketing', 'seo', 'viral', 
+  'subscribers', 'referral', 'promotion',
 
   // Payment and Gift Scams
-  'gift', 'card', 'amazon', 'paypal', 'ebay', 'apple', 'google', 
+  'gift', 'card', 'amazon', 'paypal', 'ebay', 'apple',
   'voucher', 'redeem', 'code', 'cashback', 'prepaid',
 
   // Miscellaneous
@@ -142,9 +197,9 @@ const containsFlagWords = (input) => {
   return flagWordsRegex.test(input);
 }
 
-
-
 module.exports = {
   containsFlagWords,
-  checkPrivateMessageSpamViolations
+  checkPrivateMessageSpamViolations,
+  checkFlaggedWordsViolations,
+  evaluateFlagscore
 }

@@ -37,8 +37,6 @@ const protectedRoute = (req, res, next) => {
       next();
     });
   
-
-    
   } catch (error) {
     console.log("Error in protectedRoute: ", error);
     return res.status(401).json({ message: "Unauthorized" });

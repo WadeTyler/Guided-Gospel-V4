@@ -34,6 +34,7 @@ const createMessageSession = async (req, res) => {
     const user2 = req.body.user2;   // target user
 
 
+
     if (user1 === user2) return res.status(400).json({ message: "You cannot create a session with yourself." });
 
     // Check if session already exists

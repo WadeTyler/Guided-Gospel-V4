@@ -2,7 +2,7 @@
 const { Server } = require("socket.io");
 const db = require('../db/db');
 const { getTimestampInSQLFormat } = require("../lib/utils/sqlFormatting");
-const { checkPrivateMessageSpamViolations } = require("../lib/violations/checkViolations");
+const { checkPrivateMessageSpamViolations, containsFlagWords, checkFlaggedWordsViolations, evaluateFlagscore } = require("../lib/violations/checkViolations");
 
 
 const connectedUsers = new Map();
@@ -50,6 +50,7 @@ const setupSocket = async (io) => {
 
       if (user[0].suspended) {
          const output = "Your account is suspended and you are prohibited from sending messages. If you believe this is an issue please contact support.";
+         evaluateFlagscore(userid);
          io.to(socket.id).emit("message-denied", output);
          return;
       }
@@ -80,6 +81,14 @@ const setupSocket = async (io) => {
         await checkPrivateMessageSpamViolations(userid);
 
         // Early return
+        return;
+      }
+
+      // Check flagged words
+      if (containsFlagWords(text)) {
+        await db.query("INSERT INTO violations (content, violation_type, timestamp, violatorid) VALUES(?, ?, ?, ?)", [text, 'flagged_word', timestamp, userid]);
+        await checkFlaggedWordsViolations(userid);
+        io.to(socket.id).emit("message-denied", "Your message contains flagged word(s). Please revise your message.");
         return;
       }
 
