@@ -12,6 +12,7 @@ router.post("/users/:userid/suspend", protectedRoute, authenticatedAdmin, adminC
 router.post("/users/:userid/setDefaultRates", protectedRoute, authenticatedAdmin, adminController.setDefaultRates);
 router.post("/users/:userid/resetRates", protectedRoute, authenticatedAdmin, adminController.resetRates);
 router.get("/postreports", protectedRoute, authenticatedAdmin, adminController.getAllPostReports);
+router.put("/users/:userid/resetflags", protectedRoute, authenticatedAdmin, adminController.resetFlagScore);
 
 
 module.exports = router;

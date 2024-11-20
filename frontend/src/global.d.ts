@@ -19,6 +19,7 @@ declare global {
     following: number;
     avatar: string;
     banner: string;
+    flagscore: number;
   }
 
   interface Post {

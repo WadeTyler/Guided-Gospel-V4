@@ -1,5 +1,6 @@
 
 const db = require("../db/db");
+const { evaluateFlagscore } = require("../lib/violations/checkViolations");
 
 // Returns the Admin's administrator information
 const getAdmin = async (req, res) => {
@@ -28,7 +29,7 @@ const getAdmin = async (req, res) => {
 // Return all users in the database
 const getUsers = async (req, res) => {
   try {
-    const query = 'SELECT username, userid, firstname, lastname, email, age, denomination, rates, defaultrates, createdat, lastactive, suspended FROM user ORDER BY lastname ASC';
+    const query = 'SELECT username, userid, firstname, lastname, email, age, denomination, rates, defaultrates, createdat, lastactive, suspended, flagscore FROM user ORDER BY lastname ASC';
     const [users] = await db.query(query);
 
     return res.status(200).json(users);
@@ -161,6 +162,26 @@ const getAllPostReports = async (req, res) => {
   }
 }
 
+// Reset a user's flagscore. Require's userid.
+const resetFlagScore = async (req, res) => {
+  try {
+    const userid = req.params.userid;
+
+    // Deletes all of the user's flags in the past 7 days.
+    const query = 'DELETE FROM flags WHERE userid = ? AND timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK';
+    await db.query(query, [userid]);
+    
+    // Revaluate flagscore
+    evaluateFlagscore(userid);
+
+    return res.status(200).json({ message: "User's relevant flags removed." });
+
+  } catch (error) {
+    console.log("Error in resetFlagScore controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 
 module.exports = {
   getAdmin,
@@ -170,5 +191,6 @@ module.exports = {
   suspendAndUnsuspendUser,
   setDefaultRates,
   resetRates,
-  getAllPostReports
+  getAllPostReports,
+  resetFlagScore
 }
