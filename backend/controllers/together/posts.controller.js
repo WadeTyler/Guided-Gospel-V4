@@ -4,6 +4,8 @@ const generateToken = require("../../lib/jwt/generateToken");
 const { getTimestampInSQLFormat } = require("../../lib/utils/sqlFormatting");
 const { checkSpamInPosts, checkSpamInComments } = require("../../lib/utils/checkSpam");
 const { containsFlagWords, checkFlaggedWordsViolations, evaluateFlagscore, checkReportedPostsViolations } = require("../../lib/violations/checkViolations");
+const sendEmail = require("../../lib/email/sendEmail");
+const { postReported } = require("../../lib/email/emailMessages");
 
 const getAllPosts = async (req, res) => {
   try {
@@ -376,7 +378,9 @@ const reportPost = async (req, res) => {
     const values = [content, violation_type, timestamp, violatorid, reporterid, postid];
 
     await db.query(query, values);
-    checkReportedPostsViolations(violatorid);
+    await checkReportedPostsViolations(violatorid);
+
+    sendEmail('contact@guidedgospel.net', 'Post Reported', "A user's post has been reported", postReported(violatorid, content));
 
     return res.status(200).json({ message: "Report successfully made. Thank You." });
 

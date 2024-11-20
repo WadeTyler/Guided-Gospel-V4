@@ -36,9 +36,21 @@ const emailVerification = (verificationToken) => {
   return message;
 }
 
+const postReported = (userid, content) => {
+  const message = `
+  <a href="https://guidedgospel.net/" style="color: #f59e0b; text-decoration: none; font-size: 2rem; font-weight: bold">Guided Gospel</a>
+  <p>A user's post has been reported.</p>
+  <p>userid: ${userid}</p>
+  <p>The report message is:</p>
+  <p><em>${content}</p></em>
+  `
+  return message;
+}
+
 
 
 module.exports = {
   passwordRecovery,
-  emailVerification
+  emailVerification,
+  postReported
 }

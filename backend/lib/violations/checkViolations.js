@@ -2,7 +2,6 @@
 // Utility class for checking violations on the user's account
 const db = require("../../db/db");
 
-
 // Users are suspended based on flagscore. Flagscore is a value of violations in weight.
 const evaluateFlagscore = async (userid) => {
   try {
@@ -236,7 +235,6 @@ const flagWords = [
   'download now', 'click here', 'act now', 'limited time', 'exclusive', 
   'urgent', 'guaranteed', 'no risk', 'fast cash', 'double your money'
 ];
-
 
 // Escape regex pattern
 const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
