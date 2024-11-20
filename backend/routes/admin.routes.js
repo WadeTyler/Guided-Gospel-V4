@@ -14,5 +14,6 @@ router.post("/users/:userid/resetRates", protectedRoute, authenticatedAdmin, adm
 router.get("/postreports", protectedRoute, authenticatedAdmin, adminController.getAllPostReports);
 router.put("/users/:userid/resetflags", protectedRoute, authenticatedAdmin, adminController.resetFlagScore);
 router.get("/users/:userid/content", protectedRoute, authenticatedAdmin, adminController.getUsersContent);
+router.get("/dashboard", protectedRoute, authenticatedAdmin, adminController.getDashboardData);
 
 module.exports = router;

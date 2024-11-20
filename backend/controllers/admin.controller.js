@@ -202,6 +202,41 @@ const getUsersContent = async (req, res) => {
   }
 }
 
+// Get all dashboard data
+const getDashboardData = async (req, res) => {
+  try {
+    
+    // Select total amount of users
+    const [totalUsers] = await db.query("SELECT userid, createdat FROM user");
+
+    // Select amount of new users in the last week
+    const [usersThisWeek] = await db.query("SELECT userid, createdat FROM user WHERE createdat > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+
+    // Select total flagweight in the past week
+    const [flagsThisWeek] = await db.query("SELECT weight, timestamp FROM flags WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+
+    // Select total violations in the past week
+    const [violationsThisWeek] = await db.query("SELECT violationid, timestamp, violation_type FROM violations WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+
+    // Number of posts this week
+    const [posts] = await db.query("SELECT postid, timestamp FROM together_posts WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+    const numberPosts = posts.length;
+
+    // Number of private messages past week
+    const [privateMessages] = await db.query("SELECT messageid, timestamp FROM together_messages WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+    const numberMessages = privateMessages.length;
+    
+    // Number of guided messages in the past week (Not including deleted ones)
+    const [guidedMessages] = await db.query("SELECT messageid, timestamp FROM message WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK AND sender = 'ai'");
+
+    return res.status(200).json({ totalUsers, usersThisWeek, flagsThisWeek, violationsThisWeek, numberPosts, numberMessages, guidedMessages });
+
+  } catch (error) {
+    console.log("Error in getDashboardData: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   getAdmin,
   getUsers,
@@ -212,5 +247,6 @@ module.exports = {
   resetRates,
   getAllPostReports,
   resetFlagScore,
-  getUsersContent
+  getUsersContent,
+  getDashboardData
 }
