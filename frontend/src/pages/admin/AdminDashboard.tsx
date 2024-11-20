@@ -5,6 +5,10 @@ const AdminDashboard = () => {
   return (
     <div className="flex w-full min-h-screen">
       <AdminSidebar />
+
+      <div className="ml-[15rem]">
+        
+      </div>
     </div>
   )
 }

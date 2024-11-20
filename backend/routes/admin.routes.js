@@ -13,6 +13,6 @@ router.post("/users/:userid/setDefaultRates", protectedRoute, authenticatedAdmin
 router.post("/users/:userid/resetRates", protectedRoute, authenticatedAdmin, adminController.resetRates);
 router.get("/postreports", protectedRoute, authenticatedAdmin, adminController.getAllPostReports);
 router.put("/users/:userid/resetflags", protectedRoute, authenticatedAdmin, adminController.resetFlagScore);
-
+router.get("/users/:userid/content", protectedRoute, authenticatedAdmin, adminController.getUsersContent);
 
 module.exports = router;

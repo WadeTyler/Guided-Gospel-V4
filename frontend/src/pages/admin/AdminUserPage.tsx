@@ -2,16 +2,22 @@ import { useParams } from "react-router-dom"
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import { formatName, formatTimestamp } from "../../lib/utils";
+import { formatName, formatTimestamp, formatTimestampToDifference } from "../../lib/utils";
 import ChangeRates from "../../components/admin/ChangeRates";
+import Post from "../../components/together/Post";
+import Comment from "../../components/together/Comment";
+import Message from "../../components/together/Message";
 
 
 const AdminUserPage = () => {
   const userid = useParams().userid;
 
   const [user, setUser] = useState<User | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [messages, setMessages] = useState<TogetherMessage[]>([]);
 
-
+  // Obtain the user data
   const setUserData = async () => {
     try {
       const response = await fetch(`/api/admin/users/${userid}`, {
@@ -35,9 +41,41 @@ const AdminUserPage = () => {
     }
   }
 
+  // Fetch user's content
+  const setUserContent = async () => {
+    try {
+      const response = await fetch(`/api/admin/users/${userid}/content`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      console.log(data);
+
+      // Set Data
+      setPosts(data.posts);
+      setComments(data.comments);
+      setMessages(data.messages);
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong");
+    }
+  }
+
+  // Fetch user data on load
   useEffect(() => {
     setUserData();
   }, [userid]);
+
+  // Fetch user content on user load
+  useEffect(() => {
+    setUserContent();
+  }, [user]);
 
 
   const suspendAndUnsuspendUser = async () => {
@@ -110,12 +148,12 @@ const AdminUserPage = () => {
     <div className="w-full min-h-screen flex">
       <AdminSidebar />
       
-      <div className="w-full p-4 flex flex-col bg-white dark:bg-darkbg dark:text-darktext gap-2">
+      <div className="w-full p-4 flex flex-col ml-[15rem] bg-white dark:bg-darkbg dark:text-darktext gap-8">
         <header className="admin-panel-header">
           {user ? <h1 className="text-primary text-5xl">{formatName(user.firstname)} {formatName(user.lastname)}</h1> : <h1 className="text-primary text-5xl">User Not Found </h1>}
         </header>
         {user && 
-        <div className="flex gap-8">
+        <div className="flex gap-8 border-b-primary border-b-[1px] pb-4">
           {/* User Info */}
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-1">
@@ -145,6 +183,38 @@ const AdminUserPage = () => {
           </div>
 
         </div>
+        }
+
+        {user &&
+          <div className=" gap-8 w-full grid grid-cols-3">
+            {/* Posts */}
+            <div className="flex flex-col gap-2">
+              <p className="text-primary font-bold text-lg">Posts</p>
+              {posts.map((post) => (
+                <Post post={post} key={post.postid} />
+              ))}
+            </div>
+
+            {/* Comments */}
+            <div className="flex flex-col gap-2">
+              <p className="text-primary font-bold text-lg">Comments</p>
+              {comments.map((comment) => (
+                <Comment comment={comment} key={comment.commentid} />
+              ))}
+            </div>
+
+            {/* Messages */}
+            <div className="flex flex-col gap-2">
+              <p className="text-primary font-bold text-lg">Messages</p>
+              {messages.map((message) => (
+                <div className="w-full flex flex-col border-gray-300 border-[1px] rounded-xl p-4 shadow-lg break-words">
+                  <p className="text-gray-400">{formatTimestampToDifference(message.timestamp)}</p>
+                  <p className="">{message.text}</p>
+                </div>
+              ))}
+            </div>
+
+          </div>
         }
 
       </div>

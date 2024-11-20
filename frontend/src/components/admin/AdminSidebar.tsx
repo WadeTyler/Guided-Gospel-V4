@@ -7,7 +7,7 @@ import { IconLayoutDashboardFilled, IconBatteryAutomotiveFilled, IconUsersGroup,
 
 const AdminSidebar = () => {
   return (
-    <div className='max-w-[15rem] w-[15rem] h-screen bg-neutral-800 flex flex-col gap-8 px-2 py-2'>
+    <div className='w-[15rem] fixed z-50 h-screen bg-neutral-800 flex flex-col gap-8 px-2 py-2'>
 
       <h4 className="text-primary text-2xl font-bold">Guided Gospel</h4>
 

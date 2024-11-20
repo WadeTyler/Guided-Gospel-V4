@@ -90,7 +90,7 @@ const AdminUsers = () => {
       <AdminSidebar />
       
 
-      <div className="w-full h-full flex flex-col p-4 gap-4">
+      <div className="w-full h-full ml-[15rem] flex flex-col p-4 gap-4">
 
         <header className="admin-panel-header">
           <h1 className="text-primary text-5xl">Users</h1>

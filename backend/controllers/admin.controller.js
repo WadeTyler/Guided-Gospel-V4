@@ -182,6 +182,25 @@ const resetFlagScore = async (req, res) => {
   }
 }
 
+// Select user's posts, comments, and private messages
+const getUsersContent = async (req, res) => {
+  try {
+    const userid = req.params.userid;
+
+    // Select posts
+    const [posts] = await db.query("SELECT * FROM together_posts WHERE userid = ? ORDER BY timestamp DESC", [userid]);
+    // Select comments
+    const [comments] = await db.query("SELECT * FROM together_comments WHERE userid = ? ORDER BY timestamp DESC", [userid]);
+    // Select messages
+    const [messages] = await db.query("SELECT * FROM together_messages WHERE userid = ? ORDER BY timestamp DESC", [userid]);
+
+    return res.status(200).json({posts, comments, messages});
+
+  } catch (error) {
+    console.log("Error in getUsersContent: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 module.exports = {
   getAdmin,
@@ -192,5 +211,6 @@ module.exports = {
   setDefaultRates,
   resetRates,
   getAllPostReports,
-  resetFlagScore
+  resetFlagScore,
+  getUsersContent
 }

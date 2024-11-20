@@ -55,7 +55,7 @@ const AdminFeedback = () => {
       <AdminSidebar />
 
       {/* Body */}
-      <div className="w-full min-h-screen flex flex-col p-4 gap-4 bg-white dark:bg-darkbg dark:text-darktext">
+      <div className="w-full ml-[15rem] min-h-screen flex flex-col p-4 gap-4 bg-white dark:bg-darkbg dark:text-darktext">
         {/* Header */}
         <header className="admin-panel-header">
             <h1 className="text-primary text-5xl">Feedback</h1>
