@@ -29,7 +29,7 @@ const LineChart = ( {plots}: {plots: Plot[]; }) => {
     const distance = (1 - (value / maxValueY)) * 100;
     
     return distance;
-  } 
+  }
 
   const getDistanceFromLeft = (index: number) => {
 

@@ -227,9 +227,9 @@ const getDashboardData = async (req, res) => {
     const numberMessages = privateMessages.length;
     
     // Number of guided messages in the past week (Not including deleted ones)
-    const [guidedMessages] = await db.query("SELECT messageid, timestamp FROM message WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK AND sender = 'ai'");
+    const [guidedMessagesThisWeek] = await db.query("SELECT messageid, timestamp FROM message WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK AND sender = 'ai'");
 
-    return res.status(200).json({ totalUsers, usersThisWeek, flagsThisWeek, violationsThisWeek, numberPosts, numberMessages, guidedMessages });
+    return res.status(200).json({ totalUsers, usersThisWeek, flagsThisWeek, violationsThisWeek, numberPosts, numberMessages, guidedMessagesThisWeek });
 
   } catch (error) {
     console.log("Error in getDashboardData: ", error);
