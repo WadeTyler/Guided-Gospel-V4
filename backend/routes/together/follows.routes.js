@@ -8,5 +8,6 @@ const checkSuspended = require('../../middleware/checkSuspended');
 router.post("/:username", protectedRoute, checkSuspended, checkUsernameExistsParam, followsController.followUnfollowUser);
 router.get("/following", protectedRoute, followsController.getFollowing);
 router.get("/followers", protectedRoute, followsController.getFollowers);
+router.get("/suggestedusers", protectedRoute, followsController.getSuggestedUsers);
 
 module.exports = router;
