@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import toast from "react-hot-toast";
 import LineChart, { Plot } from "../../components/util/graphs/LineChart";
+import PieChart, { Pie } from "../../components/util/graphs/PieChart";
 
 type DashboardData = {
   totalUsers: [
@@ -68,42 +69,42 @@ const AdminDashboard = () => {
     console.log(dashboardData);
   }, [dashboardData]);
 
-  const guidedMessagesPlots = [
+  const pies: Pie[] = [
     {
-      value: 3,
-      timestamp: "2024-11-16T17:49:42.000Z"
+      label: "post_report",
+      value: 48
     },
     {
-      value: 5,
-      timestamp: "2024-11-17T17:49:42.000Z"
+      label: "tsafd",
+      value: 12
     },
     {
-      value: 6,
-      timestamp: "2024-11-18T17:49:42.000Z"
+      label: "flagged_word",
+      value: 24
     },
     {
-      value: 10,
-      timestamp: "2024-11-19T17:49:42.000Z"
+      label: "flagged_word",
+      value: 76
     },
     {
-      value: 8,
-      timestamp: "2024-11-20T17:49:42.000Z"
+      label: "flagged_word",
+      value: 33
     },
     {
-      value: 2,
-      timestamp: "2024-11-21T17:49:42.000Z"
+      label: "flagged_word",
+      value: 24
     },
     {
-      value: 7,
-      timestamp: "2024-11-22T17:49:42.000Z"
-    },
+      label: "attempted_pm_spam",
+      value: 23
+    }
   ]
 
   return (
     <div className="flex w-full min-h-screen">
       <AdminSidebar />
 
-      <div className="w-full p-4 flex flex-col ml-[15rem] bg-white dark:bg-darkbg dark:text-darktext gap-8">
+      <div className="w-full p-4 flex flex-col ml-[15rem] bg-white dark:bg-darkbg dark:text-darktext gap-8 pb-24">
         <header className="admin-panel-header">
           <h1 className="text-primary text-5xl">Admin Dashboard</h1>
         </header>
@@ -126,7 +127,7 @@ const AdminDashboard = () => {
 
             {/* Guided Messages This Week */}
             <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
-              <p className="text-primary text-2xl">Guided Messages</p>
+              <p className="text-primary text-2xl">Guided Messages This Week: {dashboardData.guidedMessagesThisWeek.length}</p>
               <div className="w-full max-h-[200px] h-[200px] p-2">
                 <LineChart plots={dashboardData.guidedMessagesThisWeek} />
               </div>
@@ -136,22 +137,24 @@ const AdminDashboard = () => {
 
             <div className="flex flex-col gap-4">
               {/* Posts This Week */}
-              <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
+              <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
                 <p className="text-primary text-2xl">Posts This Week</p>
                 <p>{dashboardData?.numberPosts}</p>
               </div>
 
               {/* Private Messages This Week */}
-              <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
+              <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
                 <p className="text-primary text-2xl">Private Messages This Week</p>
                 <p>{dashboardData?.numberMessages}</p>
               </div>
             </div>
 
             {/* Violations This Week */}
-            <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
-              <p className="text-primary text-2xl">Violations This Week</p>
-              <p>{dashboardData?.violationsThisWeek.length}</p>
+            <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg flex flex-col gap-4">
+              <p className="text-primary text-2xl">Violations This Week: {dashboardData.violationsThisWeek.length}</p>
+              <div className="w-full h-full">
+                <PieChart pies={pies} circleWidth="150px" />
+              </div>
             </div>
 
             {/* Flags This Week */}
