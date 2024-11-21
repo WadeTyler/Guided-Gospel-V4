@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"; 
 
 // Icons
-import { IconBellFilled, IconMessages, IconLogin, IconFriends, IconUsersGroup, IconMessageFilled, IconX } from "@tabler/icons-react";
+import { IconBellFilled, IconMessages, IconLogin, IconFriends, IconMessageFilled, IconX } from "@tabler/icons-react";
 import { SetStateAction, useEffect, useState } from "react";
 import Loading from "../Loading";
 import toast from "react-hot-toast";
