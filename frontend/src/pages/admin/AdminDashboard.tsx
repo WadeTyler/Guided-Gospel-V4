@@ -24,13 +24,7 @@ type DashboardData = {
       timestamp: string;
     }
   ],
-  violationsThisWeek: [
-    {
-      violationid: number;
-      timestamp: string;
-      violation_type: string;
-    }
-  ],
+  violationsThisWeek: Pie[];
   numberPosts: number;
   numberMessages: number;
   guidedMessagesThisWeek: Plot[];
@@ -69,37 +63,6 @@ const AdminDashboard = () => {
     console.log(dashboardData);
   }, [dashboardData]);
 
-  const pies: Pie[] = [
-    {
-      label: "post_report",
-      value: 48
-    },
-    {
-      label: "tsafd",
-      value: 12
-    },
-    {
-      label: "flagged_word",
-      value: 24
-    },
-    {
-      label: "flagged_word",
-      value: 76
-    },
-    {
-      label: "flagged_word",
-      value: 33
-    },
-    {
-      label: "flagged_word",
-      value: 24
-    },
-    {
-      label: "attempted_pm_spam",
-      value: 23
-    }
-  ]
-
   return (
     <div className="flex w-full min-h-screen">
       <AdminSidebar />
@@ -133,8 +96,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-
-
             <div className="flex flex-col gap-4">
               {/* Posts This Week */}
               <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
@@ -153,7 +114,7 @@ const AdminDashboard = () => {
             <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg flex flex-col gap-4">
               <p className="text-primary text-2xl">Violations This Week: {dashboardData.violationsThisWeek.length}</p>
               <div className="w-full h-full">
-                <PieChart pies={pies} circleWidth="150px" />
+                <PieChart pies={dashboardData.violationsThisWeek} circleWidth="150px" />
               </div>
             </div>
 

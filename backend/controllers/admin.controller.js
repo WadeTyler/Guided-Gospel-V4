@@ -216,7 +216,22 @@ const getDashboardData = async (req, res) => {
     const [flagsThisWeek] = await db.query("SELECT weight, timestamp FROM flags WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
 
     // Select total violations in the past week
-    const [violationsThisWeek] = await db.query("SELECT violationid, timestamp, violation_type FROM violations WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+    const [violationsThisWeekData] = await db.query("SELECT violationid, timestamp, violation_type FROM violations WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
+
+
+    const violationCounts = {};
+
+    // Count the occurrences of each violation_type
+    violationsThisWeekData.forEach((violation) => {
+      const violationType = violation.violation_type;
+      violationCounts[violationType] = (violationCounts[violationType] || 0) + 1;
+    });
+
+    // Convert the counts into an array of Pie objects
+    const violationsThisWeek = Object.entries(violationCounts).map(([label, value]) => ({
+      label,
+      value,
+    }));
 
     // Number of posts this week
     const [posts] = await db.query("SELECT postid, timestamp FROM together_posts WHERE timestamp > UTC_TIMESTAMP() - INTERVAL 1 WEEK");
