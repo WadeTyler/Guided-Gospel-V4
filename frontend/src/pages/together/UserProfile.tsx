@@ -9,6 +9,7 @@ import { formatTimestampToDifference, checkIfFollowingTarget } from '../../lib/u
 import Sidebar from '../../components/together/Sidebar';
 import Comment from '../../components/together/Comment';
 import Loading from '../../components/Loading';
+import SuggestedUsers from '../../components/together/SuggestedUsers';
 
 
 const UserProfile = () => {
@@ -534,6 +535,8 @@ const UserProfile = () => {
           </div>
         }
       </div>
+
+      <SuggestedUsers />
     </div>
   )
 }

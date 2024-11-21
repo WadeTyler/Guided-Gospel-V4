@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 import Loading from "../../components/Loading";
 import Post from "../../components/together/Post";
 import { useEffect, useState } from "react";
+import SuggestedUsers from "../../components/together/SuggestedUsers";
 
 const GuidedTogether = () => {
 
@@ -68,8 +69,8 @@ const GuidedTogether = () => {
         A recommended users list on the right side.
       */}
 
-      <div className="flex justify-center items-center relative w-full h-full pb-24">
-        
+      <div className="flex justify-center relative w-full h-full pb-24 gap-8">
+
         {/* Posts section */}
         <div className="w-[40rem] flex flex-col gap-4 h-full items-center justify-start">
           <header className="flex justify-center items-center gap-16 fixed w-fit z-20">
@@ -104,8 +105,7 @@ const GuidedTogether = () => {
           </div>
         </div>
 
-
-
+        <SuggestedUsers />
       </div>
 
     </div>

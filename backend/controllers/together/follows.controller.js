@@ -171,7 +171,7 @@ const getSuggestedUsers = async (req, res) => {
     // Retreive usernames, avatars, and bio
     const suggestedUsers = [];
     for (let i = 0; i < suggestedUsersUserids.length; i++) {
-      const [user] = await db.query("SELECT username, avatar, bio FROM user WHERE userid = ?", suggestedUsersUserids[i]);
+      const [user] = await db.query("SELECT userid, username, avatar, bio FROM user WHERE userid = ?", suggestedUsersUserids[i]);
 
       suggestedUsers.push(user[0]);
     }
@@ -184,6 +184,8 @@ const getSuggestedUsers = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+
 
 module.exports = {
   followUnfollowUser,

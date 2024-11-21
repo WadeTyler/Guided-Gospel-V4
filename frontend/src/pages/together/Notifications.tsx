@@ -6,6 +6,7 @@ import { formatTimestampToDifference } from '../../lib/utils';
 import { IconFileCheck, IconHeartFilled, IconMessages, IconTrash, IconUserPlus } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import Loading from '../../components/Loading';
+import SuggestedUsers from '../../components/together/SuggestedUsers';
 
 const Notifications = () => {
   const queryClient = useQueryClient();
@@ -86,7 +87,7 @@ const Notifications = () => {
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
       <Sidebar />
 
-      <div className="w-[40rem] mt-24 flex flex-col gap-4 dark:text-darktext">
+      <div className="w-[40rem] mt-14 flex flex-col gap-4 dark:text-darktext">
           <h4 className="text-primary text-3xl pb-4 border-b-primary border-b-2">{authUser?.username}'s Notifications</h4>
           <div className="flex gap-4 w-full justify-end">
             {!markingAllRead && <button onClick={() => markAllRead()} className="text-primary flex gap-2"><IconFileCheck />  Mark all Read</button>}
@@ -116,6 +117,7 @@ const Notifications = () => {
             {isLoadingNotifications && <Loading size="lg" cn='text-primary' />}
           </div>
 
+          <SuggestedUsers />
       </div>
     </div>
   )
