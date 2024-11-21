@@ -17,5 +17,6 @@ router.get("/users/:username", protectedRoute, checkUsernameExistsParam, postsCo
 router.get("/users/comments/:username", protectedRoute, checkUsernameExistsParam, postsController.getUserComments);
 router.get("/users/likes/:username", protectedRoute, checkUsernameExistsParam, postsController.getLikedPosts);
 router.post("/report", protectedRoute, postsController.reportPost);
+router.delete("/:postid/:commentid", protectedRoute, postsController.deleteComment);
 
 module.exports = router;

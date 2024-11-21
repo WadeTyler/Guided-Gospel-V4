@@ -3,36 +3,39 @@ import { formatTimestampToDifference } from "../../lib/utils"
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Comment from "./Comment";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loading from "../Loading";
 import { useNavigate } from "react-router-dom";
 
 
 const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, handleLike: () => void, isLiked:Boolean; setViewingComments: React.Dispatch<React.SetStateAction<Boolean>>}) => {
   const [commentContent, setCommentContent] = useState<string>('');
-  const [comments, setComments] = useState<Comment[]>([]);
 
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const getComments = async () => {
-    try {
-      const response = await fetch(`/api/together/posts/${post.postid}/comments`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+  const {data:comments, isPending:loadingComments} = useQuery<Comment[]>({
+    queryKey: ['currentComments'],
+    queryFn: async () => {
+      try {
+        const response = await fetch(`/api/together/posts/${post.postid}/comments`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        });
+        const data = await response.json();
+    
+        if (!response.ok) {
+          throw new Error(data.message || "Something went wrong");
         }
-      });
-      const data = await response.json();
-  
-      if (!response.ok) {
-        throw new Error(data.message || "Something went wrong");
+    
+        return data;
+      } catch (error) {
+        toast.error((error as Error).message || "Something went wrong");
       }
-  
-      setComments(data);
-    } catch (error) {
-      toast.error((error as Error).message || "Something went wrong");
     }
-  }
+  });
 
   const { mutate:addComment, isPending:sendingComment } = useMutation({
     mutationFn: async (commentContent: string) => {
@@ -58,7 +61,7 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
       toast.success("Comment added successfully");
       post.comments += 1;
       setCommentContent('');
-      getComments();
+      queryClient.invalidateQueries({ queryKey: ['currentComments'] });
     },
     onError: (error: Error) => {
       toast.error(error.message || "Something went wrong");
@@ -74,7 +77,7 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
   }
 
   useEffect(() => {
-    getComments();
+    queryClient.invalidateQueries({ queryKey: ['currentComments'] });
   }, [post])
 
   return (
@@ -113,7 +116,7 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
         {/* Add Comment Section */}
         <div className="flex flex-col items-end gap-4">
           <textarea name="addcomment" id="addcomment" disabled={sendingComment} value={commentContent}
-          className="w-full bg-white dark:bg-darkbg form-input-bar resize-none" placeholder={`${comments.length === 0 ? 'Be the first to comment! Add your message here...' : 'Add a comment here...' }`} onChange={(e) => {
+          className="w-full bg-white dark:bg-darkbg form-input-bar resize-none" placeholder={`${comments?.length === 0 ? 'Be the first to comment! Add your message here...' : 'Add a comment here...' }`} onChange={(e) => {
             e.preventDefault();
             setCommentContent(e.target.value);
           }} />
@@ -127,7 +130,7 @@ const Comments = ({post, handleLike, isLiked, setViewingComments}:{post: Post, h
 
         {/* All Comments */}
         <div className="flex flex-col w-full items-center justify-center gap-4">
-          {comments.map((comment) => (
+          {comments && !loadingComments && comments.map((comment: Comment) => (
             <Comment key={comment.commentid} comment={comment} />
           ))}
         </div>

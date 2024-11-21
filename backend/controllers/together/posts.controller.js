@@ -382,7 +382,7 @@ const reportPost = async (req, res) => {
 
     sendEmail('contact@guidedgospel.net', 'Post Reported', "A user's post has been reported", postReported(violatorid, content));
 
-    return res.status(200).json({ message: "Report successfully made. Thank You." });
+    return res.status(200).json({ message: "Report successfully made. Thank Y[ou." });
 
   } catch (error) {
     console.log("Error in reportPost controller: ", error);
@@ -390,6 +390,40 @@ const reportPost = async (req, res) => {
   }
 }
 
+const deleteComment = async (req, res) => {
+  try {
+    const userid = req.body.userid;
+    const postid = req.params.postid;
+    const commentid = req.params.commentid;
+
+    if (!postid || !commentid) {
+      return res.status(400).json({ message: "PostID and CommentID are both required" });
+    }
+
+    const [comment] = await db.query("SELECT * FROM together_comments WHERE commentid = ? AND postid = ?", [commentid, postid]);
+    
+    if (comment.length === 0) {
+      return res.status(404).json({ message: "PostID or CommentID is incorrect" });
+    }
+    
+    // Check if userid is equal to the comment.userid
+    if (comment[0].userid !== userid) {
+      return res.status(403).json({ message: "You are not authorized to delete this post" });
+    }
+
+    // Valid user, delete post
+    await db.query("DELETE FROM together_comments WHERE commentid = ? AND postid = ? AND userid = ?", [commentid, postid, userid]);
+
+    // Update comment count on the post
+    await db.query("UPDATE together_posts SET comments = comments - 1 WHERE postid = ?", [postid]);
+
+    return res.status(200).json({ message: "Comment deleted successfully" });
+
+  } catch (error) {
+    console.log("Error in deleteComment controller: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  } 
+}
 
 module.exports = {
   getAllPosts,
@@ -402,5 +436,6 @@ module.exports = {
   getUserPosts,
   getUserComments,
   getLikedPosts,
-  reportPost
+  reportPost,
+  deleteComment
 }
