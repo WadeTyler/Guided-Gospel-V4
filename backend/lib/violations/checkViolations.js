@@ -239,7 +239,7 @@ const flagWords = [
 // Escape regex pattern
 const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const regexPattern = flagWords.map(escapeRegex).join('|');
+const regexPattern = flagWords.map(word => `\\b${escapeRegex(word)}\\b`).join('|');
 const flagWordsRegex = new RegExp(regexPattern, 'i');
 
 const containsFlagWords = (input) => {
