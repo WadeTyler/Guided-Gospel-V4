@@ -203,6 +203,7 @@ export default function App() {
     if (notifications) console.log("Notifications Retreived");
     if (followingList) console.log("Following List Retreived");
     if (likedPosts) console.log("Liked Posts Retreived");
+    if (followersList) console.log("Followers List Retreived");
     
     if (authUser) {
       // handle socket
