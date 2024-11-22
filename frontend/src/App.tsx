@@ -138,6 +138,8 @@ export default function App() {
           throw new Error(data.message || "Something went wrong");
         }
 
+        console.log(data);
+
         return data;
       } catch (error) {
         console.log("Error fetching followingList", error)
@@ -145,7 +147,28 @@ export default function App() {
       }
     }
   });
-  
+
+  const { data:followersList } = useQuery({
+    queryKey: ['followersList'],
+    queryFn: async () => {
+      try {
+        const response = await fetch('/api/together/follows/followers', {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.message);
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.log("Error retreiving followersList: ", error);
+      }
+    }
+  })
+
 
   const { data:notifications } = useQuery<NotificationType[]>({
     queryKey: ['notifications'],
@@ -174,6 +197,7 @@ export default function App() {
     queryClient.invalidateQueries({ queryKey: ['authAdmin'] });
     queryClient.invalidateQueries({ queryKey: ['notifications'] });
     queryClient.invalidateQueries({ queryKey: ['followingList'] });
+    queryClient.invalidateQueries({ queryKey: ['followersList'] });
     queryClient.invalidateQueries({ queryKey: ['likedPosts'] });
     
     if (notifications) console.log("Notifications Retreived");

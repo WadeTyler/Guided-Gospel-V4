@@ -9,5 +9,7 @@ router.post("/:username", protectedRoute, checkSuspended, checkUsernameExistsPar
 router.get("/following", protectedRoute, followsController.getFollowing);
 router.get("/followers", protectedRoute, followsController.getFollowers);
 router.get("/suggestedusers", protectedRoute, followsController.getSuggestedUsers);
+router.get("/followers/:userid", protectedRoute, followsController.getTargetsFollowersList);
+router.get("/following/:userid", protectedRoute, followsController.getTargetsFollowingList);
 
 module.exports = router;

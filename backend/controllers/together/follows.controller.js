@@ -56,7 +56,7 @@ const getFollowing = async (req, res) => {
   try {
     const userid = req.body.userid;
 
-    const query = 'SELECT followingid FROM together_follows WHERE followerid = ?';
+    const query = 'SELECT together_follows.followingid, user.username, user.avatar FROM together_follows JOIN user ON together_follows.followingid = user.userid WHERE followerid = ?';
     const [following] = await db.query(query, [userid]);
 
     return res.status(200).json(following);
@@ -67,12 +67,13 @@ const getFollowing = async (req, res) => {
   }
 }
 
+
 // Get the User's Followers list
 const getFollowers = async (req, res) => {
   try {
     const userid = req.body.userid;
 
-    const query = 'SELECT followerid FROM together_follows WHERE followingid = ?';
+    const query = 'SELECT together_follows.followerid, user.username, user.avatar FROM together_follows JOIN user ON together_follows.followerid = user.userid WHERE together_follows.followingid = ?';
     const [followers] = await db.query(query, [userid]);
 
     return res.status(200).json(followers);
@@ -186,10 +187,45 @@ const getSuggestedUsers = async (req, res) => {
 }
 
 
+const getTargetsFollowersList = async (req, res) => {
+  try {
+
+    const userid = req.params.userid;
+
+    if (!userid) return res.status(400).json({ message: "userid is required" });
+
+    const [followers] = await db.query("SELECT together_follows.followerid, user.username, user.avatar, user.userid FROM together_follows JOIN user ON together_follows.followerid = user.userid WHERE together_follows.followingid = ?", [userid]);
+
+    return res.status(200).json(followers);
+
+
+  } catch (error) {
+    console.log("Error in getTargetsFollowersList: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getTargetsFollowingList = async (req, res) => {
+  try {
+    const userid = req.params.userid;
+
+    if (!userid) return res.status(400).json({ message: "userid is required" });
+
+    const [following] = await db.query("SELECT together_follows.followingid, user.username, user.avatar FROM together_follows JOIN user ON together_follows.followingid = user.userid WHERE together_follows.followerid = ?", [userid]);
+
+    return res.status(200).json(following);
+  } catch (error) {
+    console.log("Error in getTargetsFollowingList: ", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 
 module.exports = {
   followUnfollowUser,
   getFollowing,
   getFollowers,
-  getSuggestedUsers
+  getSuggestedUsers,
+  getTargetsFollowersList,
+  getTargetsFollowingList
 }

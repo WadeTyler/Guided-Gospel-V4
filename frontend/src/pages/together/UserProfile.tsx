@@ -1,6 +1,6 @@
 
-import { useEffect, useState } from 'react';
-import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled, IconHammer } from '@tabler/icons-react'
+import { SetStateAction, useEffect, useState } from 'react';
+import { IconUserPlus, IconMessages, IconFriendsOff, IconEdit, IconDeviceFloppy, IconBackspaceFilled, IconHammer, IconX } from '@tabler/icons-react'
 import toast from 'react-hot-toast';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Post from '../../components/together/Post';
@@ -10,6 +10,7 @@ import Sidebar from '../../components/together/Sidebar';
 import Comment from '../../components/together/Comment';
 import Loading from '../../components/Loading';
 import SuggestedUsers from '../../components/together/SuggestedUsers';
+import { UserAvatar } from '../../components/util/UserAvatar';
 
 
 const UserProfile = () => {
@@ -113,8 +114,7 @@ const UserProfile = () => {
           throw new Error(data.message || "Something went wrong");
         }
 
-        console.log(data);
-      
+
         return data;
       } catch (error) {
         toast.error((error as Error).message || "Something went wrong");
@@ -371,11 +371,19 @@ const UserProfile = () => {
     }
   }
 
+
+  // View following/followers list
+  const [displayFollowingList, setDisplayFollowingList] = useState<boolean>(false);
+  const [displayFollowersList, setDisplayFollowersList] = useState<boolean>(false);
+
   
 
   return (
-    <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen'>
+    <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen relative'>
       <Sidebar />
+
+      {targetUser && displayFollowingList && <FollowingList user={targetUser} setDisplayFollowingList={setDisplayFollowingList} />}
+      {targetUser && displayFollowersList && <FollowersList user={targetUser} setDisplayFollowersList={setDisplayFollowersList} />}
 
       {/* Body Content */}
       <div className="w-[40rem]">
@@ -473,8 +481,8 @@ const UserProfile = () => {
                   </section>
                 </div>
                 <section className="flex gap-2">
-                  <p className="text-xs">{targetUser?.followers} Followers</p>
-                  <p className="text-xs">{targetUser?.following} Following</p>
+                  <p className="text-xs cursor-pointer hover:underline" onClick={() => setDisplayFollowersList(true)}>{targetUser?.followers} Followers</p>
+                  <p className="text-xs cursor-pointer hover:underline" onClick={() => setDisplayFollowingList(true)}>{targetUser?.following} Following</p>
                 </section>
                 {!editing && 
                   <p className={`${targetUser?.bio ? 'text-sm' : 'text-xs text-gray-500'}`}>
@@ -540,5 +548,110 @@ const UserProfile = () => {
     </div>
   )
 }
+
+
+
+
+const FollowingList = ({ user, setDisplayFollowingList }: { user: User; setDisplayFollowingList: React.Dispatch<SetStateAction<boolean>>; }) => {
+
+
+  // Change to targets followers list
+  const [following, setFollowing] = useState<User[]>([]);
+
+  const getFollowing = async () => {
+    try {
+      const response = await fetch(`/api/together/follows/following/${user.userid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message);
+
+      setFollowing(data);
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong" );
+    }
+  };
+
+  useEffect(() => {
+    getFollowing();
+  }, [user]);
+
+  return (
+    <div className="bg-[rgba(0,0,0,.8)] z-50 fixed w-full h-screen flex items-center justify-center">
+      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative">
+        <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowingList(false)} />
+        <p className="text-primary text-2xl">Followers</p>
+        {following && following.map((user: User, index) => (
+          <div className="flex gap-2" key={index} >
+            <UserAvatar avatar={user.avatar} username={user.username} />
+            <section className="flex flex-col">
+              <p className="">{user.username}</p>
+              <Link to={`/together/users/${user.username}`} className='text-gray-400 cursor-pointer hover:underline text-sm' >View Profile</Link>
+            </section>
+          </div>
+        ))}
+        {following.length === 0 && 
+          <p className="">{user.username} hasn't followed anyone yet</p>
+        }
+      </div>
+    </div>
+  )
+}
+
+const FollowersList = ({ user, setDisplayFollowersList }: { user: User; setDisplayFollowersList: React.Dispatch<SetStateAction<boolean>>; }) => {
+
+  // Change to targets followers list
+  const [followers, setFollowers] = useState([]);
+
+  const getFollowers = async () => {
+    try {
+      const response = await fetch(`/api/together/follows/followers/${user.userid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.message);
+
+      setFollowers(data);
+    } catch (error) {
+      toast.error((error as Error).message || "Something went wrong" );
+    }
+  };
+
+  useEffect(() => {
+    getFollowers();
+  }, [user]);
+
+  return (
+    <div className="bg-[rgba(0,0,0,.8)] z-50 fixed w-full h-screen flex items-center justify-center">
+      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative">
+        <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowersList(false)} />
+        <p className="text-primary text-2xl">Followers</p>
+        {followers && followers.map((user: User, index) => (
+          <div className="flex gap-2" key={index} >
+            <UserAvatar avatar={user.avatar} username={user.username} />
+            <section className="flex flex-col">
+              <p className="">{user.username}</p>
+              <Link to={`/together/users/${user.username}`} className='text-gray-400 cursor-pointer hover:underline text-sm' >View Profile</Link>
+            </section>
+          </div>
+        ))}
+        {followers.length === 0 && 
+          <p className="">{user.username} doesn't have any followers yet</p>
+        }
+      </div>
+    </div>
+  )
+}
+
 
 export default UserProfile
