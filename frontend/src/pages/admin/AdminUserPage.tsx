@@ -6,7 +6,6 @@ import { formatName, formatTimestamp, formatTimestampToDifference } from "../../
 import ChangeRates from "../../components/admin/ChangeRates";
 import Post from "../../components/together/Post";
 import Comment from "../../components/together/Comment";
-import Message from "../../components/together/Message";
 
 
 const AdminUserPage = () => {
