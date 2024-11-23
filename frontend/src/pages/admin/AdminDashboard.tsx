@@ -74,17 +74,34 @@ const AdminDashboard = () => {
         {dashboardData &&
           <div className="grid grid-cols-2 gap-4">
 
-            <div className="flex flex-col gap-4">
-              {/* Total Number of Users */}
-              <div className="w-full h-full rounded-xl p-4 border-gray-300 shadow-lg border-[1px]">
-                <p className="text-primary text-2xl">Total Users</p>
-                <p>{dashboardData?.totalUsers.length}</p>
+            <div className="flex gap-4">
+              <div className="flex flex-col w-full gap-4">
+                {/* Total Number of Users */}
+                <div className="w-full h-full rounded-xl p-4 border-gray-300 shadow-lg border-[1px]">
+                  <p className="text-primary text-2xl">Total Users</p>
+                  <p>{dashboardData?.totalUsers.length}</p>
+                </div>
+
+                {/* Total Number of Users */}
+                <div className="w-full h-full rounded-xl p-4 border-gray-300 shadow-lg border-[1px]">
+                  <p className="text-primary text-2xl">Users This Week</p>
+                  <p>{dashboardData?.usersThisWeek.length}</p>
+                </div>
               </div>
 
-              {/* Total Number of Users */}
-              <div className="w-full h-full rounded-xl p-4 border-gray-300 shadow-lg border-[1px]">
-                <p className="text-primary text-2xl">Users This Week</p>
-                <p>{dashboardData?.usersThisWeek.length}</p>
+
+              <div className="flex flex-col w-full gap-4">
+                {/* Posts This Week */}
+                <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
+                  <p className="text-primary text-2xl">Posts This Week</p>
+                  <p>{dashboardData?.numberPosts}</p>
+                </div>
+
+                {/* Private Messages This Week */}
+                <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
+                  <p className="text-primary text-2xl">Private Messages This Week</p>
+                  <p>{dashboardData?.numberMessages}</p>
+                </div>
               </div>
             </div>
 
@@ -96,19 +113,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              {/* Posts This Week */}
-              <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
-                <p className="text-primary text-2xl">Posts This Week</p>
-                <p>{dashboardData?.numberPosts}</p>
-              </div>
-
-              {/* Private Messages This Week */}
-              <div className="w-full h-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg">
-                <p className="text-primary text-2xl">Private Messages This Week</p>
-                <p>{dashboardData?.numberMessages}</p>
-              </div>
-            </div>
 
             {/* Violations This Week */}
             <div className="w-full rounded-xl p-4 border-gray-300 border-[1px] shadow-lg flex flex-col gap-4">
