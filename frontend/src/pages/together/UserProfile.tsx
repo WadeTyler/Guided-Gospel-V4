@@ -583,7 +583,7 @@ const FollowingList = ({ user, setDisplayFollowingList }: { user: User; setDispl
 
   return (
     <div className="bg-[rgba(0,0,0,.8)] z-50 fixed w-full h-screen flex items-center justify-center">
-      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative">
+      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative dark:bg-darkbg dark:text-darktext">
         <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowingList(false)} />
         <p className="text-primary text-2xl">Followers</p>
         {following && following.map((user: User, index) => (
@@ -633,7 +633,7 @@ const FollowersList = ({ user, setDisplayFollowersList }: { user: User; setDispl
 
   return (
     <div className="bg-[rgba(0,0,0,.8)] z-50 fixed w-full h-screen flex items-center justify-center">
-      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative">
+      <div className="bg-white rounded-xl w-96 max-h-96 overflow-scroll flex flex-col gap-3 p-4 relative dark:bg-darkbg dark:text-darktext">
         <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowersList(false)} />
         <p className="text-primary text-2xl">Followers</p>
         {followers && followers.map((user: User, index) => (
