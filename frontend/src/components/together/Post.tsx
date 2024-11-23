@@ -8,7 +8,7 @@ import Comments from './Comments';
 import { FaDeleteLeft } from 'react-icons/fa6';
 import Loading from '../Loading';
 import { useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 
 const Post = ({post}: {post:Post}) => {
   const [isLiked, setIsLiked] = useState<Boolean>(false);
@@ -70,7 +70,11 @@ const Post = ({post}: {post:Post}) => {
   }
 
   return (
-    <div className='w-full flex flex-col gap-2 border-[1px] border-gray-300 hover:border-primary duration-300 shadow-lg dark:text-darktext p-4 rounded-2xl relative'>
+    <motion.div 
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duartion: .5 }}
+    className='w-full flex flex-col gap-2 border-[1px] border-gray-300 hover:border-primary duration-300 shadow-lg dark:text-darktext p-4 rounded-2xl relative'>
 
       {/* Delete Button */}
       {authUser?.userid === post.userid &&
@@ -114,7 +118,7 @@ const Post = ({post}: {post:Post}) => {
 
       {viewingComments && <Comments post={post} handleLike={handleLike} isLiked={isLiked} setViewingComments={setViewingComments} />}
       {reportingPost && <ReportingPost post={post} setReportingPost={setReportingPost} />}
-    </div>
+    </motion.div>
   )
 }
 

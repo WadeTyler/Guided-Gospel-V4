@@ -3,7 +3,7 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import Loading from '../components/Loading';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { motion } from 'framer-motion';
 
 
 const Settings = () => {
@@ -134,12 +134,20 @@ const Settings = () => {
     
 
       {/* Left Side */}
-      <div className="logo-container">
+      <motion.div 
+      initial={{ x: -100, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duration: .5 }}
+      className="logo-container">
         <img src="./images/logo-3.png" alt="" className="rounded-full" />
-      </div>
+      </motion.div>
 
       {/* Right Side */}
-      <div className="form-container">
+      <motion.div 
+      initial={{ x: 100, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 1 }}
+      transition={{ duartion: .5 }}
+      className="form-container">
         <h2 className="text-primary text-5xl w-full md:text-end text-center">Settings</h2>
         <p className="w-full md:text-end text-center dark:text-darktext">Customize your preferences to have a more uniquely tailored experience with Guided Gospel!</p>
 
@@ -206,7 +214,7 @@ const Settings = () => {
             <Link to="/rates" className="text-primary underline not-italic text-sm" >Click here to learn more about Rates</Link>
         </p>
 
-      </div>
+      </motion.div>
 
       {isDeletingUser &&
         <div className="bg-[rgba(0,0,0,0.8)] w-full h-full absolute z-[100] flex items-center justify-center">

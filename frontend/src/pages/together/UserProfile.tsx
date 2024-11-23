@@ -11,7 +11,7 @@ import Comment from '../../components/together/Comment';
 import Loading from '../../components/Loading';
 import SuggestedUsers from '../../components/together/SuggestedUsers';
 import { UserAvatar } from '../../components/util/UserAvatar';
-
+import { motion } from 'framer-motion';
 
 const UserProfile = () => {
 
@@ -231,6 +231,8 @@ const UserProfile = () => {
     if (followingList && targetUser) {
       setFollowingTarget(checkIfFollowingTarget(followingList, targetUser.userid));
     }
+
+
     
   }, [targetUser, followingList]);
 
@@ -371,13 +373,16 @@ const UserProfile = () => {
     }
   }
 
-
   // View following/followers list
   const [displayFollowingList, setDisplayFollowingList] = useState<boolean>(false);
   const [displayFollowersList, setDisplayFollowersList] = useState<boolean>(false);
 
-  
+  useEffect(() => {
+    setDisplayFollowersList(false);
+    setDisplayFollowingList(false);
+  }, [targetUser]);
 
+  
   return (
     <div className='flex justify-center bg-white dark:bg-darkbg min-h-screen relative'>
       <Sidebar />
@@ -587,13 +592,17 @@ const FollowingList = ({ user, setDisplayFollowingList }: { user: User; setDispl
         <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowingList(false)} />
         <p className="text-primary text-2xl">Followers</p>
         {following && following.map((user: User, index) => (
-          <div className="flex gap-2" key={index} >
+          <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration : .5 }}
+          className="flex gap-2" key={index} >
             <UserAvatar avatar={user.avatar} username={user.username} />
             <section className="flex flex-col">
               <p className="">{user.username}</p>
               <Link to={`/together/users/${user.username}`} className='text-gray-400 cursor-pointer hover:underline text-sm' >View Profile</Link>
             </section>
-          </div>
+          </motion.div>
         ))}
         {following.length === 0 && 
           <p className="">{user.username} hasn't followed anyone yet</p>
@@ -637,13 +646,17 @@ const FollowersList = ({ user, setDisplayFollowersList }: { user: User; setDispl
         <IconX className='absolute top-2 right-2 cursor-pointer hover:text-red-500' onClick={() => setDisplayFollowersList(false)} />
         <p className="text-primary text-2xl">Followers</p>
         {followers && followers.map((user: User, index) => (
-          <div className="flex gap-2" key={index} >
+          <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration : .5 }}
+          className="flex gap-2" key={index} >
             <UserAvatar avatar={user.avatar} username={user.username} />
             <section className="flex flex-col">
               <p className="">{user.username}</p>
               <Link to={`/together/users/${user.username}`} className='text-gray-400 cursor-pointer hover:underline text-sm' >View Profile</Link>
             </section>
-          </div>
+          </motion.div>
         ))}
         {followers.length === 0 && 
           <p className="">{user.username} doesn't have any followers yet</p>

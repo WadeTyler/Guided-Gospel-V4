@@ -5,7 +5,7 @@ import { FaDeleteLeft } from "react-icons/fa6";
 import { SetStateAction, useState } from "react";
 import Loading from "../Loading";
 import toast from "react-hot-toast";
-
+import { motion } from "framer-motion";
 
 const Comment = ({comment}: {comment:Comment}) => {
 
@@ -20,7 +20,11 @@ const Comment = ({comment}: {comment:Comment}) => {
   const [deletingComment, setDeletingComment] = useState<boolean>(false);
 
   return (
-    <div className="relative border-[1px] border-gray-300 hover:border-primary duration-300 shadow-lg p-4 rounded-2xl w-full h-fit dark:text-white">
+    <motion.div 
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duration: .5 }}
+    className="relative border-[1px] border-gray-300 hover:border-primary duration-300 shadow-lg p-4 rounded-2xl w-full h-fit dark:text-white">
 
         {/* Delete Button */}
         {authUser?.userid === comment.userid &&
@@ -40,7 +44,7 @@ const Comment = ({comment}: {comment:Comment}) => {
           <section className="flex flex-col gap-2 ">
             <p className="break-words">{comment.content}</p>
           </section>
-        </div>
+        </motion.div>
       
   )
 }

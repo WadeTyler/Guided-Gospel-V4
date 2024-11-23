@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom';
 import { formatTimestampToDifference } from '../../lib/utils';
-
+import { motion } from 'framer-motion';
 
 /*
 interface TogetherMessage {
@@ -22,7 +22,11 @@ const Message = ({message}: {message: TogetherMessage}) => {
   const isSelf = message.userid === authUser?.userid;
 
   return (
-    <div className={`flex gap-4 relative group-parent ${!isSelf ? 'self-start translate-x-16 lg:ml-10 flex-row-reverse' : 'self-end -translate-x-16 lg:mr-10'}`} >
+    <motion.div 
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duration: .5 }}
+    className={`flex gap-4 relative group-parent ${!isSelf ? 'self-start translate-x-16 lg:ml-10 flex-row-reverse' : 'self-end -translate-x-16 lg:mr-10'}`} >
 
       <div className="flex flex-col">
         <p  className={`text-neutral-800 dark:text-darktext w-full ${isSelf ? 'text-end' : 'text-start'}`}>
@@ -42,7 +46,7 @@ const Message = ({message}: {message: TogetherMessage}) => {
       </div>
 
       <img src={message.avatar ? `https://res.cloudinary.com/${import.meta.env.VITE_CLOUDINARY_NAME}/image/upload/${message.avatar}` : "/images/default-avatar.jpg"} alt="User Avatar" className="rounded-full h-12 w-12 cursor-pointer" onClick={() => navigate(`/together/users/${message.username}`)} />
-    </div>
+    </motion.div>
   )
 }
 
