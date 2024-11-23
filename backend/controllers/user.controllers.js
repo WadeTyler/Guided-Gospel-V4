@@ -12,6 +12,7 @@ const sendEmail = require('../lib/email/sendEmail.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 const checkEmailFormat = require('../lib/utils/checkEmailFormat');
 const isUsernameTaken = require('../lib/username/isUsernameTaken');
+const { evaluateFlagscore } = require('../lib/violations/checkViolations.js');
 const cloudinary = require('cloudinary').v2;
 
 const defaultRates = 50;
@@ -344,6 +345,8 @@ const getMe = async (req, res) => {
 
     // Remove password
     const { password: _, ...userWithoutPassword} = user;
+
+    evaluateFlagscore(user.userid);
 
     return res.status(200).json(userWithoutPassword);
 
