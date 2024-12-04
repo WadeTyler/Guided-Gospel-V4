@@ -205,7 +205,7 @@ const flagWords = [
   '.gov', '.edu', 'download', 'apk', 'exe', 'zip', 'torrent',
   
   // Financial and Scams
-  'free', 'money', 'cash', 'earn', 'rich', 'profit', 'reward', 'bonus', 
+  'money', 'cash', 'earn', 'rich', 'profit', 'reward', 'bonus', 
   'win', 'prize', 'jackpot', 'giveaway', 'lottery', 'investment', 'loan', 
   'bitcoin', 'crypto', 'nft', 'forex', 'stock', 'trading', 'fund',
 
