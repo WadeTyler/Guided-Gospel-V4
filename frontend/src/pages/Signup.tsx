@@ -63,7 +63,7 @@ const Signup = () => {
               className='form-input-bar' />
             <input type="text" name="email" placeholder='Email' onChange={(e) => {setEmail(e.target.value)}}
               className='form-input-bar' />
-            <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
+            <input type="password" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
               className='form-input-bar' />
             
             {isPending && 
