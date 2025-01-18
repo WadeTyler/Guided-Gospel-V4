@@ -61,7 +61,7 @@ const Login = () => {
           className='form-input-bar' />
           
           <section className="w-full flex flex-col gap-1">
-            <input type="text" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
+            <input type="password" name="password" placeholder='Password' onChange={(e) => {setPassword(e.target.value)}}
             className='form-input-bar' />
             <div className="w-full flex items-center md:justify-end justify-center">
               <Link to="/forgotpassword" className="dark:text-darktext underline">Forgot password?</Link>
