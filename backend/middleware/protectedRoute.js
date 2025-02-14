@@ -24,10 +24,10 @@ const protectedRoute = async (req, res, next) => {
 
       // Check if userid is in db
 
-      const user = await db.query("SELECT userid FROM user WHERE userid = ?", [userid]);
+      const [user] = await db.query("SELECT * FROM user WHERE userid = ?", [userid]);
       console.log("USER: ", user);
 
-      if (user[0].length === 0) {
+      if (user.length === 0) {
         // Not Found
         res.clearCookie("authToken");
         return res.status(404).json({message: "User does not exist"});
@@ -35,7 +35,7 @@ const protectedRoute = async (req, res, next) => {
 
       // Found - Set the req.userid to the userid
       try {
-        req.body.userid = user[0][0].userid;
+        req.body.userid = user[0].userid;
       } catch (e) {
         res.clearCookie("authToken");
         return res.status(401).json({ message: "Unauthorized" });
