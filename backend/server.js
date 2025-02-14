@@ -19,7 +19,7 @@ const bibleRoutes = require('./routes/bible/bible.routes');
 const adminRoutes = require('./routes/admin.routes');
 const resetDeletedEmails = require('./lib/cronjobs/resetDeletedEmails');
 
-require('dotenv').config();
+// require('dotenv').config();
 
 // middleware
 const app = express();

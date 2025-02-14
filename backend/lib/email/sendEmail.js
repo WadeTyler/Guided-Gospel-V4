@@ -2,7 +2,7 @@
 
 const nodemailer = require('nodemailer');
 const checkEmailFormat = require('../utils/checkEmailFormat');
-require('dotenv').config();
+// require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,

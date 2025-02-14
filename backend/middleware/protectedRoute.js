@@ -3,7 +3,7 @@ const db = require('../db/db');
 const jwt = require('jsonwebtoken');
 
 // Verify if the user is authenticated
-const protectedRoute = (req, res, next) => {
+const protectedRoute = async (req, res, next) => {
   try {
 
     const authToken = req.cookies.authToken;
@@ -12,24 +12,25 @@ const protectedRoute = (req, res, next) => {
     }
 
     // Verify Token
-    const verifiedToken = jwt.verify(authToken, process.env.JWT_SECRET, function(err, decoded) {
+    const verifiedToken = jwt.verify(authToken, process.env.JWT_SECRET, async function (err, decoded) {
       if (err) {
         res.clearCookie("authToken");
         throw new Error(err);
-        return res.status(401).json({ message: "Invalid authToken. Please Login again." });
+        return res.status(401).json({message: "Invalid authToken. Please Login again."});
       }
 
       // extract userid from token
       const userid = decoded.userid;
 
       // Check if userid is in db
-      
-      const user = db.query("SELECT userid FROM user WHERE userid = ?", [userid]);
-      
+
+      const [user] = await db.query("SELECT userid FROM user WHERE userid = ?", [userid]);
+      console.log(user);
+
       if (user.length === 0) {
         // Not Found
         res.clearCookie("authToken");
-        return res.status(404).json({ message: "User does not exist" });
+        return res.status(404).json({message: "User does not exist"});
       }
 
       // Found - Set the req.userid to the userid
