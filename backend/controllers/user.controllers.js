@@ -305,6 +305,7 @@ const getMe = async (req, res) => {
     const userid = req.body.userid;
 
     const query = 'SELECT * FROM user WHERE userid = ?';
+    const [userData] = await db.query(query, [userid]);
     console.log(userData);
 
     if (!userData || userData.length === 0) {

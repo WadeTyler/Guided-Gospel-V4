@@ -24,17 +24,23 @@ const protectedRoute = async (req, res, next) => {
 
       // Check if userid is in db
 
-      const [user] = await db.query("SELECT userid FROM user WHERE userid = ?", [userid]);
-      console.log(user);
+      const user = await db.query("SELECT userid FROM user WHERE userid = ?", [userid]);
+      console.log("USER: ", user);
 
-      if (user.length === 0) {
+      if (user[0].length === 0) {
         // Not Found
         res.clearCookie("authToken");
         return res.status(404).json({message: "User does not exist"});
       }
 
       // Found - Set the req.userid to the userid
-      req.body.userid = userid;
+      try {
+        req.body.userid = user[0][0].userid;
+      } catch (e) {
+        res.clearCookie("authToken");
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
       next();
     });
   
@@ -42,6 +48,7 @@ const protectedRoute = async (req, res, next) => {
     
   } catch (error) {
     console.log("Error in protectedRoute: ", error);
+    res.clearCookie("authToken");
     return res.status(401).json({ message: "Unauthorized" });
   }
 }
