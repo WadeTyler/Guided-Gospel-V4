@@ -3,6 +3,7 @@ services:
   mysql-db:
     image: mysql:8.0
     container_name: guided-gospel-db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -23,6 +24,7 @@ services:
   server:
     build: ./
     container_name: guided-gospel-server
+    restart: unless-stopped
     depends_on:
       - mysql-db
     ports:
