@@ -1,5 +1,3 @@
-
-
 const nodemailer = require('nodemailer');
 const checkEmailFormat = require('../utils/checkEmailFormat');
 // require('dotenv').config();
@@ -27,14 +25,25 @@ const sendEmail = async (to, subject, text, html) => {
       return;
     }
 
-    // send email with defined transport object
-    const info = await transporter.sendMail({
+    const mailData = {
       from: ' "Guided Gospel" <contact@guidedgospel.net>', // sender address
       to: to, // list of receivers
       subject: subject, // Subject line
       text: text, // plain text body
       html: html, // html body
-    });
+    }
+
+    // send email with defined transport object
+    const info = await new Promise((resolve, reject) => {
+      transporter.sendMail(mailData, (err, info) => {
+        if (err) {
+          throw new Error(`Error in sendEmail: ${err.message || err}`);
+        } else {
+          return resolve(info);
+        }
+      });
+    })
+
 
     console.log("Email sent %s", info.messageId);
   } catch (error) {
