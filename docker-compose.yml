@@ -43,6 +43,10 @@ services:
       EMAIL_PORT: ${EMAIL_PORT}
       EMAIL_USER: ${EMAIL_USER}
       EMAIL_PASS: ${EMAIL_PASS}
-
+    develop:
+      watch:
+        - action: rebuild
+          path: ./
+          target: /app
 volumes:
   mysql_guided_gospel_data:
