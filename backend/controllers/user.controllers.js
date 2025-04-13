@@ -7,7 +7,6 @@ const generateAuthToken = require('../lib/jwt/generateAuthToken.js');
 const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 const passwordRecoveryCron = require('../lib/cronjobs/passwordRecovery');
 const signupRequestsCron = require('../lib/cronjobs/signupRequests');
-const emailMessages = require('../lib/email/emailMessages');
 const sendEmail = require('../lib/email/emailing.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 const checkEmailFormat = require('../lib/utils/checkEmailFormat');
