@@ -123,14 +123,12 @@ const signUp = async (req, res) => {
 
     console.log("Verification Token: ", signupid);
 
-
-
     // Insert user into SignUpRequests table
     const query = 'INSERT INTO SignUpRequests (signupid) VALUES (?)';
     await db.query(query, [signupid]);
 
     // Send email
-    sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(signupid));
+    await sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(signupid));
 
     // Activate Cronjob to remove token after 5 minutes
     signupRequestsCron.removeToken(signupid, 300000);
@@ -393,7 +391,7 @@ const submitForgotPassword = async (req, res) => {
 
     passwordRecoveryCron.removeToken(recoveryToken, 300000);
 
-    sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
+    await sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
 
     res.status(200).json({ message: "Password recovery email sent" });
 
