@@ -8,9 +8,10 @@ const checkIfEmailExists = require('../lib/utils/checkEmailExists');
 const passwordRecoveryCron = require('../lib/cronjobs/passwordRecovery');
 const signupRequestsCron = require('../lib/cronjobs/signupRequests');
 const emailMessages = require('../lib/email/emailMessages');
-const sendEmail = require('../lib/email/sendEmail.js');
+const sendEmail = require('../lib/email/emailing.js');
 const getTimestampInSQLFormat = require('../lib/utils/sqlFormatting').getTimestampInSQLFormat;
 const checkEmailFormat = require('../lib/utils/checkEmailFormat');
+const {sendOTPEmail} = require("../lib/email/emailing");
 
 const defaultRates = 50;
 
@@ -128,7 +129,8 @@ const signUp = async (req, res) => {
     await db.query(query, [signupid]);
 
     // Send email
-    await sendEmail(email, "Complete Your Registration - Guided Gospel", "Please complete your registration.", emailMessages.emailVerification(signupid));
+
+    await sendOTPEmail(email, signupid);
 
     // Activate Cronjob to remove token after 5 minutes
     signupRequestsCron.removeToken(signupid, 300000);
@@ -391,7 +393,7 @@ const submitForgotPassword = async (req, res) => {
 
     passwordRecoveryCron.removeToken(recoveryToken, 300000);
 
-    await sendEmail(email, "Password Recovery - Guided Gospel", "You have requested a password recovery.", emailMessages.passwordRecovery(recoveryToken));
+    await sendOTPEmail(email, recoveryToken);
 
     res.status(200).json({ message: "Password recovery email sent" });
 
